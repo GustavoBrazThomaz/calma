@@ -1,13 +1,41 @@
 import { useState, type ReactNode } from "react";
 import { Avatar, Flex, Layout, Menu, Typography } from "antd";
-import { menuItems } from "./contants";
-
 const { Sider, Content } = Layout;
 const { Title } = Typography;
 
+import {
+  HomeOutlined,
+  CalendarOutlined,
+  TeamOutlined,
+} from "@ant-design/icons";
+import type { MenuProps } from "antd";
+import { useNavigate } from "react-router";
+type MenuItem = Required<MenuProps>["items"][number];
+
 export function AppLayout({ children }: { children: ReactNode }) {
   const [collapsed, setCollapsed] = useState(false);
+  const navigate = useNavigate();
 
+  const menuItems: MenuItem[] = [
+    {
+      key: "1",
+      icon: <HomeOutlined />,
+      label: "Dashboard",
+      onClick: () => navigate("/"),
+    },
+    {
+      key: "2",
+      icon: <CalendarOutlined />,
+      label: "Consultas",
+      onClick: () => navigate("/consultas"),
+    },
+    {
+      key: "3",
+      icon: <TeamOutlined />,
+      label: "Pacientes",
+      onClick: () => navigate("/pacientes"),
+    },
+  ];
   return (
     <Layout>
       <Sider

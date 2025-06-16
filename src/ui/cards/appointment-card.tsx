@@ -35,7 +35,7 @@ export function AppointmentCard({
               {firstName}
             </Avatar>
           }
-          title="Card title"
+          title={firstName}
           description={
             <Flex vertical>
               <p>

@@ -1,6 +1,6 @@
-import { Button, Col, Flex, Row, Space, Typography } from "antd";
+import { SearchOutlined } from "@ant-design/icons";
+import { Flex, Space, Button, Typography, Select, Input, Col, Row } from "antd";
 import { AppointmentCard } from "../../ui/cards/appointment-card";
-
 const { Title } = Typography;
 
 interface Props {
@@ -47,39 +47,57 @@ const appointments: Props[] = [
   },
 ];
 
-export function Dashboard() {
+export function Appointments() {
+  const handleChange = (value: string) => {
+    console.log(`selected ${value}`);
+  };
+
   return (
-    <Flex vertical gap="middle">
+    <Flex vertical gap="large">
       <Flex align="center" justify="space-between" style={{ width: "100%" }}>
-        <Title level={3}>Dashboard</Title>
+        <Title level={3}>Consultas</Title>
         <Space>
-          <Button>Novo Paciente</Button>
           <Button variant="solid" color="blue">
             Nova Consulta
           </Button>
         </Space>
       </Flex>
 
-      <Title level={4}>Consultas de Hoje</Title>
+      <Flex gap="large">
+        <Flex gap="middle" style={{ width: "40%" }}>
+          <Input placeholder="Buscar Consulta..." />
+          <Button variant="solid" color="primary">
+            <SearchOutlined /> Buscar
+          </Button>
+        </Flex>
 
-      <Row gutter={[16, 16]}>
-        {appointments.map((item) => (
-          <Col span={12}>
-            <AppointmentCard
-              firstName={item.firstName}
-              isPaid={item.isPaid}
-              phone={item.phone}
-              scheduled={item.scheduled}
-              price={item.price}
-              status={item.status}
-            />
-          </Col>
-        ))}
-      </Row>
+        <Flex gap="middle" style={{ width: "30%" }}>
+          <Select
+            defaultValue="lucy"
+            style={{ width: "50%" }}
+            onChange={handleChange}
+            options={[
+              { value: "all", label: "Todas as consultas" },
+              { value: "scheduled", label: "Agendados" },
+              { value: "done", label: "Realizada" },
+              { value: "cancel", label: "Cancelada" },
+            ]}
+          />
 
-      <Title level={4}>Próximas Consultas</Title>
+          <Select
+            defaultValue="lucy"
+            style={{ width: "50%" }}
+            onChange={handleChange}
+            options={[
+              { value: "all", label: "Todos os pagamentos" },
+              { value: "paid", label: "Pagos" },
+              { value: "pendents", label: "Pendentes" },
+            ]}
+          />
+        </Flex>
+      </Flex>
 
-      <Row gutter={[16, 16]}>
+      <Row gutter={[16, 16]} >
         {appointments.map((item) => (
           <Col span={12}>
             <AppointmentCard
