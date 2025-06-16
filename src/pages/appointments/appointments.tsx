@@ -1,5 +1,5 @@
 import { SearchOutlined } from "@ant-design/icons";
-import { Flex, Space, Button, Typography, Select, Input, Col, Row } from "antd";
+import { Flex, Button, Typography, Select, Input, Col, Row } from "antd";
 import { AppointmentCard } from "../../ui/cards/appointment-card";
 const { Title } = Typography;
 
@@ -56,17 +56,12 @@ export function Appointments() {
     <Flex vertical gap="large">
       <Flex align="center" justify="space-between" style={{ width: "100%" }}>
         <Title level={3}>Consultas</Title>
-        <Space>
-          <Button variant="solid" color="blue">
-            Nova Consulta
-          </Button>
-        </Space>
       </Flex>
 
       <Flex gap="large">
-        <Flex gap="middle" style={{ width: "40%" }}>
+        <Flex gap="middle" style={{ width: "100%" }}>
           <Input placeholder="Buscar Consulta..." />
-          <Button variant="solid" color="primary">
+          <Button variant="outlined" color="primary">
             <SearchOutlined /> Buscar
           </Button>
         </Flex>
@@ -95,9 +90,13 @@ export function Appointments() {
             ]}
           />
         </Flex>
+
+        <Button variant="solid" color="blue">
+          Nova Consulta
+        </Button>
       </Flex>
 
-      <Row gutter={[16, 16]} >
+      <Row gutter={[16, 16]}>
         {appointments.map((item) => (
           <Col span={12}>
             <AppointmentCard
