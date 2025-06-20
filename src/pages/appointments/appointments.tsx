@@ -1,53 +1,13 @@
 import { SearchOutlined } from "@ant-design/icons";
 import { Flex, Button, Typography, Select, Input, Col, Row } from "antd";
 import { AppointmentCard } from "../../ui/cards/appointment-card";
+import { AppointmentForm } from "../../ui/forms/appointment-form";
+import { useState } from "react";
+import { appointments } from "../../constants";
 const { Title } = Typography;
 
-interface Props {
-  firstName: string;
-  phone: string;
-  scheduled: Date;
-  price: string;
-  isPaid: boolean;
-  status: "done" | "cancel" | "scheduled";
-}
-
-const appointments: Props[] = [
-  {
-    firstName: "Ana",
-    phone: "(11) 91234-5678",
-    scheduled: new Date("2025-06-18T10:00:00"),
-    price: "R$ 250,00",
-    isPaid: true,
-    status: "done",
-  },
-  {
-    firstName: "Bruno",
-    phone: "(21) 99876-5432",
-    scheduled: new Date("2025-06-19T14:30:00"),
-    price: "R$ 300,00",
-    isPaid: false,
-    status: "scheduled",
-  },
-  {
-    firstName: "Carla",
-    phone: "(31) 98765-4321",
-    scheduled: new Date("2025-06-20T09:00:00"),
-    price: "R$ 200,00",
-    isPaid: true,
-    status: "cancel",
-  },
-  {
-    firstName: "Diego",
-    phone: "(41) 97654-3210",
-    scheduled: new Date("2025-06-21T16:15:00"),
-    price: "R$ 280,00",
-    isPaid: false,
-    status: "scheduled",
-  },
-];
-
 export function Appointments() {
+  const [open, setOpen] = useState<boolean>(true);
   const handleChange = (value: string) => {
     console.log(`selected ${value}`);
   };
@@ -97,8 +57,8 @@ export function Appointments() {
       </Flex>
 
       <Row gutter={[16, 16]}>
-        {appointments.map((item) => (
-          <Col span={12}>
+        {appointments.map((item, index) => (
+          <Col span={12} key={"col_" + index}>
             <AppointmentCard
               firstName={item.firstName}
               isPaid={item.isPaid}
@@ -110,6 +70,7 @@ export function Appointments() {
           </Col>
         ))}
       </Row>
+      <AppointmentForm open={open} setOpen={setOpen} />
     </Flex>
   );
 }
