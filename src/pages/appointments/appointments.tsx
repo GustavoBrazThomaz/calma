@@ -7,7 +7,7 @@ import { appointments } from "../../constants";
 const { Title } = Typography;
 
 export function Appointments() {
-  const [open, setOpen] = useState<boolean>(true);
+  const [open, setOpen] = useState<boolean>(false);
   const handleChange = (value: string) => {
     console.log(`selected ${value}`);
   };
@@ -51,7 +51,7 @@ export function Appointments() {
           />
         </Flex>
 
-        <Button variant="solid" color="blue">
+        <Button onClick={() => setOpen(true)} variant="solid" color="blue">
           Nova Consulta
         </Button>
       </Flex>

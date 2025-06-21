@@ -2,6 +2,7 @@ import { CalendarOutlined, PhoneOutlined } from "@ant-design/icons";
 import { Avatar, Button, Card, Flex, Space, Typography } from "antd";
 import dayjs from "dayjs";
 import { getAgeFromBirthDate } from "../../utils/get-age";
+import { useNavigate } from "react-router";
 
 const { Title } = Typography;
 
@@ -20,8 +21,10 @@ export function PatientCard({
   lastName,
   birthDate,
   phone,
-  lastAppointment
+  lastAppointment,
 }: Props) {
+  const navigate = useNavigate();
+
   return (
     <Card
       actions={[
@@ -29,7 +32,7 @@ export function PatientCard({
           key="details"
           variant="text"
           color="default"
-          onClick={() => console.log(id)}
+          onClick={() => navigate("/paciente/" + id)}
         >
           Ver detalhes
         </Button>,

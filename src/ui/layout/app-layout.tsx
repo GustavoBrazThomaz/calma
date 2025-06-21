@@ -9,12 +9,14 @@ import {
   TeamOutlined,
 } from "@ant-design/icons";
 import type { MenuProps } from "antd";
-import { useNavigate } from "react-router";
+import { useLocation, useNavigate } from "react-router";
+import { getKeyByPathname } from "../../utils/get-key-by-pathname";
 type MenuItem = Required<MenuProps>["items"][number];
 
 export function AppLayout({ children }: { children: ReactNode }) {
   const [collapsed, setCollapsed] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
 
   const menuItems: MenuItem[] = [
     {
@@ -36,6 +38,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
       onClick: () => navigate("/pacientes"),
     },
   ];
+
   return (
     <Layout>
       <Sider
@@ -67,7 +70,11 @@ export function AppLayout({ children }: { children: ReactNode }) {
           </Flex>
         </Flex>
 
-        <Menu mode="inline" defaultSelectedKeys={["1"]} items={menuItems} />
+        <Menu
+          mode="inline"
+          defaultSelectedKeys={getKeyByPathname(location.pathname) ?? ["1"]}
+          items={menuItems}
+        />
       </Sider>
       <Layout>
         <Content
