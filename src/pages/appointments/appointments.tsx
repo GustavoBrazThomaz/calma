@@ -1,9 +1,9 @@
 import { SearchOutlined } from "@ant-design/icons";
 import { Flex, Button, Typography, Select, Input, Col, Row } from "antd";
-import { AppointmentCard } from "../../ui/cards/appointment-card";
-import { AppointmentForm } from "../../ui/forms/appointment-form";
 import { useState } from "react";
 import { appointments } from "../../constants";
+import { AppointmentCard } from "../../ui/cards/appointment-card";
+import { AppointmentForm } from "../../ui/forms/appointment/appointment-form";
 const { Title } = Typography;
 
 export function Appointments() {
@@ -28,7 +28,7 @@ export function Appointments() {
 
         <Flex gap="middle" style={{ width: "30%" }}>
           <Select
-            defaultValue="lucy"
+            defaultValue="Todas as consultas"
             style={{ width: "50%" }}
             onChange={handleChange}
             options={[
@@ -40,7 +40,7 @@ export function Appointments() {
           />
 
           <Select
-            defaultValue="lucy"
+            defaultValue="Todos os pagamentos"
             style={{ width: "50%" }}
             onChange={handleChange}
             options={[

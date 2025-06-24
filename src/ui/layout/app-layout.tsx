@@ -13,6 +13,15 @@ import { useLocation, useNavigate } from "react-router";
 import { getKeyByPathname } from "../../utils/get-key-by-pathname";
 type MenuItem = Required<MenuProps>["items"][number];
 
+const siderStyle: React.CSSProperties = {
+  overflow: "auto",
+  height: "100vh",
+  position: "sticky",
+  insetInlineStart: 0,
+  top: 0,
+  bottom: 0,
+};
+
 export function AppLayout({ children }: { children: ReactNode }) {
   const [collapsed, setCollapsed] = useState(false);
   const navigate = useNavigate();
@@ -43,7 +52,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
     <Layout>
       <Sider
         theme="light"
-        style={{ height: "100vh" }}
+        style={siderStyle}
         collapsed={collapsed}
         onCollapse={(value) => setCollapsed(value)}
         collapsible={true}
@@ -81,7 +90,8 @@ export function AppLayout({ children }: { children: ReactNode }) {
           style={{
             margin: "24px 16px",
             padding: 24,
-            height: "100vh",
+            minHeight: "100vh",
+            height: "100%",
             background: "#fff",
             borderRadius: "16px",
           }}

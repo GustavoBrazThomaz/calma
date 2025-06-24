@@ -11,9 +11,10 @@ import {
   type AutoCompleteProps,
 } from "antd";
 import { type Dispatch } from "react";
-import { patients } from "../../constants";
-import type { AppointmentForm } from "./appointment.types";
+
 import dayjs from "dayjs";
+import { patients } from "../../../constants";
+import type { AppointmentForm } from "./appointment.types";
 
 export function AppointmentForm({
   open,
