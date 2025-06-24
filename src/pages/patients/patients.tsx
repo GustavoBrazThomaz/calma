@@ -1,11 +1,14 @@
-import { Flex, Button, Typography, Input, Col, Row } from "antd";
-import { PatientCard } from "../../ui/cards/patient-card";
 import { SearchOutlined } from "@ant-design/icons";
+import { Button, Col, Flex, Input, Row, Typography } from "antd";
 import { patients } from "../../constants";
+import { PatientCard } from "../../ui/cards/patient-card";
+import { useNavigate } from "react-router";
 
 const { Title } = Typography;
 
 export function Patients() {
+  const navigate = useNavigate();
+
   return (
     <Flex vertical gap="large">
       <Flex>
@@ -20,7 +23,11 @@ export function Patients() {
           </Button>
         </Flex>
 
-        <Button variant="solid" color="blue">
+        <Button
+          onClick={() => navigate("/novo-paciente")}
+          variant="solid"
+          color="blue"
+        >
           Novo Paciente
         </Button>
       </Flex>

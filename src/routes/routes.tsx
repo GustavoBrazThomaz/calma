@@ -1,10 +1,11 @@
 import { createBrowserRouter } from "react-router";
 import App from "../App";
-import { Dashboard } from "../pages/dashboard/dashboard";
 import { Appointments } from "../pages/appointments/appointments";
-import { Patients } from "../pages/patients/patients";
-import { PatientDetail } from "../pages/patient-detail/patient-detail";
 import { CaseEvolutionForm } from "../pages/case-evolution-form/case-evolution-form";
+import { Dashboard } from "../pages/dashboard/dashboard";
+import { PatientDetail } from "../pages/patient-detail/patient-detail";
+import { Patients } from "../pages/patients/patients";
+import { NewPatient } from "../pages/new-patient/patient-form";
 
 export const routes = createBrowserRouter([
   {
@@ -19,6 +20,7 @@ export const routes = createBrowserRouter([
         element: <PatientDetail />,
       },
       { path: "paciente/:id/evolucao-de-caso", element: <CaseEvolutionForm /> },
+      { path: "novo-paciente", element: <NewPatient /> },
     ],
   },
 ]);
