@@ -1,14 +1,16 @@
-import { Card, Flex, Form, Input, Tabs, Typography } from "antd";
+import { Button, Card, Flex, Form, Input, Tabs, Typography } from "antd";
 import type { CaseEvolutionForm } from "./case-evolution.types";
 import { MarkdownEditor } from "./markdown/markdown-editor";
 import { MarkdownPreview } from "./markdown/markdown-preview";
 import { useState } from "react";
 import { markdownInitialValue } from "../../constants";
+import { useParams } from "react-router";
 
 const { Title, Paragraph } = Typography;
 
 export function CaseEvolutionForm() {
   const [markdown, setMarkdown] = useState<string>(markdownInitialValue);
+  const { caseId } = useParams();
 
   const tabs = [
     {
@@ -29,7 +31,12 @@ export function CaseEvolutionForm() {
 
   return (
     <Flex vertical gap="middle">
-      <Title level={3}>Nova Evolução de Caso</Title>
+      <Flex justify="space-between">
+        <Title level={3}>
+          {caseId ? "Evolução de caso" : "Nova Evolução de Caso"}
+        </Title>
+        <Button>Salvar</Button>
+      </Flex>
       <Form<CaseEvolutionForm>
         onFinish={handleSubmit}
         onFinishFailed={(e) => console.log(e)}
@@ -54,7 +61,11 @@ export function CaseEvolutionForm() {
           <Card>
             <Title level={4}>Conteúdo da Evolução</Title>
             <Paragraph>Conteúdo (Markdown)</Paragraph>
-            <Tabs defaultActiveKey="1" tabPosition="top" items={tabs} />
+            <Tabs
+              defaultActiveKey={caseId ? "2" : "1"}
+              tabPosition="top"
+              items={tabs}
+            />
           </Card>
           <Flex gap="large" style={{ color: "#868687" }}>
             <div>

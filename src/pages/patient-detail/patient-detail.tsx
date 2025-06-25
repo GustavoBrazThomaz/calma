@@ -2,9 +2,14 @@ import { Avatar, Button, Card, Flex, Space, Tabs, Typography } from "antd";
 import { CaseEvolution } from "./tabs/case-evolution";
 import { PatientAppointments } from "./tabs/patient-appointments";
 import { ClinicalData } from "./tabs/clinical-data";
+import { useNavigate, useParams, useSearchParams } from "react-router";
 
 const { Title, Text } = Typography;
 export function PatientDetail() {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const { id } = useParams();
+  const navigate = useNavigate();
+
   const tabs = [
     {
       label: "Dados clínicos",
@@ -27,7 +32,9 @@ export function PatientDetail() {
     <Flex vertical gap="middle">
       <Flex justify="space-between">
         <Title level={3}>Detalhes do Paciente</Title>
-        <Button>Editar</Button>
+        <Button onClick={() => navigate(`/editar-paciente/${id}`)}>
+          Editar
+        </Button>
       </Flex>
       <Card>
         <Flex gap="middle" align="center">
@@ -40,7 +47,14 @@ export function PatientDetail() {
           </Space.Compact>
         </Flex>
       </Card>
-      <Tabs defaultActiveKey="1" tabPosition="top" items={tabs} />
+      <Tabs
+        onChange={(tab) => {
+          setSearchParams({ tab });
+        }}
+        defaultActiveKey={searchParams.get("tab") ?? "1"}
+        tabPosition="top"
+        items={tabs}
+      />
     </Flex>
   );
 }

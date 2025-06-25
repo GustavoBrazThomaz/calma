@@ -1,14 +1,16 @@
 import { SearchOutlined } from "@ant-design/icons";
-import { Button, Col, Flex, Input, Row, Typography } from "antd";
+import { Button, Col, Flex, Form, Input, Row, Typography } from "antd";
 import { patients } from "../../constants";
 import { PatientCard } from "../../ui/cards/patient-card";
-import { useNavigate } from "react-router";
+import { useNavigate, useSearchParams } from "react-router";
+import type { SearchForm } from "../../types/search";
 
 const { Title } = Typography;
 
 export function Patients() {
   const navigate = useNavigate();
-
+  const [searchParams, setSearchParams] = useSearchParams();
+  
   return (
     <Flex vertical gap="large">
       <Flex>
@@ -16,12 +18,33 @@ export function Patients() {
       </Flex>
 
       <Flex gap="middle" justify="space-between" style={{ width: "100%" }}>
-        <Flex gap="middle" style={{ width: "100%" }}>
-          <Input placeholder="Buscar Consulta..." />
-          <Button variant="outlined" color="primary">
-            <SearchOutlined /> Buscar
-          </Button>
-        </Flex>
+        <Form<SearchForm>
+          onFinish={(form: SearchForm) => {
+            if (form.search === undefined) return;
+            setSearchParams({ search: form.search });
+          }}
+          autoComplete="off"
+          style={{ width: "100%" }}
+          initialValues={{
+            search: searchParams.get("search") ?? "",
+          }}
+        >
+          <Flex gap="middle" style={{ width: "100%" }}>
+            <Form.Item<SearchForm>
+              name="search"
+              label={null}
+              style={{ width: "100%" }}
+              rules={[{ required: true, message: "" }]}
+            >
+              <Input placeholder="Buscar Consulta..." />
+            </Form.Item>
+            <Form.Item>
+              <Button variant="outlined" color="primary" htmlType="submit">
+                <SearchOutlined /> Buscar
+              </Button>
+            </Form.Item>
+          </Flex>
+        </Form>
 
         <Button
           onClick={() => navigate("/novo-paciente")}

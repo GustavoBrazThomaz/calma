@@ -5,11 +5,12 @@ import {
   Flex,
   Form,
   Input,
+  InputNumber,
   Select,
   Typography,
 } from "antd";
 import { useMask } from "react-phone-hooks";
-import { useNavigate } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import {
   genderOptions,
   sexualityOptions,
@@ -22,6 +23,7 @@ const dateFormat = "DD/MM/YYYY";
 
 export function NewPatient() {
   const navigate = useNavigate();
+  const { id } = useParams();
   return (
     <Form
       onFinish={(e) => console.log(e)}
@@ -29,7 +31,9 @@ export function NewPatient() {
       autoComplete="off"
       layout="vertical"
     >
-      <Title level={3}>Criar novo paciente</Title>
+      <Title level={3}>
+        {id ? "Paciente: Maria Silva" : "Criar novo paciente"}
+      </Title>
       <Card>
         <Flex gap="small">
           <Form.Item
@@ -74,7 +78,11 @@ export function NewPatient() {
         </Flex>
         <Flex gap="middle">
           <Form.Item label="Data de nascimento" style={{ width: "100%" }}>
-            <DatePicker placeholder="Escolha a data" style={{ width: "100%" }} format={dateFormat} />
+            <DatePicker
+              placeholder="Escolha a data"
+              style={{ width: "100%" }}
+              format={dateFormat}
+            />
           </Form.Item>
           <Form.Item label="Profissão" style={{ width: "100%" }}>
             <Input placeholder="Profissão" />
@@ -116,6 +124,46 @@ export function NewPatient() {
             <Select
               placeholder="Ensino superior completo"
               options={educationLevelOptions}
+            />
+          </Form.Item>
+        </Flex>
+
+        <Flex gap="middle" align="center">
+          <Form.Item label="Valor" style={{ width: "100%" }} name="price">
+            <InputNumber<number>
+              prefix="R$"
+              suffix=".00"
+              placeholder="150"
+              formatter={(value) =>
+                `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+              }
+              parser={(value) =>
+                value?.replace(/(,*)/g, "") as unknown as number
+              }
+              style={{ width: "100%" }}
+              maxLength={4}
+            />
+          </Form.Item>
+
+          <Form.Item
+            style={{
+              width: "100%",
+            }}
+            name="isPaid"
+            label="Tipo de pagamento"
+          >
+            <Select
+              placeholder="Selecione o tipo de pagamento"
+              options={[
+                {
+                  label: "Pagamento mensal",
+                  value: "monthly_payment",
+                },
+                {
+                  label: "Pagamento por consulta",
+                  value: "payment_for_appointment",
+                },
+              ]}
             />
           </Form.Item>
         </Flex>

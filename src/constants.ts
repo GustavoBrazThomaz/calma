@@ -2,6 +2,7 @@ import dayjs from "dayjs";
 
 export interface Appointments {
   firstName: string;
+  lastName: string;
   phone: string;
   scheduled: Date;
   price: string;
@@ -12,6 +13,7 @@ export interface Appointments {
 export const appointments: Appointments[] = [
   {
     firstName: "Ana",
+    lastName: "Silva",
     phone: "(11) 91234-5678",
     scheduled: new Date("2025-06-18T10:00:00"),
     price: "R$ 250,00",
@@ -20,6 +22,7 @@ export const appointments: Appointments[] = [
   },
   {
     firstName: "Bruno",
+    lastName: "Ferreira",
     phone: "(21) 99876-5432",
     scheduled: new Date("2025-06-19T14:30:00"),
     price: "R$ 300,00",
@@ -28,6 +31,7 @@ export const appointments: Appointments[] = [
   },
   {
     firstName: "Carla",
+    lastName: "Ferreira",
     phone: "(31) 98765-4321",
     scheduled: new Date("2025-06-20T09:00:00"),
     price: "R$ 200,00",
@@ -36,6 +40,7 @@ export const appointments: Appointments[] = [
   },
   {
     firstName: "Diego",
+    lastName: "Lima",
     phone: "(41) 97654-3210",
     scheduled: new Date("2025-06-21T16:15:00"),
     price: "R$ 280,00",

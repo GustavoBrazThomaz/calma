@@ -3,8 +3,6 @@ import {
   DatePicker,
   Flex,
   Form,
-  // Input,
-  InputNumber,
   Modal,
   Select,
   TimePicker,
@@ -100,50 +98,6 @@ export function AppointmentForm({
             </Form.Item>
           </Flex>
 
-          <Flex gap="middle" align="center">
-            <Form.Item<AppointmentForm>
-              label="Valor da Consulta"
-              rules={[{ required: true }]}
-              style={{ width: "50%" }}
-              name="price"
-            >
-              <InputNumber<number>
-                prefix="R$"
-                suffix=".00"
-                formatter={(value) =>
-                  `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-                }
-                parser={(value) =>
-                  value?.replace(/(,*)/g, "") as unknown as number
-                }
-                style={{ width: "100%" }}
-                maxLength={4}
-              />
-            </Form.Item>
-
-            <Form.Item<AppointmentForm>
-              style={{
-                width: "50%",
-                marginTop: "1.7rem",
-              }}
-              rules={[{ required: true }]}
-              name="isPaid"
-              label={null}
-            >
-              <Select
-                options={[
-                  {
-                    label: "Pagamento efetuado",
-                    value: "paid",
-                  },
-                  {
-                    label: "Pagamento não efetuado",
-                    value: "not_paid",
-                  },
-                ]}
-              ></Select>
-            </Form.Item>
-          </Flex>
           <Flex justify="end" gap="middle">
             <Button
               onClick={() => setOpen(false)}

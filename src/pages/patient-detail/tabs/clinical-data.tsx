@@ -1,4 +1,5 @@
 import { Card, Flex, Space, Typography } from "antd";
+import { PAYMENT_TYPE } from "../../../enum/payment_type";
 
 const { Title, Text, Paragraph } = Typography;
 export function ClinicalData() {
@@ -15,6 +16,10 @@ export function ClinicalData() {
       profession: "Professora",
       gender: "Feminino",
       sexuality: "Heterossexual",
+    },
+    paymentInfo: {
+      price: "R$ 150.00",
+      paymentType: PAYMENT_TYPE.MONTHLY,
     },
     clinicalObservations:
       "Paciente apresenta quadro de ansiedade moderada e dificuldades para dormir. Iniciou terapia em janeiro de 2025.",
@@ -63,6 +68,17 @@ export function ClinicalData() {
         <Paragraph>
           Escolaridade: {patientDetails.personalInformation.education}
         </Paragraph>
+      </Card>
+
+      <Card>
+        <Title level={4}>Informações sobre o pagamento</Title>
+        <Paragraph>
+          Tipo de pagamento:{" "}
+          {patientDetails.paymentInfo.paymentType === PAYMENT_TYPE.MONTHLY
+            ? "Mensal"
+            : "A cada consulta"}
+        </Paragraph>
+        <Paragraph>Valor: {patientDetails.paymentInfo.price}</Paragraph>
       </Card>
 
       <Card>

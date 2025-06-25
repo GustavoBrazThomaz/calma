@@ -20,7 +20,12 @@ export const routes = createBrowserRouter([
         element: <PatientDetail />,
       },
       { path: "paciente/:id/evolucao-de-caso", element: <CaseEvolutionForm /> },
+      {
+        path: "paciente/:id/evolucao-de-caso/:caseId",
+        element: <CaseEvolutionForm />,
+      },
       { path: "novo-paciente", element: <NewPatient /> },
+      { path: "editar-paciente/:id", element: <NewPatient /> },
     ],
   },
 ]);

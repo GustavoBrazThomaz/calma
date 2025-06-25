@@ -9,6 +9,7 @@ export function PatientAppointments() {
         <Col span={12} key={"col_" + index}>
           <AppointmentCard
             firstName={item.firstName}
+            lastName={item.lastName}
             isPaid={item.isPaid}
             phone={item.phone}
             scheduled={item.scheduled}
