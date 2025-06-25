@@ -1,15 +1,30 @@
-import { Button, Col, Flex, Row, Space, Typography } from "antd";
+import { Button, Col, Flex, Pagination, Row, Space, Typography } from "antd";
 import { AppointmentCard } from "../../ui/cards/appointment-card";
 import { AppointmentForm } from "../../ui/forms/appointment/appointment-form";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
-import { appointments } from "../../constants";
+import { useGetAppointment } from "../../services/appointment/use-get-appointment";
+import { useGetTodayAppointment } from "../../services/appointment/use-get-today-appointment";
+import type { Appointment } from "../../types/appointment";
+import { paginateItems } from "../../utils/paginate-items";
 
 const { Title } = Typography;
 
 export function Dashboard() {
   const [open, setOpen] = useState<boolean>(false);
+  const { data, isLoading, isSuccess } = useGetAppointment();
+  const [appointments, setAppointments] = useState<Appointment[]>([]);
+  const todayAppointment = useGetTodayAppointment();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (data) paginateItems(data, 1, setAppointments);
+  }, [isSuccess, data]);
+
+  if (isLoading || !data) return <p>Loading...</p>;
+  if (!todayAppointment.data || todayAppointment.isLoading)
+    return <p>Loading...</p>;
+
   return (
     <Flex vertical gap="middle">
       <Flex align="center" justify="space-between" style={{ width: "100%" }}>
@@ -27,9 +42,12 @@ export function Dashboard() {
       <Title level={4}>Consultas de Hoje</Title>
 
       <Row gutter={[16, 16]}>
-        {appointments.map((item) => (
+        {todayAppointment.data.map((item) => (
           <Col span={12}>
             <AppointmentCard
+              id={item.id}
+              patientId={item.patientId}
+              paymentType={item.paymentType}
               firstName={item.firstName}
               lastName={item.lastName}
               isPaid={item.isPaid}
@@ -48,6 +66,9 @@ export function Dashboard() {
         {appointments.map((item) => (
           <Col span={12}>
             <AppointmentCard
+              id={item.id}
+              patientId={item.patientId}
+              paymentType={item.paymentType}
               firstName={item.firstName}
               lastName={item.lastName}
               isPaid={item.isPaid}
@@ -59,7 +80,13 @@ export function Dashboard() {
           </Col>
         ))}
       </Row>
-
+      <Pagination
+        onChange={(pag) => paginateItems(data, pag, setAppointments)}
+        defaultCurrent={1}
+        total={data.length}
+        defaultPageSize={6}
+        align="center"
+      />
       <AppointmentForm open={open} setOpen={setOpen} />
     </Flex>
   );

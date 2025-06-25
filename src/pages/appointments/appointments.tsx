@@ -1,20 +1,41 @@
 import { SearchOutlined } from "@ant-design/icons";
-import { Flex, Button, Typography, Select, Input, Col, Row, Form } from "antd";
-import { useState } from "react";
-import { appointments } from "../../constants";
+import {
+  Flex,
+  Button,
+  Typography,
+  Select,
+  Input,
+  Col,
+  Row,
+  Form,
+  Pagination,
+} from "antd";
+import { useEffect, useState } from "react";
 import { AppointmentCard } from "../../ui/cards/appointment-card";
 import { AppointmentForm } from "../../ui/forms/appointment/appointment-form";
 import { useSearchParams } from "react-router";
 import type { SearchForm } from "../../types/search";
+import { useGetAppointment } from "../../services/appointment/use-get-appointment";
+import type { Appointment } from "../../types/appointment";
+import { paginateItems } from "../../utils/paginate-items";
+
 const { Title } = Typography;
 
 export function Appointments() {
   const [open, setOpen] = useState<boolean>(false);
   const [searchParams, setSearchParams] = useSearchParams();
+  const { data, isLoading, isSuccess } = useGetAppointment();
+  const [appointments, setAppointments] = useState<Appointment[]>([]);
 
   const handleChange = (value: string) => {
     console.log(`selected ${value}`);
   };
+
+  useEffect(() => {
+    if (data) paginateItems(data, 1, setAppointments);
+  }, [isSuccess, data]);
+
+  if (isLoading || !data) return <p>Loading...</p>;
 
   return (
     <Flex vertical gap="large">
@@ -82,9 +103,12 @@ export function Appointments() {
       </Flex>
 
       <Row gutter={[16, 16]}>
-        {appointments.map((item, index) => (
-          <Col span={12} key={"col_" + index}>
+        {appointments.map((item) => (
+          <Col span={12}>
             <AppointmentCard
+              id={item.id}
+              patientId={item.patientId}
+              paymentType={item.paymentType}
               firstName={item.firstName}
               lastName={item.lastName}
               isPaid={item.isPaid}
@@ -96,6 +120,13 @@ export function Appointments() {
           </Col>
         ))}
       </Row>
+      <Pagination
+        onChange={(pag) => paginateItems(data, pag, setAppointments)}
+        defaultCurrent={1}
+        total={data.length}
+        defaultPageSize={6}
+        align="center"
+      />
       <AppointmentForm open={open} setOpen={setOpen} />
     </Flex>
   );

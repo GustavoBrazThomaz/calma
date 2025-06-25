@@ -7,18 +7,11 @@ import { Avatar, Badge, Card, Flex } from "antd";
 import dayjs from "dayjs";
 import { PAYMENT_TYPE } from "../../enum/payment_type";
 import { useLocation, useNavigate } from "react-router";
-
-interface Props {
-  firstName: string;
-  lastName: string;
-  phone: string;
-  scheduled: Date;
-  price: string;
-  isPaid: boolean;
-  status: "done" | "cancel" | "scheduled";
-}
+import type { Appointment } from "../../types/appointment";
 
 export function AppointmentCard({
+  id,
+  patientId,
   firstName,
   lastName,
   isPaid,
@@ -26,15 +19,14 @@ export function AppointmentCard({
   price,
   scheduled,
   status,
-}: Props) {
+  paymentType,
+}: Appointment) {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const patientId = 1;
-
   function handleRedirectToPatient() {
+    console.log(id);
     if (location.pathname === `/paciente/${patientId}`) return;
-
     navigate(`/paciente/${patientId}`);
   }
 
@@ -62,7 +54,7 @@ export function AppointmentCard({
               </p>
               <p>
                 Tipo de pagamento:{" "}
-                {PAYMENT_TYPE.MONTHLY === PAYMENT_TYPE.MONTHLY
+                {paymentType === PAYMENT_TYPE.MONTHLY
                   ? "Mensal"
                   : "A cada consulta"}
               </p>

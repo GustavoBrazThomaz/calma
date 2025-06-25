@@ -1,10 +1,13 @@
 import { Button, Col, Flex, Row } from "antd";
 import { CaseEvolutionCard } from "../../../ui/cards/case-evolution-card";
 import { useNavigate, useParams } from "react-router";
+import { useGetPatientCaseEvolution } from "../../../services/patient/use-get-patient-case-evolution";
 
 export function CaseEvolution() {
   const navigate = useNavigate();
   const { id } = useParams();
+  const { data, isLoading } = useGetPatientCaseEvolution(id as string);
+  if (isLoading || !data) return <p>Loading...</p>;
   return (
     <Flex vertical gap="middle">
       <Flex justify="flex-end">
@@ -14,9 +17,14 @@ export function CaseEvolution() {
       </Flex>
 
       <Row gutter={[16, 16]}>
-        {Array.from({ length: 5 }).map((_, index) => (
+        {data.map((item, index) => (
           <Col span={12} key={"col_" + index}>
-            <CaseEvolutionCard title="Titulo da nota" />
+            <CaseEvolutionCard
+              id={item.id}
+              patientId={item.patientId}
+              title={item.title}
+              note={item.note}
+            />
           </Col>
         ))}
       </Row>

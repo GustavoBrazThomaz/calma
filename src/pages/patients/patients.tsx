@@ -1,16 +1,36 @@
 import { SearchOutlined } from "@ant-design/icons";
-import { Button, Col, Flex, Form, Input, Row, Typography } from "antd";
-import { patients } from "../../constants";
+import {
+  Button,
+  Col,
+  Flex,
+  Form,
+  Input,
+  Pagination,
+  Row,
+  Typography,
+} from "antd";
 import { PatientCard } from "../../ui/cards/patient-card";
 import { useNavigate, useSearchParams } from "react-router";
 import type { SearchForm } from "../../types/search";
+import { useGetPatients } from "../../services/patient/use-get-patients";
+import { paginateItems } from "../../utils/paginate-items";
+import { useEffect, useState } from "react";
+import type { Patients } from "../../types/patient";
 
 const { Title } = Typography;
 
 export function Patients() {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
-  
+  const { data, isLoading, isSuccess } = useGetPatients();
+  const [patients, setPatients] = useState<Patients[]>([]);
+
+  useEffect(() => {
+    if (data) paginateItems(data, 1, setPatients, 8);
+  }, [isSuccess, data]);
+
+  if (isLoading || !data) return <p>Loading...</p>;
+
   return (
     <Flex vertical gap="large">
       <Flex>
@@ -36,7 +56,7 @@ export function Patients() {
               style={{ width: "100%" }}
               rules={[{ required: true, message: "" }]}
             >
-              <Input placeholder="Buscar Consulta..." />
+              <Input placeholder="Buscar por paciente..." />
             </Form.Item>
             <Form.Item>
               <Button variant="outlined" color="primary" htmlType="submit">
@@ -60,6 +80,7 @@ export function Patients() {
           <Col span={6}>
             <PatientCard
               id={item.id}
+              patientId={item.patientId}
               firstName={item.firstName}
               lastName={item.lastName}
               birthDate={item.birthDate}
@@ -69,6 +90,13 @@ export function Patients() {
           </Col>
         ))}
       </Row>
+      <Pagination
+        onChange={(pag) => paginateItems(data, pag, setPatients, 8)}
+        defaultCurrent={1}
+        total={data.length}
+        defaultPageSize={8}
+        align="center"
+      />
     </Flex>
   );
 }

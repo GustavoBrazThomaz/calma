@@ -3,26 +3,18 @@ import { Avatar, Button, Card, Flex, Space, Typography } from "antd";
 import dayjs from "dayjs";
 import { getAgeFromBirthDate } from "../../utils/get-age";
 import { useNavigate } from "react-router";
+import type { Patients } from "../../types/patient";
 
 const { Title } = Typography;
 
-interface Props {
-  id: string;
-  firstName: string;
-  lastName: string;
-  birthDate: Date;
-  lastAppointment: Date;
-  phone: string;
-}
-
 export function PatientCard({
-  id,
   firstName,
   lastName,
   birthDate,
+  patientId,
   phone,
   lastAppointment,
-}: Props) {
+}: Patients) {
   const navigate = useNavigate();
 
   return (
@@ -32,7 +24,7 @@ export function PatientCard({
           key="details"
           variant="text"
           color="default"
-          onClick={() => navigate("/paciente/" + id)}
+          onClick={() => navigate("/paciente/" + patientId)}
         >
           Ver detalhes
         </Button>,

@@ -3,18 +3,24 @@ import { CaseEvolution } from "./tabs/case-evolution";
 import { PatientAppointments } from "./tabs/patient-appointments";
 import { ClinicalData } from "./tabs/clinical-data";
 import { useNavigate, useParams, useSearchParams } from "react-router";
+import { useGetPatientDetail } from "../../services/patient/use-get-patient-detail";
+import dayjs from "dayjs";
+import { getAgeFromBirthDate } from "../../utils/get-age";
 
 const { Title, Text } = Typography;
 export function PatientDetail() {
   const [searchParams, setSearchParams] = useSearchParams();
   const { id } = useParams();
+  const { data, isLoading } = useGetPatientDetail(id as string);
   const navigate = useNavigate();
+
+  if (isLoading || !data) return <p>Loading...</p>;
 
   const tabs = [
     {
       label: "Dados clínicos",
       key: "1",
-      children: <ClinicalData />,
+      children: <ClinicalData patient={data} />,
     },
     {
       label: "Histórico de consultas",
@@ -41,9 +47,12 @@ export function PatientDetail() {
           <Avatar size={42}>MS</Avatar>
           <Space.Compact direction="vertical">
             <Title style={{ marginBottom: 0 }} level={4}>
-              Maria Silva
+              {data.firstName} {data.lastName}
             </Title>
-            <Text>35 anos - 15/05/1990</Text>
+            <Text>
+              {getAgeFromBirthDate(data.birthDate)} anos -{" "}
+              {dayjs(data.birthDate).format("DD/MM/YYYY")}
+            </Text>
           </Space.Compact>
         </Flex>
       </Card>
