@@ -6,7 +6,7 @@ export const patientsDetails: PatientDetails[] = [
     id: "f7249848-d991-459d-97a5-e4cb3313d79b",
     firstName: "Ana",
     lastName: "Gomes",
-    birthDate: "1988-10-22",
+    birthDate: new Date("1988-10-22"),
     contactInformation: {
       phone: "(65) 97139-2528",
       email: "ana.gomes@email.com",
@@ -34,7 +34,7 @@ export const patientsDetails: PatientDetails[] = [
     id: "ca62f255-2b4b-44e9-a191-60b70838d054",
     firstName: "João",
     lastName: "Souza",
-    birthDate: "2003-07-27",
+    birthDate: new Date("1975-02-19"),
     contactInformation: {
       phone: "(85) 92166-1451",
       email: "joão.souza@email.com",
@@ -61,7 +61,7 @@ export const patientsDetails: PatientDetails[] = [
     id: "09a2ae04-97e1-4ca5-9063-7b14c09c0421",
     firstName: "Juliana",
     lastName: "Silva",
-    birthDate: "2000-03-29",
+    birthDate: new Date("2000-03-29"),
     contactInformation: {
       phone: "(13) 99222-1892",
       email: "juliana.silva@email.com",
@@ -88,7 +88,7 @@ export const patientsDetails: PatientDetails[] = [
     id: "2400c912-faa4-461d-b146-87775abc3488",
     firstName: "Maria",
     lastName: "Pereira",
-    birthDate: "1998-09-23",
+    birthDate: new Date("2001-12-07"),
     contactInformation: {
       phone: "(81) 93675-5146",
       email: "maria.pereira@email.com",
@@ -115,7 +115,7 @@ export const patientsDetails: PatientDetails[] = [
     id: "fbb13219-2897-442d-bf05-52d79f9997d0",
     firstName: "Camila",
     lastName: "Oliveira",
-    birthDate: "1983-12-28",
+    birthDate: new Date("1983-12-28"),
     contactInformation: {
       phone: "(12) 92185-7530",
       email: "camila.oliveira@email.com",
@@ -142,7 +142,7 @@ export const patientsDetails: PatientDetails[] = [
     id: "42d6196d-08a2-407a-b867-8c8b6d77aa0b",
     firstName: "Mariana",
     lastName: "Gomes",
-    birthDate: "2001-01-30",
+    birthDate: new Date("2001-01-30"),
     contactInformation: {
       phone: "(77) 91288-9561",
       email: "mariana.gomes@email.com",
@@ -169,7 +169,7 @@ export const patientsDetails: PatientDetails[] = [
     id: "f665e59a-d8cf-4853-a4cd-4df47747c5af",
     firstName: "Lucas",
     lastName: "Almeida",
-    birthDate: "1999-05-12",
+    birthDate: new Date("1999-05-12"),
     contactInformation: {
       phone: "(13) 99789-2951",
       email: "lucas.almeida@email.com",
@@ -196,7 +196,7 @@ export const patientsDetails: PatientDetails[] = [
     id: "e15afb3b-8a26-443b-b04a-4f03a30689fb",
     firstName: "João",
     lastName: "Oliveira",
-    birthDate: "1981-03-09",
+    birthDate: new Date("1981-03-09"),
     contactInformation: {
       phone: "(53) 94531-4598",
       email: "joão.oliveira@email.com",
@@ -223,7 +223,7 @@ export const patientsDetails: PatientDetails[] = [
     id: "053fcd03-1373-42a0-bead-d8e5100b1bfe",
     firstName: "Mariana",
     lastName: "Oliveira",
-    birthDate: "1993-07-12",
+    birthDate: new Date("1993-07-12"),
     contactInformation: {
       phone: "(32) 98804-3015",
       email: "mariana.oliveira@email.com",
@@ -249,12 +249,12 @@ export const patientsDetails: PatientDetails[] = [
   },
   {
     id: "de2d821e-9d35-4c6c-aa02-b01e201235a1",
-    firstName: "João",
-    lastName: "Santos",
-    birthDate: "2002-10-12",
+    firstName: "Camila",
+    lastName: "Carvalho",
+    birthDate: new Date("2002-10-12"),
     contactInformation: {
       phone: "(98) 92163-3839",
-      email: "joão.santos@email.com",
+      email: "camila.carvalho@email.com",
     },
     personalInformation: {
       religion: "Candomblé",

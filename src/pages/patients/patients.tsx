@@ -80,7 +80,6 @@ export function Patients() {
           <Col span={6}>
             <PatientCard
               id={item.id}
-              patientId={item.patientId}
               firstName={item.firstName}
               lastName={item.lastName}
               birthDate={item.birthDate}

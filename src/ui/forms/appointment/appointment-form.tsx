@@ -11,8 +11,8 @@ import {
 import { type Dispatch } from "react";
 
 import dayjs from "dayjs";
-import { patients } from "../../../constants";
 import type { AppointmentForm } from "./appointment.types";
+import { useGetPatients } from "../../../services/patient/use-get-patients";
 
 export function AppointmentForm({
   open,
@@ -24,8 +24,11 @@ export function AppointmentForm({
   const dateFormat = "DD/MM/YYYY";
   const timeFormat = "HH:mm";
   const patientsOptions: AutoCompleteProps["options"] = [];
+  const { data, isLoading } = useGetPatients();
 
-  patients.map((item) => {
+  if (isLoading || !data) return null;
+
+  data.map((item) => {
     patientsOptions.push({
       label: `${item.firstName} ${item.lastName}`,
       value: item.id,

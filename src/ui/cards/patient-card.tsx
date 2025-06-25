@@ -8,10 +8,10 @@ import type { Patients } from "../../types/patient";
 const { Title } = Typography;
 
 export function PatientCard({
+  id,
   firstName,
   lastName,
   birthDate,
-  patientId,
   phone,
   lastAppointment,
 }: Patients) {
@@ -24,7 +24,7 @@ export function PatientCard({
           key="details"
           variant="text"
           color="default"
-          onClick={() => navigate("/paciente/" + patientId)}
+          onClick={() => navigate("/paciente/" + id)}
         >
           Ver detalhes
         </Button>,

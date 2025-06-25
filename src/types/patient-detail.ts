@@ -4,7 +4,7 @@ export interface PatientDetails {
   id: string;
   firstName: string;
   lastName: string;
-  birthDate: string
+  birthDate: Date;
   contactInformation: {
     phone: string;
     email: string;
