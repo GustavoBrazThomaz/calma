@@ -1,5 +1,8 @@
+import dayjs from "dayjs";
 import { appointments } from "../../mocks/appointment.mock";
 import type { Appointment } from "../../types/appointment";
+import type { AppointmentForm } from "../../ui/forms/appointment/appointment.types";
+import { patientsDetails } from "../../mocks/patient-detail.mock";
 
 export async function getAppointment(): Promise<Appointment[]> {
   return new Promise((resolve, reject) => {
@@ -31,6 +34,73 @@ export async function getTodayAppointment(): Promise<Appointment[]> {
       resolve(todayAppointments);
 
       reject({ code: 404, message: "Consulta não encontrada" });
+    }, 500);
+  });
+}
+
+export async function postCreateNewAppointment(appointment: AppointmentForm) {
+  const scheduledDate = appointment.date;
+  const scheduledTime = appointment.scheduled_time;
+  const combinedDate = dayjs(
+    `${scheduledDate} ${scheduledTime}`,
+    "YYYY-MM-DD HH:mm"
+  ).toDate();
+  const newId = Math.random().toString();
+
+  const patient = patientsDetails.find((p) => p.id === appointment.patient);
+
+  if (!patient) return;
+
+  appointments.push({
+    id: newId,
+    patientId: patient.id,
+    firstName: patient.firstName,
+    lastName: patient.lastName,
+    phone: patient.phone,
+    scheduled: combinedDate,
+    status: "scheduled",
+    paymentType: patient.paymentType,
+    isPaid: false,
+    price: patient.price,
+  });
+
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve(appointments);
+      reject({ code: 404, message: "Consulta não encontrada" });
+    }, 500);
+  });
+}
+
+export async function putToggleIsPaidById(id: string) {
+  appointments.map((appointment) =>
+    appointment.id === id
+      ? { ...appointment, isPaid: !appointment.isPaid }
+      : appointment
+  );
+
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve(appointments);
+      reject({ code: 404, message: "Consulta não encontrada" });
+    }, 500);
+  });
+}
+
+export async function deleteAppointmentById(id: string) {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      const index = appointments.findIndex(
+        (appointment) => appointment.id === id
+      );
+
+      if (index === -1) {
+        reject({ code: 404, message: "Consulta não encontrada" });
+        return;
+      }
+
+      appointments.splice(index, 1);
+      resolve(appointments);
     }, 500);
   });
 }

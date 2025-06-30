@@ -8,11 +8,13 @@ import {
   TimePicker,
   type AutoCompleteProps,
 } from "antd";
-import { type Dispatch } from "react";
+import { useState, type Dispatch } from "react";
 
 import dayjs from "dayjs";
-import type { AppointmentForm } from "./appointment.types";
+import { useAppointment } from "../../../services/appointment/use-appointment";
 import { useGetPatients } from "../../../services/patient/use-get-patients";
+import type { AppointmentForm } from "./appointment.types";
+import { useQueryClient } from "@tanstack/react-query";
 
 export function AppointmentForm({
   open,
@@ -25,7 +27,10 @@ export function AppointmentForm({
   const timeFormat = "HH:mm";
   const patientsOptions: AutoCompleteProps["options"] = [];
   const { data, isLoading } = useGetPatients();
-
+  const { newAppointment } = useAppointment();
+  const [hasPatient, setHasPatient] = useState<boolean>(true);
+  const queryClient = useQueryClient();
+  const [formInstance] = Form.useForm<AppointmentForm>();
   if (isLoading || !data) return null;
 
   data.map((item) => {
@@ -37,9 +42,16 @@ export function AppointmentForm({
   });
 
   function handleSubmit(form: AppointmentForm) {
-    form.scheduled_time = dayjs(form.scheduled_time).format(timeFormat);
-    form.date = dayjs(form.date).format(dateFormat);
-    console.log(form);
+    form.scheduled_time = dayjs(form.scheduled_time).toDate();
+    form.date = dayjs(form.date).toDate();
+    newAppointment.mutate(form, {
+      onSuccess() {
+        queryClient.invalidateQueries({ queryKey: ["fetchAppointment"] });
+        formInstance.resetFields();
+      },
+    });
+    setHasPatient(true);
+    setOpen(false);
   }
 
   return (
@@ -60,6 +72,8 @@ export function AppointmentForm({
     >
       <Flex vertical>
         <Form<AppointmentForm>
+          form={formInstance}
+          clearOnDestroy={true}
           onFinish={handleSubmit}
           onFinishFailed={(e) => console.log(e)}
           autoComplete="off"
@@ -76,9 +90,10 @@ export function AppointmentForm({
           >
             <Select
               showSearch
-              placeholder="Select a person"
+              placeholder="Selecione um paciente"
               optionFilterProp="label"
               options={patientsOptions}
+              onChange={(value) => setHasPatient(value ? false : true)}
             />
           </Form.Item>
           <Flex gap="middle">
@@ -88,7 +103,13 @@ export function AppointmentForm({
               rules={[{ required: true }]}
               style={{ width: "100%" }}
             >
-              <DatePicker style={{ width: "100%" }} format={dateFormat} />
+              <DatePicker
+                minDate={dayjs(new Date())}
+                style={{ width: "100%" }}
+                disabled={hasPatient}
+                format={dateFormat}
+                placeholder="Selecione uma data"
+              />
             </Form.Item>
 
             <Form.Item<AppointmentForm>
@@ -97,7 +118,12 @@ export function AppointmentForm({
               rules={[{ required: true }]}
               style={{ width: "100%" }}
             >
-              <TimePicker format={timeFormat} style={{ width: "100%" }} />
+              <TimePicker
+                minuteStep={5}
+                format={timeFormat}
+                disabled={hasPatient}
+                style={{ width: "100%" }}
+              />
             </Form.Item>
           </Flex>
 
