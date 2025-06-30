@@ -2,11 +2,13 @@ import { SearchOutlined } from "@ant-design/icons";
 import {
   Button,
   Col,
+  Empty,
   Flex,
   Form,
   Input,
   Pagination,
   Row,
+  Spin,
   Typography,
 } from "antd";
 import { PatientCard } from "../../ui/cards/patient-card";
@@ -29,8 +31,18 @@ export function Patients() {
     if (data) paginateItems(data, 1, setPatients, 8);
   }, [isSuccess, data]);
 
-  if (isLoading || !data) return <p>Loading...</p>;
-  console.log(patients);
+  if (isLoading)
+    return (
+      <Flex
+        align="center"
+        justify="center"
+        style={{ width: "100%", height: "100%" }}
+      >
+        <Spin tip="Loading..." size="large" />
+      </Flex>
+    );
+  if (!data) return <Empty style={{ marginTop: "4rem" }} />;
+
   return (
     <Flex vertical gap="large">
       <Flex>
