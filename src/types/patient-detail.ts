@@ -5,23 +5,17 @@ export interface PatientDetails {
   firstName: string;
   lastName: string;
   birthDate: Date;
-  contactInformation: {
-    phone: string;
-    email: string;
-  };
-  personalInformation: {
-    religion: string;
-    maritalStatus: string;
-    address: string;
-    education: string;
-    profession: string;
-    gender: string;
-    sexuality: string;
-  };
-  paymentInfo: {
-    price: string;
-    paymentType: PAYMENT_TYPE;
-  };
+  phone: string;
+  email: string;
+  religion: string;
+  maritalStatus: string;
+  address: string;
+  education: string;
+  profession: string;
+  gender: string;
+  sexuality: string;
+  price: string;
+  paymentType: PAYMENT_TYPE;
   clinicalObservations: string;
   currentMedications: string;
   diagnoses: string;

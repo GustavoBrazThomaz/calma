@@ -9,6 +9,7 @@ import {
   Row,
   Form,
   Pagination,
+  Empty,
 } from "antd";
 import { useEffect, useState } from "react";
 import { AppointmentCard } from "../../ui/cards/appointment-card";
@@ -18,6 +19,7 @@ import type { SearchForm } from "../../types/search";
 import { useGetAppointment } from "../../services/appointment/use-get-appointment";
 import type { Appointment } from "../../types/appointment";
 import { paginateItems } from "../../utils/paginate-items";
+import { AppointmentLoading } from "./appointment.loading";
 
 const { Title } = Typography;
 
@@ -34,8 +36,6 @@ export function Appointments() {
   useEffect(() => {
     if (data) paginateItems(data, 1, setAppointments);
   }, [isSuccess, data]);
-
-  if (isLoading || !data) return <p>Loading...</p>;
 
   return (
     <Flex vertical gap="large">
@@ -101,32 +101,40 @@ export function Appointments() {
           Nova Consulta
         </Button>
       </Flex>
+      {isLoading ? (
+        <AppointmentLoading />
+      ) : !data ? (
+        <Empty />
+      ) : (
+        <>
+          <Row gutter={[16, 16]}>
+            {appointments.map((item) => (
+              <Col span={12}>
+                <AppointmentCard
+                  id={item.id}
+                  patientId={item.patientId}
+                  paymentType={item.paymentType}
+                  firstName={item.firstName}
+                  lastName={item.lastName}
+                  isPaid={item.isPaid}
+                  phone={item.phone}
+                  scheduled={item.scheduled}
+                  price={item.price}
+                  status={item.status}
+                />
+              </Col>
+            ))}
+          </Row>
+          <Pagination
+            onChange={(pag) => paginateItems(data, pag, setAppointments)}
+            defaultCurrent={1}
+            total={data.length}
+            defaultPageSize={6}
+            align="center"
+          />
+        </>
+      )}
 
-      <Row gutter={[16, 16]}>
-        {appointments.map((item) => (
-          <Col span={12}>
-            <AppointmentCard
-              id={item.id}
-              patientId={item.patientId}
-              paymentType={item.paymentType}
-              firstName={item.firstName}
-              lastName={item.lastName}
-              isPaid={item.isPaid}
-              phone={item.phone}
-              scheduled={item.scheduled}
-              price={item.price}
-              status={item.status}
-            />
-          </Col>
-        ))}
-      </Row>
-      <Pagination
-        onChange={(pag) => paginateItems(data, pag, setAppointments)}
-        defaultCurrent={1}
-        total={data.length}
-        defaultPageSize={6}
-        align="center"
-      />
       <AppointmentForm open={open} setOpen={setOpen} />
     </Flex>
   );

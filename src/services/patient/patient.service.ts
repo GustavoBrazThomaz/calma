@@ -1,3 +1,4 @@
+import dayjs from "dayjs";
 import { casesEvolution } from "../../mocks/case-evolution.mock";
 import { patientsDetails } from "../../mocks/patient-detail.mock";
 import { patients } from "../../mocks/patient.mock";
@@ -39,6 +40,35 @@ export async function getPatientCasesEvolution(
       if (caseEvolution) {
         resolve([caseEvolution]);
       }
+
+      reject({ code: 404, message: "Evolução de caso não encontrada" });
+    }, 500);
+  });
+}
+
+export async function postCreateNewPatient(
+  patient: Omit<PatientDetails, "id">
+) {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      const id = Math.random().toString();
+
+      patientsDetails.push({
+        ...patient,
+        birthDate: dayjs(patient.birthDate).toDate(),
+        id,
+      });
+
+      patients.push({
+        firstName: patient.firstName,
+        id,
+        lastName: patient.lastName,
+        birthDate: dayjs(patient.birthDate).toDate(),
+        lastAppointment: new Date(),
+        phone: patient.phone,
+      });
+
+      resolve({ code: 200, message: "Paciente criado com sucesso" });
 
       reject({ code: 404, message: "Evolução de caso não encontrada" });
     }, 500);

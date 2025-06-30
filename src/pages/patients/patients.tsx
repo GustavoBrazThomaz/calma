@@ -30,7 +30,7 @@ export function Patients() {
   }, [isSuccess, data]);
 
   if (isLoading || !data) return <p>Loading...</p>;
-
+  console.log(patients);
   return (
     <Flex vertical gap="large">
       <Flex>

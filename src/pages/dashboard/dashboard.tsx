@@ -1,12 +1,23 @@
-import { Button, Col, Flex, Pagination, Row, Space, Typography } from "antd";
-import { AppointmentCard } from "../../ui/cards/appointment-card";
-import { AppointmentForm } from "../../ui/forms/appointment/appointment-form";
+import {
+  Button,
+  Col,
+  Empty,
+  Flex,
+  Pagination,
+  Row,
+  Skeleton,
+  Space,
+  Typography,
+} from "antd";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { useGetAppointment } from "../../services/appointment/use-get-appointment";
 import { useGetTodayAppointment } from "../../services/appointment/use-get-today-appointment";
 import type { Appointment } from "../../types/appointment";
+import { AppointmentCard } from "../../ui/cards/appointment-card";
+import { AppointmentForm } from "../../ui/forms/appointment/appointment-form";
 import { paginateItems } from "../../utils/paginate-items";
+import { AppointmentInDashboardLoading } from "./appointment-in-dashboard.loading";
 
 const { Title } = Typography;
 
@@ -20,10 +31,6 @@ export function Dashboard() {
   useEffect(() => {
     if (data) paginateItems(data, 1, setAppointments);
   }, [isSuccess, data]);
-
-  if (isLoading || !data) return <p>Loading...</p>;
-  if (!todayAppointment.data || todayAppointment.isLoading)
-    return <p>Loading...</p>;
 
   return (
     <Flex vertical gap="middle">
@@ -41,52 +48,68 @@ export function Dashboard() {
 
       <Title level={4}>Consultas de Hoje</Title>
 
-      <Row gutter={[16, 16]}>
-        {todayAppointment.data.map((item) => (
-          <Col span={12}>
-            <AppointmentCard
-              id={item.id}
-              patientId={item.patientId}
-              paymentType={item.paymentType}
-              firstName={item.firstName}
-              lastName={item.lastName}
-              isPaid={item.isPaid}
-              phone={item.phone}
-              scheduled={item.scheduled}
-              price={item.price}
-              status={item.status}
-            />
-          </Col>
-        ))}
-      </Row>
+      {todayAppointment.isLoading ? (
+        <Skeleton.Node style={{ width: 650, height: 140 }} />
+      ) : !todayAppointment.data ? (
+        <Empty />
+      ) : (
+        <Row gutter={[16, 16]}>
+          {todayAppointment.data.map((item) => (
+            <Col span={12}>
+              <AppointmentCard
+                id={item.id}
+                patientId={item.patientId}
+                paymentType={item.paymentType}
+                firstName={item.firstName}
+                lastName={item.lastName}
+                isPaid={item.isPaid}
+                phone={item.phone}
+                scheduled={item.scheduled}
+                price={item.price}
+                status={item.status}
+              />
+            </Col>
+          ))}
+        </Row>
+      )}
 
       <Title level={4}>Próximas Consultas</Title>
 
-      <Row gutter={[16, 16]}>
-        {appointments.map((item) => (
-          <Col span={12}>
-            <AppointmentCard
-              id={item.id}
-              patientId={item.patientId}
-              paymentType={item.paymentType}
-              firstName={item.firstName}
-              lastName={item.lastName}
-              isPaid={item.isPaid}
-              phone={item.phone}
-              scheduled={item.scheduled}
-              price={item.price}
-              status={item.status}
-            />
-          </Col>
-        ))}
-      </Row>
-      <Pagination
-        onChange={(pag) => paginateItems(data, pag, setAppointments)}
-        defaultCurrent={1}
-        total={data.length}
-        defaultPageSize={6}
-        align="center"
-      />
+      {isLoading ? (
+        <AppointmentInDashboardLoading />
+      ) : !data ? (
+        <Empty />
+      ) : (
+        <>
+          <Row gutter={[16, 16]}>
+            {appointments.map((item) => (
+              <Col span={12}>
+                <AppointmentCard
+                  id={item.id}
+                  patientId={item.patientId}
+                  paymentType={item.paymentType}
+                  firstName={item.firstName}
+                  lastName={item.lastName}
+                  isPaid={item.isPaid}
+                  phone={item.phone}
+                  scheduled={item.scheduled}
+                  price={item.price}
+                  status={item.status}
+                />
+              </Col>
+            ))}
+          </Row>
+
+          <Pagination
+            onChange={(pag) => paginateItems(data, pag, setAppointments)}
+            defaultCurrent={1}
+            total={data.length}
+            defaultPageSize={6}
+            align="center"
+          />
+        </>
+      )}
+
       <AppointmentForm open={open} setOpen={setOpen} />
     </Flex>
   );

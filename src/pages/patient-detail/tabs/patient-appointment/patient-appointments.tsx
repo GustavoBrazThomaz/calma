@@ -1,11 +1,14 @@
-import { Row, Col } from "antd";
-import { AppointmentCard } from "../../../ui/cards/appointment-card";
-import { useGetAppointment } from "../../../services/appointment/use-get-appointment";
+import { Row, Col, Empty } from "antd";
+import { AppointmentCard } from "../../../../ui/cards/appointment-card";
+import { useGetAppointment } from "../../../../services/appointment/use-get-appointment";
+import { PatientAppointmentsSkeleton } from "./patient-appointment.loading";
 
 export function PatientAppointments() {
   const { data, isLoading } = useGetAppointment();
 
-  if (isLoading || !data) return <p>Loading...</p>;
+  if (isLoading) return <PatientAppointmentsSkeleton />;
+  if (!data) return <Empty style={{ marginTop: "4rem" }} />;
+
   return (
     <Row gutter={[16, 16]}>
       {data.map((item, index) => (

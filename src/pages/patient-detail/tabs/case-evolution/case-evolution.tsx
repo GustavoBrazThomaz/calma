@@ -1,13 +1,16 @@
-import { Button, Col, Flex, Row } from "antd";
-import { CaseEvolutionCard } from "../../../ui/cards/case-evolution-card";
+import { Button, Col, Empty, Flex, Row } from "antd";
+import { CaseEvolutionCard } from "../../../../ui/cards/case-evolution-card";
 import { useNavigate, useParams } from "react-router";
-import { useGetPatientCaseEvolution } from "../../../services/patient/use-get-patient-case-evolution";
+import { useGetPatientCaseEvolution } from "../../../../services/patient/use-get-patient-case-evolution";
+import { CaseEvolutionSkeleton } from "./case-evolution.loading";
 
 export function CaseEvolution() {
   const navigate = useNavigate();
   const { id } = useParams();
   const { data, isLoading } = useGetPatientCaseEvolution(id as string);
-  if (isLoading || !data) return <p>Loading...</p>;
+  if (isLoading) return <CaseEvolutionSkeleton />;
+  if (!data) return <Empty style={{ marginTop: "4rem" }} />;
+  
   return (
     <Flex vertical gap="middle">
       <Flex justify="flex-end">

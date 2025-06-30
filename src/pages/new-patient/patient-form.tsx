@@ -17,6 +17,10 @@ import {
   maritalStatusOptions,
   educationLevelOptions,
 } from "./constants";
+import type { PatientDetails } from "../../types/patient-detail";
+import { PAYMENT_TYPE } from "../../enum/payment_type";
+import { usePatient } from "../../services/patient/use-patient";
+import { useQueryClient } from "@tanstack/react-query";
 
 const { Title } = Typography;
 const dateFormat = "DD/MM/YYYY";
@@ -24,10 +28,22 @@ const dateFormat = "DD/MM/YYYY";
 export function NewPatient() {
   const navigate = useNavigate();
   const { id } = useParams();
+  const { newPatient } = usePatient();
+  const queryClient = useQueryClient();
+
+  function handleSubmit(form: Omit<PatientDetails, "id">) {
+    newPatient.mutate(form, {
+      onSuccess() {
+        queryClient.invalidateQueries({ queryKey: ["fetchPatients"] });
+      },
+    });
+
+    navigate("/pacientes");
+  }
+
   return (
-    <Form
-      onFinish={(e) => console.log(e)}
-      onFinishFailed={(e) => console.log(e)}
+    <Form<Omit<PatientDetails, "id">>
+      onFinish={handleSubmit}
       autoComplete="off"
       layout="vertical"
     >
@@ -36,7 +52,7 @@ export function NewPatient() {
       </Title>
       <Card>
         <Flex gap="small">
-          <Form.Item
+          <Form.Item<Omit<PatientDetails, "id">>
             label="Nome"
             name="firstName"
             style={{ width: "100%" }}
@@ -44,7 +60,7 @@ export function NewPatient() {
           >
             <Input placeholder="Maria" />
           </Form.Item>
-          <Form.Item
+          <Form.Item<Omit<PatientDetails, "id">>
             label="Sobrenome"
             name="lastName"
             rules={[{ required: true }]}
@@ -55,7 +71,7 @@ export function NewPatient() {
         </Flex>
 
         <Flex gap="middle">
-          <Form.Item
+          <Form.Item<Omit<PatientDetails, "id">>
             label="Email"
             name="email"
             rules={[{ required: true }]}
@@ -64,7 +80,7 @@ export function NewPatient() {
             <Input type="email" placeholder="exemplo@gmail.com" />
           </Form.Item>
 
-          <Form.Item
+          <Form.Item<Omit<PatientDetails, "id">>
             label="Telefone"
             name="phone"
             rules={[{ required: true }]}
@@ -77,20 +93,33 @@ export function NewPatient() {
           </Form.Item>
         </Flex>
         <Flex gap="middle">
-          <Form.Item label="Data de nascimento" style={{ width: "100%" }}>
+          <Form.Item<Omit<PatientDetails, "id">>
+            label="Data de nascimento"
+            name="birthDate"
+            style={{ width: "100%" }}
+          >
             <DatePicker
               placeholder="Escolha a data"
               style={{ width: "100%" }}
               format={dateFormat}
+              onChange={(date) => console.log(date)}
             />
           </Form.Item>
-          <Form.Item label="Profissão" style={{ width: "100%" }}>
+          <Form.Item<Omit<PatientDetails, "id">>
+            label="Profissão"
+            name="profession"
+            style={{ width: "100%" }}
+          >
             <Input placeholder="Profissão" />
           </Form.Item>
         </Flex>
 
         <Flex gap="middle">
-          <Form.Item label="Gênero" style={{ width: "100%" }}>
+          <Form.Item<Omit<PatientDetails, "id">>
+            label="Gênero"
+            name="gender"
+            style={{ width: "100%" }}
+          >
             <Select
               options={genderOptions}
               style={{ width: "100%" }}
@@ -98,7 +127,11 @@ export function NewPatient() {
             />
           </Form.Item>
 
-          <Form.Item label="Sexualidade" style={{ width: "100%" }}>
+          <Form.Item<Omit<PatientDetails, "id">>
+            label="Sexualidade"
+            name="sexuality"
+            style={{ width: "100%" }}
+          >
             <Select
               options={sexualityOptions}
               style={{ width: "100%" }}
@@ -108,19 +141,35 @@ export function NewPatient() {
         </Flex>
 
         <Flex gap="middle">
-          <Form.Item label="Estado civil" style={{ width: "100%" }}>
+          <Form.Item<Omit<PatientDetails, "id">>
+            label="Estado civil"
+            name="maritalStatus"
+            style={{ width: "100%" }}
+          >
             <Select options={maritalStatusOptions} placeholder="Solteiro(a)" />
           </Form.Item>
-          <Form.Item label="Religião" style={{ width: "100%" }}>
+          <Form.Item<Omit<PatientDetails, "id">>
+            label="Religião"
+            name="religion"
+            style={{ width: "100%" }}
+          >
             <Input placeholder="Budista" />
           </Form.Item>
         </Flex>
 
         <Flex gap="middle">
-          <Form.Item label="Endereço" style={{ width: "100%" }}>
+          <Form.Item<Omit<PatientDetails, "id">>
+            label="Endereço"
+            name="address"
+            style={{ width: "100%" }}
+          >
             <Input placeholder="Rua exemplo, 909" />
           </Form.Item>
-          <Form.Item label="Escolaridade" style={{ width: "100%" }}>
+          <Form.Item<Omit<PatientDetails, "id">>
+            label="Escolaridade"
+            name="education"
+            style={{ width: "100%" }}
+          >
             <Select
               placeholder="Ensino superior completo"
               options={educationLevelOptions}
@@ -129,7 +178,11 @@ export function NewPatient() {
         </Flex>
 
         <Flex gap="middle" align="center">
-          <Form.Item label="Valor" style={{ width: "100%" }} name="price">
+          <Form.Item<Omit<PatientDetails, "id">>
+            label="Valor"
+            style={{ width: "100%" }}
+            name="price"
+          >
             <InputNumber<number>
               prefix="R$"
               suffix=".00"
@@ -145,11 +198,11 @@ export function NewPatient() {
             />
           </Form.Item>
 
-          <Form.Item
+          <Form.Item<Omit<PatientDetails, "id">>
             style={{
               width: "100%",
             }}
-            name="isPaid"
+            name="paymentType"
             label="Tipo de pagamento"
           >
             <Select
@@ -157,11 +210,11 @@ export function NewPatient() {
               options={[
                 {
                   label: "Pagamento mensal",
-                  value: "monthly_payment",
+                  value: PAYMENT_TYPE.MONTHLY,
                 },
                 {
                   label: "Pagamento por consulta",
-                  value: "payment_for_appointment",
+                  value: PAYMENT_TYPE.APPOINTMENT,
                 },
               ]}
             />
@@ -169,7 +222,10 @@ export function NewPatient() {
         </Flex>
       </Card>
       <Card style={{ marginTop: "1rem" }}>
-        <Form.Item label="Observações Clínicas">
+        <Form.Item<Omit<PatientDetails, "id">>
+          label="Observações Clínicas"
+          name="clinicalObservations"
+        >
           <Input.TextArea
             rows={4}
             style={{ resize: "none" }}
@@ -177,7 +233,10 @@ export function NewPatient() {
           />
         </Form.Item>
 
-        <Form.Item label="Laudos e Diagnósticos">
+        <Form.Item<Omit<PatientDetails, "id">>
+          label="Laudos e Diagnósticos"
+          name="diagnoses"
+        >
           <Input.TextArea
             rows={4}
             style={{ resize: "none" }}
@@ -185,7 +244,10 @@ export function NewPatient() {
           />
         </Form.Item>
 
-        <Form.Item label="Medicamentos em uso">
+        <Form.Item<Omit<PatientDetails, "id">>
+          label="Medicamentos em uso"
+          name="currentMedications"
+        >
           <Input.TextArea
             rows={4}
             style={{ resize: "none" }}
@@ -202,7 +264,7 @@ export function NewPatient() {
         >
           Cancelar
         </Button>
-        <Form.Item label={null}>
+        <Form.Item<Omit<PatientDetails, "id">> label={null}>
           <Button type="primary" htmlType="submit">
             Salvar
           </Button>

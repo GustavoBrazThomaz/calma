@@ -8,49 +8,39 @@ export function ClinicalData({ patient }: { patient: PatientDetails }) {
     <Flex vertical gap="middle">
       <Card>
         <Title level={4}>Informações de Contato</Title>
-        <Paragraph>Telefone: {patient.contactInformation.phone}</Paragraph>
-        <Paragraph>Email: {patient.contactInformation.email}</Paragraph>
+        <Paragraph>Telefone: {patient.phone}</Paragraph>
+        <Paragraph>Email: {patient.email}</Paragraph>
       </Card>
 
       <Card>
         <Title level={4}>Informações Pessoais</Title>
         <Flex gap="large">
           <Space direction="vertical">
-            <Paragraph>Gênero: {patient.personalInformation.gender}</Paragraph>
-            <Paragraph>
-              Estado Civil: {patient.personalInformation.maritalStatus}
-            </Paragraph>
+            <Paragraph>Gênero: {patient.gender}</Paragraph>
+            <Paragraph>Estado Civil: {patient.maritalStatus}</Paragraph>
           </Space>
           <Space direction="vertical">
-            <Paragraph>
-              Sexualidade: {patient.personalInformation.sexuality}
-            </Paragraph>
-            <Paragraph>
-              Religião: {patient.personalInformation.religion}
-            </Paragraph>
+            <Paragraph>Sexualidade: {patient.sexuality}</Paragraph>
+            <Paragraph>Religião: {patient.religion}</Paragraph>
           </Space>
         </Flex>
       </Card>
 
       <Card>
         <Title level={4}>Informações Profissionais</Title>
-        <Paragraph>
-          Profissão: {patient.personalInformation.profession}
-        </Paragraph>
-        <Paragraph>
-          Escolaridade: {patient.personalInformation.education}
-        </Paragraph>
+        <Paragraph>Profissão: {patient.profession}</Paragraph>
+        <Paragraph>Escolaridade: {patient.education}</Paragraph>
       </Card>
 
       <Card>
         <Title level={4}>Informações sobre o pagamento</Title>
         <Paragraph>
           Tipo de pagamento:{" "}
-          {patient.paymentInfo.paymentType === PAYMENT_TYPE.MONTHLY
+          {patient.paymentType === PAYMENT_TYPE.MONTHLY
             ? "Mensal"
             : "A cada consulta"}
         </Paragraph>
-        <Paragraph>Valor: {patient.paymentInfo.price}</Paragraph>
+        <Paragraph>Valor: {patient.price}</Paragraph>
       </Card>
 
       <Card>
@@ -69,9 +59,7 @@ export function ClinicalData({ patient }: { patient: PatientDetails }) {
       <Card>
         <Title level={4}>Laudos e Diagnósticos</Title>
 
-        <Text style={{ whiteSpace: "pre-line" }}>
-          {patient.diagnoses}
-        </Text>
+        <Text style={{ whiteSpace: "pre-line" }}>{patient.diagnoses}</Text>
       </Card>
     </Flex>
   );
