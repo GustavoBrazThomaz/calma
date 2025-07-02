@@ -1,16 +1,43 @@
-import { Button, Card, Flex, Form, Input, Tabs, Typography } from "antd";
+import {
+  Button,
+  Card,
+  Empty,
+  Flex,
+  Form,
+  Input,
+  Spin,
+  Tabs,
+  Typography,
+} from "antd";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router";
+import { useCaseEvolutionById } from "../../services/case-evolution/use-case-evolution-by-id";
 import type { CaseEvolutionForm } from "./case-evolution.types";
 import { MarkdownEditor } from "./markdown/markdown-editor";
 import { MarkdownPreview } from "./markdown/markdown-preview";
-import { useState } from "react";
-import { markdownInitialValue } from "../../constants";
-import { useParams } from "react-router";
 
 const { Title, Paragraph } = Typography;
 
 export function CaseEvolutionForm() {
-  const [markdown, setMarkdown] = useState<string>(markdownInitialValue);
+  const [markdown, setMarkdown] = useState<string>("");
   const { caseId } = useParams();
+  const { data, isLoading } = useCaseEvolutionById(caseId as string);
+
+  useEffect(() => {
+    if (data) setMarkdown(data.note);
+  }, [data, isLoading]);
+
+  if (isLoading)
+    return (
+      <Flex
+        align="center"
+        justify="center"
+        style={{ width: "100%", height: "100%" }}
+      >
+        <Spin tip="Loading..." size="large" />
+      </Flex>
+    );
+  if (!data) return <Empty style={{ marginTop: "4rem" }} />;
 
   const tabs = [
     {
@@ -43,7 +70,8 @@ export function CaseEvolutionForm() {
         autoComplete="off"
         layout="vertical"
         initialValues={{
-          note: markdown,
+          title: data.title,
+          note: data.note,
         }}
       >
         <Flex vertical gap="middle">

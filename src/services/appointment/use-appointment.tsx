@@ -18,6 +18,7 @@ export function useAppointment() {
     mutationFn: deleteAppointmentById,
   });
 
+
   return {
     newAppointment,
     toggleIsPaidById,

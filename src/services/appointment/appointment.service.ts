@@ -1,8 +1,8 @@
 import dayjs from "dayjs";
-import { appointments } from "../../mocks/appointment.mock";
+import { patientsDetails } from "../../mocks/patient-detail.mock";
 import type { Appointment } from "../../types/appointment";
 import type { AppointmentForm } from "../../ui/forms/appointment/appointment.types";
-import { patientsDetails } from "../../mocks/patient-detail.mock";
+import { appointments } from "./../../mocks/appointment.mock";
 
 export async function getAppointment(): Promise<Appointment[]> {
   return new Promise((resolve, reject) => {
@@ -101,6 +101,24 @@ export async function deleteAppointmentById(id: string) {
 
       appointments.splice(index, 1);
       resolve(appointments);
+    }, 500);
+  });
+}
+
+export async function getPatientAppointment(
+  patientId: string
+): Promise<Appointment[]> {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      const patientAppointments = appointments.filter(
+        (appointment) => appointment.patientId === patientId
+      );
+
+      if (patientAppointments) {
+        resolve(patientAppointments);
+      }
+
+      reject({ code: 404, message: "Consultas não encontradas" });
     }, 500);
   });
 }

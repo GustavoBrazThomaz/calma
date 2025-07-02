@@ -8,9 +8,11 @@ export function CaseEvolution() {
   const navigate = useNavigate();
   const { id } = useParams();
   const { data, isLoading } = useGetPatientCaseEvolution(id as string);
+
   if (isLoading) return <CaseEvolutionSkeleton />;
-  if (!data) return <Empty style={{ marginTop: "4rem" }} />;
-  
+  if (!data || data.length === 0)
+    return <Empty style={{ marginTop: "4rem" }} />;
+
   return (
     <Flex vertical gap="middle">
       <Flex justify="flex-end">

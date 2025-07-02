@@ -89,7 +89,7 @@ export function Patients() {
 
       <Row gutter={[16, 16]}>
         {patients.map((item) => (
-          <Col span={6}>
+          <Col span={6} key={item.id}>
             <PatientCard
               id={item.id}
               firstName={item.firstName}

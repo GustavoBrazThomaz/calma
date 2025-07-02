@@ -1,13 +1,17 @@
 import { Row, Col, Empty } from "antd";
 import { AppointmentCard } from "../../../../ui/cards/appointment-card";
-import { useGetAppointment } from "../../../../services/appointment/use-get-appointment";
 import { PatientAppointmentsSkeleton } from "./patient-appointment.loading";
+import { useGetPatientAppointments } from "../../../../services/appointment/use-get-patient-appointments";
+import { useParams } from "react-router";
 
 export function PatientAppointments() {
-  const { data, isLoading } = useGetAppointment();
+  const { id } = useParams();
+  const { data, isLoading } = useGetPatientAppointments(id as string);
 
   if (isLoading) return <PatientAppointmentsSkeleton />;
-  if (!data) return <Empty style={{ marginTop: "4rem" }} />;
+
+  if (!data || data.length === 0)
+    return <Empty style={{ marginTop: "4rem" }} />;
 
   return (
     <Row gutter={[16, 16]}>
