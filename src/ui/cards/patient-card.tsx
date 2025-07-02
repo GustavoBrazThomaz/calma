@@ -1,11 +1,27 @@
-import { CalendarOutlined, PhoneOutlined } from "@ant-design/icons";
-import { Avatar, Button, Card, Flex, Space, Typography } from "antd";
+import {
+  CalendarOutlined,
+  DeleteOutlined,
+  PhoneOutlined,
+} from "@ant-design/icons";
+import {
+  Avatar,
+  Button,
+  Card,
+  Flex,
+  Popconfirm,
+  Space,
+  Typography,
+} from "antd";
 import dayjs from "dayjs";
-import { getAgeFromBirthDate } from "../../utils/get-age";
 import { useNavigate } from "react-router";
 import type { Patients } from "../../types/patient";
+import { getAgeFromBirthDate } from "../../utils/get-age";
 
 const { Title } = Typography;
+
+type Props = Patients & {
+  onDelete: (id: string) => void;
+};
 
 export function PatientCard({
   id,
@@ -14,7 +30,8 @@ export function PatientCard({
   birthDate,
   phone,
   lastAppointment,
-}: Patients) {
+  onDelete,
+}: Props) {
   const navigate = useNavigate();
 
   return (
@@ -57,6 +74,28 @@ export function PatientCard({
           </Space>
         </Flex>
       </Space>
+
+      <Popconfirm
+        title="Excluir paciente"
+        description="Você tem certeza que deseja excluir esse paciente?"
+        onConfirm={() => {
+          onDelete(id);
+        }}
+        okText="Excluir"
+        cancelText="Cancelar"
+      >
+        <Button
+          icon={<DeleteOutlined />}
+          type="text"
+          color="danger"
+          style={{
+            position: "absolute",
+            right: "0.5rem",
+            top: "0.5rem",
+            color: "red",
+          }}
+        />
+      </Popconfirm>
     </Card>
   );
 }

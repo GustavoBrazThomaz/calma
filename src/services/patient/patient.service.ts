@@ -75,3 +75,18 @@ export async function postCreateNewPatient(
   });
 }
 
+export async function deletePatientById(id: string) {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      const index = patients.findIndex((patients) => patients.id === id);
+
+      if (index === -1) {
+        reject({ code: 404, message: "paciente não encontrado" });
+        return;
+      }
+
+      patients.splice(index, 1);
+      resolve(patients);
+    }, 500);
+  });
+}

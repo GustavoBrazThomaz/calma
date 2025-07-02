@@ -18,18 +18,52 @@ import { useGetPatients } from "../../services/patient/use-get-patients";
 import { paginateItems } from "../../utils/paginate-items";
 import { useEffect, useState } from "react";
 import type { Patients } from "../../types/patient";
+import { useQueryClient } from "@tanstack/react-query";
+import { usePatient } from "../../services/patient/use-patient";
 
 const { Title } = Typography;
 
 export function Patients() {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
-  const { data, isLoading, isSuccess } = useGetPatients();
+  const { data, isLoading, isSuccess, isStale } = useGetPatients();
   const [patients, setPatients] = useState<Patients[]>([]);
+  const [pagination, setPagination] = useState<{ count: number; page: number }>(
+    { count: 0, page: 1 }
+  );
+  const queryClient = useQueryClient();
+  const { deletePatient } = usePatient();
 
   useEffect(() => {
-    if (data) paginateItems(data, 1, setPatients, 8);
-  }, [isSuccess, data]);
+    if (data) {
+      paginateItems(data, 1, setPatients, 8);
+      setPagination((prev) => {
+        return {
+          ...prev,
+          count: data.length,
+        };
+      });
+    }
+  }, [isSuccess, data, isStale]);
+
+  function handleDeletePatientById(id: string) {
+    deletePatient.mutate(id);
+    queryClient.refetchQueries({ queryKey: ["fetchPatients"] });
+
+    if (data) {
+      const newData = data.filter((item) => item.id !== id);
+      paginateItems(newData, pagination.page, setPatients, 8);
+      console.log(newData);
+      setPagination((prev) => {
+        return {
+          ...prev,
+          count: newData.length,
+        };
+      });
+    }
+
+    setPatients((prev) => prev.filter((item) => item.id !== id));
+  }
 
   if (isLoading)
     return (
@@ -97,14 +131,23 @@ export function Patients() {
               birthDate={item.birthDate}
               phone={item.phone}
               lastAppointment={item.lastAppointment}
+              onDelete={handleDeletePatientById}
             />
           </Col>
         ))}
       </Row>
       <Pagination
-        onChange={(pag) => paginateItems(data, pag, setPatients, 8)}
+        onChange={(pag) => {
+          paginateItems(data, pag, setPatients, 8);
+          setPagination((prev) => {
+            return {
+              ...prev,
+              page: pag,
+            };
+          });
+        }}
         defaultCurrent={1}
-        total={data.length}
+        total={pagination.count}
         defaultPageSize={8}
         align="center"
       />
