@@ -23,14 +23,40 @@ const { Title } = Typography;
 
 export function Dashboard() {
   const [open, setOpen] = useState<boolean>(false);
-  const { data, isLoading, isSuccess } = useGetAppointment();
+  const { data, isLoading, isSuccess, isStale } = useGetAppointment();
   const [appointments, setAppointments] = useState<Appointment[]>([]);
+  const [pagination, setPagination] = useState<{ count: number; page: number }>(
+    { count: 0, page: 1 }
+  );
   const todayAppointment = useGetTodayAppointment();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (data) paginateItems(data, 1, setAppointments);
-  }, [isSuccess, data]);
+    if (data) {
+      paginateItems(data, 1, setAppointments);
+      setPagination((prev) => {
+        return {
+          ...prev,
+          count: data.length,
+        };
+      });
+    }
+  }, [isSuccess, data, isStale]);
+
+  function handleDelete(id: string) {
+    if (data) {
+      const newData = data.filter((item) => item.id !== id);
+      paginateItems(newData, pagination.page, setAppointments);
+      setPagination((prev) => {
+        return {
+          ...prev,
+          count: newData.length,
+        };
+      });
+    }
+
+    setAppointments((prev) => prev.filter((item) => item.id !== id));
+  }
 
   return (
     <Flex vertical gap="middle">
@@ -55,7 +81,7 @@ export function Dashboard() {
       ) : (
         <Row gutter={[16, 16]}>
           {todayAppointment.data.map((item) => (
-            <Col span={12}>
+            <Col span={12} key={item.id}>
               <AppointmentCard
                 id={item.id}
                 patientId={item.patientId}
@@ -67,6 +93,8 @@ export function Dashboard() {
                 scheduled={item.scheduled}
                 price={item.price}
                 status={item.status}
+                onDelete={handleDelete}
+                hasDelete={false}
               />
             </Col>
           ))}
@@ -83,7 +111,7 @@ export function Dashboard() {
         <>
           <Row gutter={[16, 16]}>
             {appointments.map((item) => (
-              <Col span={12}>
+              <Col span={12} key={item.id}>
                 <AppointmentCard
                   id={item.id}
                   patientId={item.patientId}
@@ -95,15 +123,24 @@ export function Dashboard() {
                   scheduled={item.scheduled}
                   price={item.price}
                   status={item.status}
+                  onDelete={handleDelete}
                 />
               </Col>
             ))}
           </Row>
 
           <Pagination
-            onChange={(pag) => paginateItems(data, pag, setAppointments)}
+            onChange={(pag) => {
+              paginateItems(data, pag, setAppointments);
+              setPagination((prev) => {
+                return {
+                  ...prev,
+                  page: pag,
+                };
+              });
+            }}
             defaultCurrent={1}
-            total={data.length}
+            total={pagination.count}
             defaultPageSize={6}
             align="center"
           />

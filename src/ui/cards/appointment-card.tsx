@@ -1,6 +1,7 @@
 import {
   ClockCircleOutlined,
-  EllipsisOutlined,
+  DeleteOutlined,
+  DollarOutlined,
   PhoneOutlined,
   StopOutlined,
 } from "@ant-design/icons";
@@ -10,10 +11,9 @@ import {
   Button,
   Card,
   Flex,
-  Menu,
-  Popover,
+  Popconfirm,
   Space,
-  type MenuProps,
+  Tooltip,
 } from "antd";
 import dayjs from "dayjs";
 import { useState } from "react";
@@ -23,7 +23,10 @@ import { useAppointment } from "../../services/appointment/use-appointment";
 import type { Appointment } from "../../types/appointment";
 import { useQueryClient } from "@tanstack/react-query";
 
-type MenuItem = Required<MenuProps>["items"][number];
+type Props = Appointment & {
+  onDelete?: (id: string) => void;
+  hasDelete?: boolean;
+};
 
 export function AppointmentCard({
   id,
@@ -36,12 +39,15 @@ export function AppointmentCard({
   scheduled,
   status,
   paymentType,
-}: Appointment) {
+  onDelete,
+  hasDelete,
+}: Props) {
   const navigate = useNavigate();
   const location = useLocation();
   const { toggleIsPaidById, deleteAppointment } = useAppointment();
   const [hasPaid, setHasPaid] = useState<boolean>(isPaid);
   const queryClient = useQueryClient();
+  // const [hidden, setHidden] = useState<boolean>(false);
 
   function handleRedirectToPatient() {
     if (location.pathname === `/paciente/${patientId}`) return;
@@ -58,27 +64,13 @@ export function AppointmentCard({
     queryClient.refetchQueries({ queryKey: ["fetchAppointment"] });
   }
 
-  const items: MenuItem[] = [
-    { key: "1", label: "Excluir", onClick: handleDelete },
-    {
-      key: "2",
-      label: `Mudar status para ${!hasPaid ? "Pago" : "Pendente"}`,
-      onClick: handleIsPaid,
-    },
-    { key: "3", label: "Ver detalhes", onClick: handleRedirectToPatient },
-  ];
-
-  const content = (
-    <Menu
-      style={{ width: 256 }}
-      openKeys={["sub1"]}
-      mode="vertical"
-      items={items}
-    />
-  );
-
   return (
-    <Card style={{ minWidth: 300, cursor: "pointer" }}>
+    <Card
+      style={{ minWidth: 300, cursor: "pointer" }}
+      onClick={handleRedirectToPatient}
+      hoverable
+      // hidden={hidden}
+    >
       <Card.Meta
         avatar={
           <Avatar size="large" style={{ backgroundColor: "#FF7D29" }}>
@@ -93,11 +85,38 @@ export function AppointmentCard({
                 count={hasPaid ? "Pago" : "Pendente"}
                 color={hasPaid ? "green" : "orange"}
               />
-              <Popover content={content} trigger="click">
-                <Button type="text">
-                  <EllipsisOutlined />
+              <Tooltip
+                title={`Mudar status para ${!hasPaid ? "Pago" : "Pendente"}`}
+              >
+                <Button
+                  type="text"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleIsPaid();
+                  }}
+                >
+                  <DollarOutlined />
                 </Button>
-              </Popover>
+              </Tooltip>
+
+              <Popconfirm
+                title="Excluir consulta"
+                description="Você tem certeza que deseja excluir essa consulta?"
+                onConfirm={(e) => {
+                  e?.stopPropagation();
+                  handleDelete();
+                  if (onDelete) onDelete(id);
+                }}
+                onCancel={(e) => e?.stopPropagation()}
+                okText="Excluir"
+                cancelText="Cancelar"
+              >
+                {hasDelete ?? undefined ?? (
+                  <Button type="text" onClick={(e) => e.stopPropagation()}>
+                    <DeleteOutlined />
+                  </Button>
+                )}
+              </Popconfirm>
             </Space>
           </Flex>
         }

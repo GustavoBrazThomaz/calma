@@ -75,7 +75,7 @@ export function Appointments() {
         <Flex gap="middle" style={{ width: "30%" }}>
           <Select
             defaultValue="Todas as consultas"
-            style={{ width: "50%" }}
+            style={{ width: "50%", minWidth: "190px" }}
             onChange={handleChange}
             options={[
               { value: "all", label: "Todas as consultas" },
@@ -87,7 +87,7 @@ export function Appointments() {
 
           <Select
             defaultValue="Todos os pagamentos"
-            style={{ width: "50%" }}
+            style={{ width: "50%", minWidth: "190px" }}
             onChange={handleChange}
             options={[
               { value: "all", label: "Todos os pagamentos" },
@@ -109,7 +109,7 @@ export function Appointments() {
         <>
           <Row gutter={[16, 16]}>
             {appointments.map((item) => (
-              <Col span={12}>
+              <Col span={12} key={item.id}>
                 <AppointmentCard
                   id={item.id}
                   patientId={item.patientId}
