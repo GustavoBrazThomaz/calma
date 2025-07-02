@@ -26,16 +26,42 @@ const { Title } = Typography;
 export function Appointments() {
   const [open, setOpen] = useState<boolean>(false);
   const [searchParams, setSearchParams] = useSearchParams();
-  const { data, isLoading, isSuccess } = useGetAppointment();
+  const { data, isLoading, isSuccess, isStale } = useGetAppointment();
   const [appointments, setAppointments] = useState<Appointment[]>([]);
+  const [pagination, setPagination] = useState<{ count: number; page: number }>(
+    { count: 0, page: 1 }
+  );
 
   const handleChange = (value: string) => {
     console.log(`selected ${value}`);
   };
 
   useEffect(() => {
-    if (data) paginateItems(data, 1, setAppointments);
-  }, [isSuccess, data]);
+    if (data) {
+      paginateItems(data, 1, setAppointments);
+      setPagination((prev) => {
+        return {
+          ...prev,
+          count: data.length,
+        };
+      });
+    }
+  }, [isSuccess, data, isStale]);
+
+  function handleDelete(id: string) {
+    if (data) {
+      const newData = data.filter((item) => item.id !== id);
+      paginateItems(newData, pagination.page, setAppointments);
+      setPagination((prev) => {
+        return {
+          ...prev,
+          count: newData.length,
+        };
+      });
+    }
+
+    setAppointments((prev) => prev.filter((item) => item.id !== id));
+  }
 
   return (
     <Flex vertical gap="large">
@@ -121,14 +147,23 @@ export function Appointments() {
                   scheduled={item.scheduled}
                   price={item.price}
                   status={item.status}
+                  onDelete={handleDelete}
                 />
               </Col>
             ))}
           </Row>
           <Pagination
-            onChange={(pag) => paginateItems(data, pag, setAppointments)}
+            onChange={(pag) => {
+              paginateItems(data, pag, setAppointments);
+              setPagination((prev) => {
+                return {
+                  ...prev,
+                  page: pag,
+                };
+              });
+            }}
             defaultCurrent={1}
-            total={data.length}
+            total={pagination.count}
             defaultPageSize={6}
             align="center"
           />

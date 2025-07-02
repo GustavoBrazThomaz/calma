@@ -47,7 +47,6 @@ export function AppointmentCard({
   const { toggleIsPaidById, deleteAppointment } = useAppointment();
   const [hasPaid, setHasPaid] = useState<boolean>(isPaid);
   const queryClient = useQueryClient();
-  // const [hidden, setHidden] = useState<boolean>(false);
 
   function handleRedirectToPatient() {
     if (location.pathname === `/paciente/${patientId}`) return;
@@ -69,7 +68,6 @@ export function AppointmentCard({
       style={{ minWidth: 300, cursor: "pointer" }}
       onClick={handleRedirectToPatient}
       hoverable
-      // hidden={hidden}
     >
       <Card.Meta
         avatar={
@@ -94,9 +92,8 @@ export function AppointmentCard({
                     e.stopPropagation();
                     handleIsPaid();
                   }}
-                >
-                  <DollarOutlined />
-                </Button>
+                  icon={<DollarOutlined />}
+                />
               </Tooltip>
 
               <Popconfirm
@@ -112,9 +109,11 @@ export function AppointmentCard({
                 cancelText="Cancelar"
               >
                 {hasDelete ?? undefined ?? (
-                  <Button type="text" onClick={(e) => e.stopPropagation()}>
-                    <DeleteOutlined />
-                  </Button>
+                  <Button
+                    icon={<DeleteOutlined />}
+                    type="text"
+                    onClick={(e) => e.stopPropagation()}
+                  />
                 )}
               </Popconfirm>
             </Space>
