@@ -13,6 +13,7 @@ export function CaseEvolution() {
   if (!data || data.length === 0)
     return <Empty style={{ marginTop: "4rem" }} />;
 
+
   return (
     <Flex vertical gap="middle">
       <Flex justify="flex-end">

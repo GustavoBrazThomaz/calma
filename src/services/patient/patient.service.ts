@@ -34,11 +34,12 @@ export async function getPatientCasesEvolution(
 ): Promise<CaseEvolution[]> {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
-      const caseEvolution = casesEvolution.find(
+      const patientCases = casesEvolution.filter(
         (p) => p.patientId === patientId
       );
-      if (caseEvolution) {
-        resolve([caseEvolution]);
+
+      if (patientCases.length > 0) {
+        return resolve(patientCases);
       }
 
       reject({ code: 404, message: "Evolução de caso não encontrada" });
@@ -51,7 +52,7 @@ export async function postCreateNewPatient(
 ) {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
-      const id = Math.random().toString();
+      const id = crypto.randomUUID();
 
       patientsDetails.push({
         ...patient,

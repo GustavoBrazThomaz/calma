@@ -1,7 +1,8 @@
+import { useQueryClient } from "@tanstack/react-query";
 import {
+  App,
   Button,
   Card,
-  Empty,
   Flex,
   Form,
   Input,
@@ -10,7 +11,8 @@ import {
   Typography,
 } from "antd";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
+import { useCaseEvolution } from "../../services/case-evolution/use-case-evolution";
 import { useCaseEvolutionById } from "../../services/case-evolution/use-case-evolution-by-id";
 import type { CaseEvolutionForm } from "./case-evolution.types";
 import { MarkdownEditor } from "./markdown/markdown-editor";
@@ -20,25 +22,29 @@ const { Title, Paragraph } = Typography;
 
 export function CaseEvolutionForm() {
   const [markdown, setMarkdown] = useState<string>("");
-  const { caseId } = useParams();
-  const { data, isLoading } = useCaseEvolutionById(caseId as string);
+  const { caseId, id } = useParams();
+  const { data, isLoading } = useCaseEvolutionById(caseId ?? "");
+  const { updateCaseEvolution, createCaseEvolution } = useCaseEvolution();
+  const navigate = useNavigate();
+  const { message } = App.useApp();
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     if (data) setMarkdown(data.note);
   }, [data, isLoading]);
 
-  if (isLoading)
-    return (
-      <Flex
-        align="center"
-        justify="center"
-        style={{ width: "100%", height: "100%" }}
-      >
-        <Spin tip="Loading..." size="large" />
-      </Flex>
-    );
-  if (!data) return <Empty style={{ marginTop: "4rem" }} />;
-
+  if (caseId) {
+    if (isLoading)
+      return (
+        <Flex
+          align="center"
+          justify="center"
+          style={{ width: "100%", height: "100%" }}
+        >
+          <Spin tip="Loading..." size="large" />
+        </Flex>
+      );
+  }
   const tabs = [
     {
       label: "Editor",
@@ -52,8 +58,26 @@ export function CaseEvolutionForm() {
     },
   ];
 
-  function handleSubmit(e: CaseEvolutionForm) {
-    console.log(e);
+  function handleSubmit(form: CaseEvolutionForm) {
+    if (!data) {
+      createCaseEvolution.mutate({ ...form, patientId: id as string });
+      message.success("Evolução de caso criada com sucesso");
+    } else {
+      updateCaseEvolution.mutate({
+        id: caseId as string,
+        note: form.note,
+        title: form.title,
+      });
+      message.success("Evolução de caso atualizada com sucesso");
+    }
+
+    queryClient
+      .invalidateQueries({
+        queryKey: [`fetchPatientCaseEvolution`, id],
+      })
+      .then(() => {
+        navigate(`/paciente/${id}?tab=3`);
+      });
   }
 
   return (
@@ -62,18 +86,23 @@ export function CaseEvolutionForm() {
         <Title level={3}>
           {caseId ? "Evolução de caso" : "Nova Evolução de Caso"}
         </Title>
-        <Button>Salvar</Button>
       </Flex>
       <Form<CaseEvolutionForm>
         onFinish={handleSubmit}
-        onFinishFailed={(e) => console.log(e)}
         autoComplete="off"
         layout="vertical"
+        style={{ position: "relative" }}
         initialValues={{
-          title: data.title,
-          note: data.note,
+          title: data ? data.title : "",
+          note: data ? data.note : "",
         }}
       >
+        <Button
+          htmlType="submit"
+          style={{ position: "absolute", right: 0, top: "-4rem" }}
+        >
+          Salvar
+        </Button>
         <Flex vertical gap="middle">
           <Card>
             <Title level={4}>Informações da Evolução</Title>
@@ -89,11 +118,7 @@ export function CaseEvolutionForm() {
           <Card>
             <Title level={4}>Conteúdo da Evolução</Title>
             <Paragraph>Conteúdo (Markdown)</Paragraph>
-            <Tabs
-              defaultActiveKey={caseId ? "2" : "1"}
-              tabPosition="top"
-              items={tabs}
-            />
+            <Tabs defaultActiveKey={"1"} tabPosition="top" items={tabs} />
           </Card>
           <Flex gap="large" style={{ color: "#868687" }}>
             <div>

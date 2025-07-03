@@ -45,7 +45,7 @@ export async function postCreateNewAppointment(appointment: AppointmentForm) {
     `${scheduledDate} ${scheduledTime}`,
     "YYYY-MM-DD HH:mm"
   ).toDate();
-  const newId = Math.random().toString();
+  const newId = crypto.randomUUID();
 
   const patient = patientsDetails.find((p) => p.id === appointment.patient);
 
