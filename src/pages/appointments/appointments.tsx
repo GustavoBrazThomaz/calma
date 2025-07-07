@@ -1,23 +1,21 @@
-import { SearchOutlined } from "@ant-design/icons";
 import {
-  Flex,
   Button,
-  Typography,
-  Select,
-  Input,
   Col,
-  Row,
-  Form,
-  Pagination,
   Empty,
+  Flex,
+  Input,
+  Pagination,
+  Row,
+  Select,
+  Typography,
 } from "antd";
 import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router";
+import { useGetAppointment } from "../../services/appointment/use-get-appointment";
+import { useSearchAppointment } from "../../services/appointment/use-search-appointment";
+import type { Appointment } from "../../types/appointment";
 import { AppointmentCard } from "../../ui/cards/appointment-card";
 import { AppointmentForm } from "../../ui/forms/appointment/appointment-form";
-import { useSearchParams } from "react-router";
-import type { SearchForm } from "../../types/search";
-import { useGetAppointment } from "../../services/appointment/use-get-appointment";
-import type { Appointment } from "../../types/appointment";
 import { paginateItems } from "../../utils/paginate-items";
 import { AppointmentLoading } from "./appointment.loading";
 
@@ -25,28 +23,32 @@ const { Title } = Typography;
 
 export function Appointments() {
   const [open, setOpen] = useState<boolean>(false);
-  const [searchParams, setSearchParams] = useSearchParams();
-  const { data, isLoading, isSuccess, isStale } = useGetAppointment();
+  const { data, isLoading, refetch } = useGetAppointment();
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [pagination, setPagination] = useState<{ count: number; page: number }>(
     { count: 0, page: 1 }
   );
+
+  const [searchParams, setSearchParams] = useSearchParams();
+  const search = searchParams.get("search") ?? "";
+  const searchAppointment = useSearchAppointment(search);
+  const hasSearch = !!search;
+  const currentData = hasSearch ? searchAppointment.data : data;
+  const isEmpty = !currentData || currentData.length === 0;
 
   const handleChange = (value: string) => {
     console.log(`selected ${value}`);
   };
 
   useEffect(() => {
-    if (data) {
-      paginateItems(data, 1, setAppointments);
-      setPagination((prev) => {
-        return {
-          ...prev,
-          count: data.length,
-        };
-      });
+    if (currentData) {
+      paginateItems(currentData, 1, setAppointments);
+      setPagination((prev) => ({
+        ...prev,
+        count: currentData.length,
+      }));
     }
-  }, [isSuccess, data, isStale]);
+  }, [currentData]);
 
   function handleDelete(id: string) {
     if (data) {
@@ -70,33 +72,16 @@ export function Appointments() {
       </Flex>
 
       <Flex gap="large">
-        <Form<SearchForm>
-          onFinish={(form: SearchForm) => {
-            if (form.search === undefined) return;
-            setSearchParams({ search: form.search });
+        <Input.Search
+          placeholder="Buscar consulta pelo nome do paciente"
+          allowClear
+          onSearch={(search: string) => setSearchParams({ search: search })}
+          onClear={() => {
+            setSearchParams({});
+            refetch();
           }}
-          autoComplete="off"
-          style={{ width: "100%" }}
-          initialValues={{
-            search: searchParams.get("search") ?? "",
-          }}
-        >
-          <Flex gap="middle" style={{ width: "100%" }}>
-            <Form.Item<SearchForm>
-              name="search"
-              label={null}
-              style={{ width: "100%" }}
-              rules={[{ required: true, message: "" }]}
-            >
-              <Input placeholder="Buscar Consulta..." />
-            </Form.Item>
-            <Form.Item>
-              <Button variant="outlined" color="primary" htmlType="submit">
-                <SearchOutlined /> Buscar
-              </Button>
-            </Form.Item>
-          </Flex>
-        </Form>
+          defaultValue={search}
+        />
 
         <Flex gap="middle" style={{ width: "30%" }}>
           <Select
@@ -127,9 +112,9 @@ export function Appointments() {
           Nova Consulta
         </Button>
       </Flex>
-      {isLoading ? (
+      {isLoading || searchAppointment.isLoading ? (
         <AppointmentLoading />
-      ) : !data ? (
+      ) : isEmpty ? (
         <Empty />
       ) : (
         <>
@@ -154,7 +139,7 @@ export function Appointments() {
           </Row>
           <Pagination
             onChange={(pag) => {
-              paginateItems(data, pag, setAppointments);
+              paginateItems(currentData, pag, setAppointments);
               setPagination((prev) => {
                 return {
                   ...prev,

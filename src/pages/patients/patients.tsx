@@ -23,17 +23,17 @@ const { Title } = Typography;
 
 export function Patients() {
   const navigate = useNavigate();
-  const [searchParams, setSearchParams] = useSearchParams();
   const { data, isLoading, refetch } = useGetPatients();
   const [patients, setPatients] = useState<Patients[]>([]);
-  const search = searchParams.get("search") ?? "";
-  const searchPatient = useSearchPatient(search);
   const [pagination, setPagination] = useState<{ count: number; page: number }>(
     { count: 0, page: 1 }
   );
   const queryClient = useQueryClient();
   const { deletePatient } = usePatient();
 
+  const [searchParams, setSearchParams] = useSearchParams();
+  const search = searchParams.get("search") ?? "";
+  const searchPatient = useSearchPatient(search);
   const hasSearch = !!search;
   const currentData = hasSearch ? searchPatient.data : data;
   const isEmpty = !currentData || currentData.length === 0;

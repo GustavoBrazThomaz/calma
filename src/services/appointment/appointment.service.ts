@@ -122,3 +122,19 @@ export async function getPatientAppointment(
     }, 500);
   });
 }
+
+export async function getSearchAppointment(
+  search: string
+): Promise<Appointment[]> {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      const searchLower = search.toLowerCase();
+      const result = appointments.filter((patient) => {
+        const fullName =
+          `${patient.firstName} ${patient.lastName}`.toLowerCase();
+        return fullName.includes(searchLower);
+      });
+      resolve(result);
+    }, 500);
+  });
+}
