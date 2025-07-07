@@ -1,4 +1,5 @@
 import {
+  CheckOutlined,
   ClockCircleOutlined,
   DeleteOutlined,
   DollarOutlined,
@@ -134,6 +135,10 @@ export function AppointmentCard({
               {status === "cancel" ? (
                 <p style={{ color: "red" }}>
                   <StopOutlined /> Cancelado
+                </p>
+              ) : status === "done" ? (
+                <p style={{ color: "#52C41A" }}>
+                  <CheckOutlined /> Realizada
                 </p>
               ) : (
                 <p>

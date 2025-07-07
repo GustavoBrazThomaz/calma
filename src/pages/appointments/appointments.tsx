@@ -18,6 +18,7 @@ import { AppointmentCard } from "../../ui/cards/appointment-card";
 import { AppointmentForm } from "../../ui/forms/appointment/appointment-form";
 import { paginateItems } from "../../utils/paginate-items";
 import { AppointmentLoading } from "./appointment.loading";
+import { ClearOutlined } from "@ant-design/icons";
 
 const { Title } = Typography;
 
@@ -31,18 +32,28 @@ export function Appointments() {
 
   const [searchParams, setSearchParams] = useSearchParams();
   const search = searchParams.get("search") ?? "";
-  const searchAppointment = useSearchAppointment(search);
-  const hasSearch = !!search;
-  const currentData = hasSearch ? searchAppointment.data : data;
-  const isEmpty = !currentData || currentData.length === 0;
+  const appointmentStatus = searchParams.get("appointmentStatus") ?? "all";
+  const paymentStatus = searchParams.get("paymentStatus") ?? "all";
 
-  const handleChange = (value: string) => {
-    console.log(`selected ${value}`);
-  };
+  const [filters, setFilters] = useState<{
+    search: string;
+    appointmentStatus: string;
+    paymentStatus: string;
+  }>({ search, appointmentStatus, paymentStatus });
+
+  const searchAppointment = useSearchAppointment({
+    search,
+    appointmentStatus,
+    paymentStatus,
+  });
+  const hasActiveFilters =
+    search !== "" || appointmentStatus !== "all" || paymentStatus !== "all";
+  const currentData = hasActiveFilters ? searchAppointment.data : data;
+  const isEmpty = !currentData || currentData.length === 0;
 
   useEffect(() => {
     if (currentData) {
-      paginateItems(currentData, 1, setAppointments);
+      paginateItems(currentData, 1, setAppointments, 8);
       setPagination((prev) => ({
         ...prev,
         count: currentData.length,
@@ -53,7 +64,7 @@ export function Appointments() {
   function handleDelete(id: string) {
     if (data) {
       const newData = data.filter((item) => item.id !== id);
-      paginateItems(newData, pagination.page, setAppointments);
+      paginateItems(newData, pagination.page, setAppointments, 8);
       setPagination((prev) => {
         return {
           ...prev,
@@ -65,6 +76,39 @@ export function Appointments() {
     setAppointments((prev) => prev.filter((item) => item.id !== id));
   }
 
+  function handleClear() {
+    setSearchParams({});
+    setFilters({
+      search: "",
+      paymentStatus: "all",
+      appointmentStatus: "all",
+    });
+    refetch();
+  }
+
+  function handleFilter({
+    value,
+    paramName,
+  }: {
+    value: string;
+    paramName: string;
+  }) {
+    setSearchParams((prev) => {
+      const params = new URLSearchParams(prev);
+      params.set(paramName, value);
+      return params;
+    });
+    const newFilters = {
+      search: paramName === "search" ? value : filters.search,
+      appointmentStatus:
+        paramName === "appointmentStatus" ? value : filters.appointmentStatus,
+      paymentStatus:
+        paramName === "paymentStatus" ? value : filters.paymentStatus,
+    };
+
+    setFilters(newFilters);
+  }
+
   return (
     <Flex vertical gap="large">
       <Flex align="center" justify="space-between" style={{ width: "100%" }}>
@@ -74,20 +118,24 @@ export function Appointments() {
       <Flex gap="large">
         <Input.Search
           placeholder="Buscar consulta pelo nome do paciente"
-          allowClear
-          onSearch={(search: string) => setSearchParams({ search: search })}
-          onClear={() => {
-            setSearchParams({});
-            refetch();
-          }}
-          defaultValue={search}
+          onSearch={(value: string) =>
+            handleFilter({ value, paramName: "search" })
+          }
+          value={filters.search}
+          onChange={(event) =>
+            setFilters((prev) => {
+              return { ...prev, search: event.target.value };
+            })
+          }
         />
 
         <Flex gap="middle" style={{ width: "30%" }}>
           <Select
-            defaultValue="Todas as consultas"
+            value={filters.appointmentStatus}
             style={{ width: "50%", minWidth: "190px" }}
-            onChange={handleChange}
+            onChange={(value) =>
+              handleFilter({ value, paramName: "appointmentStatus" })
+            }
             options={[
               { value: "all", label: "Todas as consultas" },
               { value: "scheduled", label: "Agendados" },
@@ -95,18 +143,25 @@ export function Appointments() {
               { value: "cancel", label: "Cancelada" },
             ]}
           />
-
           <Select
-            defaultValue="Todos os pagamentos"
+            value={filters.paymentStatus}
             style={{ width: "50%", minWidth: "190px" }}
-            onChange={handleChange}
+            onChange={(value) =>
+              handleFilter({ value, paramName: "paymentStatus" })
+            }
             options={[
               { value: "all", label: "Todos os pagamentos" },
               { value: "paid", label: "Pagos" },
-              { value: "pendents", label: "Pendentes" },
+              { value: "pending", label: "Pendentes" },
             ]}
           />
         </Flex>
+
+        {(appointmentStatus !== "all" || paymentStatus !== "all" || search) && (
+          <Button onClick={handleClear}>
+            Limpar filtros <ClearOutlined />
+          </Button>
+        )}
 
         <Button onClick={() => setOpen(true)} variant="solid" color="blue">
           Nova Consulta
@@ -139,7 +194,7 @@ export function Appointments() {
           </Row>
           <Pagination
             onChange={(pag) => {
-              paginateItems(currentData, pag, setAppointments);
+              paginateItems(currentData, pag, setAppointments, 8);
               setPagination((prev) => {
                 return {
                   ...prev,
@@ -149,7 +204,7 @@ export function Appointments() {
             }}
             defaultCurrent={1}
             total={pagination.count}
-            defaultPageSize={6}
+            defaultPageSize={8}
             align="center"
           />
         </>

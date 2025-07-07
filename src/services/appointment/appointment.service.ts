@@ -73,16 +73,17 @@ export async function postCreateNewAppointment(appointment: AppointmentForm) {
 }
 
 export async function putToggleIsPaidById(id: string) {
-  appointments.map((appointment) =>
-    appointment.id === id
-      ? { ...appointment, isPaid: !appointment.isPaid }
-      : appointment
-  );
+  const index = appointments.findIndex((appointment) => appointment.id === id);
 
-  return new Promise((resolve, reject) => {
+  if (index === -1) {
+    return Promise.reject({ code: 404, message: "Consulta não encontrada" });
+  }
+
+  appointments[index].isPaid = !appointments[index].isPaid;
+
+  return new Promise((resolve) => {
     setTimeout(() => {
-      resolve(appointments);
-      reject({ code: 404, message: "Consulta não encontrada" });
+      resolve({ code: 204, message: "Status mudado com sucesso" });
     }, 500);
   });
 }
@@ -124,16 +125,33 @@ export async function getPatientAppointment(
 }
 
 export async function getSearchAppointment(
-  search: string
+  search: string,
+  appointmentStatus: string,
+  paymentStatus: string
 ): Promise<Appointment[]> {
   return new Promise((resolve) => {
     setTimeout(() => {
       const searchLower = search.toLowerCase();
-      const result = appointments.filter((patient) => {
+
+      const result = appointments.filter((appointment) => {
         const fullName =
-          `${patient.firstName} ${patient.lastName}`.toLowerCase();
-        return fullName.includes(searchLower);
+          `${appointment.firstName} ${appointment.lastName}`.toLowerCase();
+        const nameMatch = search ? fullName.includes(searchLower) : true;
+
+        const appointmentMatch =
+          appointmentStatus === "all" ||
+          appointment.status === appointmentStatus;
+
+        const paymentMatch =
+          paymentStatus === "all" ||
+          (paymentStatus === "paid" && appointment.isPaid === true) ||
+          (paymentStatus === "pending" && appointment.isPaid === false);
+
+        return nameMatch && appointmentMatch && paymentMatch;
       });
+
+      console.log(result);
+
       resolve(result);
     }, 500);
   });
