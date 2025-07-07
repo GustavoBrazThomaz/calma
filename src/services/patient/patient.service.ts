@@ -91,3 +91,17 @@ export async function deletePatientById(id: string) {
     }, 500);
   });
 }
+
+export async function getSearchPatient(name: string): Promise<Patients[]> {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      const nameLower = name.toLowerCase();
+      const result = patients.filter((patient) => {
+        const fullName =
+          `${patient.firstName} ${patient.lastName}`.toLowerCase();
+        return fullName.includes(nameLower);
+      });
+      resolve(result);
+    }, 500);
+  });
+}

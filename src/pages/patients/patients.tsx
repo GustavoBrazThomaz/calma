@@ -1,50 +1,52 @@
-import { SearchOutlined } from "@ant-design/icons";
+import { useQueryClient } from "@tanstack/react-query";
 import {
   Button,
   Col,
   Empty,
   Flex,
-  Form,
   Input,
   Pagination,
   Row,
   Spin,
   Typography,
 } from "antd";
-import { PatientCard } from "../../ui/cards/patient-card";
-import { useNavigate, useSearchParams } from "react-router";
-import type { SearchForm } from "../../types/search";
-import { useGetPatients } from "../../services/patient/use-get-patients";
-import { paginateItems } from "../../utils/paginate-items";
 import { useEffect, useState } from "react";
-import type { Patients } from "../../types/patient";
-import { useQueryClient } from "@tanstack/react-query";
+import { useNavigate, useSearchParams } from "react-router";
+import { useGetPatients } from "../../services/patient/use-get-patients";
 import { usePatient } from "../../services/patient/use-patient";
+import { useSearchPatient } from "../../services/patient/use-search-patient";
+import type { Patients } from "../../types/patient";
+import { PatientCard } from "../../ui/cards/patient-card";
+import { paginateItems } from "../../utils/paginate-items";
 
 const { Title } = Typography;
 
 export function Patients() {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
-  const { data, isLoading, isSuccess, isStale } = useGetPatients();
+  const { data, isLoading, refetch } = useGetPatients();
   const [patients, setPatients] = useState<Patients[]>([]);
+  const search = searchParams.get("search") ?? "";
+  const searchPatient = useSearchPatient(search);
   const [pagination, setPagination] = useState<{ count: number; page: number }>(
     { count: 0, page: 1 }
   );
   const queryClient = useQueryClient();
   const { deletePatient } = usePatient();
 
+  const hasSearch = !!search;
+  const currentData = hasSearch ? searchPatient.data : data;
+  const isEmpty = !currentData || currentData.length === 0;
+
   useEffect(() => {
-    if (data) {
-      paginateItems(data, 1, setPatients, 8);
-      setPagination((prev) => {
-        return {
-          ...prev,
-          count: data.length,
-        };
-      });
+    if (currentData) {
+      paginateItems(currentData, 1, setPatients, 8);
+      setPagination((prev) => ({
+        ...prev,
+        count: currentData.length,
+      }));
     }
-  }, [isSuccess, data, isStale]);
+  }, [currentData]);
 
   function handleDeletePatientById(id: string) {
     deletePatient.mutate(id);
@@ -53,7 +55,6 @@ export function Patients() {
     if (data) {
       const newData = data.filter((item) => item.id !== id);
       paginateItems(newData, pagination.page, setPatients, 8);
-      console.log(newData);
       setPagination((prev) => {
         return {
           ...prev,
@@ -65,7 +66,7 @@ export function Patients() {
     setPatients((prev) => prev.filter((item) => item.id !== id));
   }
 
-  if (isLoading)
+  if (isLoading || searchPatient.isLoading)
     return (
       <Flex
         align="center"
@@ -75,7 +76,6 @@ export function Patients() {
         <Spin tip="Loading..." size="large" />
       </Flex>
     );
-  if (!data) return <Empty style={{ marginTop: "4rem" }} />;
 
   return (
     <Flex vertical gap="large">
@@ -84,33 +84,16 @@ export function Patients() {
       </Flex>
 
       <Flex gap="middle" justify="space-between" style={{ width: "100%" }}>
-        <Form<SearchForm>
-          onFinish={(form: SearchForm) => {
-            if (form.search === undefined) return;
-            setSearchParams({ search: form.search });
+        <Input.Search
+          placeholder="Buscar por paciente pelo nome"
+          allowClear
+          onSearch={(search: string) => setSearchParams({ search: search })}
+          onClear={() => {
+            setSearchParams({});
+            refetch();
           }}
-          autoComplete="off"
-          style={{ width: "100%" }}
-          initialValues={{
-            search: searchParams.get("search") ?? "",
-          }}
-        >
-          <Flex gap="middle" style={{ width: "100%" }}>
-            <Form.Item<SearchForm>
-              name="search"
-              label={null}
-              style={{ width: "100%" }}
-              rules={[{ required: true, message: "" }]}
-            >
-              <Input placeholder="Buscar por paciente..." />
-            </Form.Item>
-            <Form.Item>
-              <Button variant="outlined" color="primary" htmlType="submit">
-                <SearchOutlined /> Buscar
-              </Button>
-            </Form.Item>
-          </Flex>
-        </Form>
+          defaultValue={search}
+        />
 
         <Button
           onClick={() => navigate("/novo-paciente")}
@@ -121,36 +104,42 @@ export function Patients() {
         </Button>
       </Flex>
 
-      <Row gutter={[16, 16]}>
-        {patients.map((item) => (
-          <Col span={6} key={item.id}>
-            <PatientCard
-              id={item.id}
-              firstName={item.firstName}
-              lastName={item.lastName}
-              birthDate={item.birthDate}
-              phone={item.phone}
-              lastAppointment={item.lastAppointment}
-              onDelete={handleDeletePatientById}
-            />
-          </Col>
-        ))}
-      </Row>
-      <Pagination
-        onChange={(pag) => {
-          paginateItems(data, pag, setPatients, 8);
-          setPagination((prev) => {
-            return {
-              ...prev,
-              page: pag,
-            };
-          });
-        }}
-        defaultCurrent={1}
-        total={pagination.count}
-        defaultPageSize={8}
-        align="center"
-      />
+      {isEmpty ? (
+        <Empty style={{ marginTop: "4rem" }} />
+      ) : (
+        <>
+          <Row gutter={[16, 16]}>
+            {patients.map((item) => (
+              <Col span={6} key={item.id}>
+                <PatientCard
+                  id={item.id}
+                  firstName={item.firstName}
+                  lastName={item.lastName}
+                  birthDate={item.birthDate}
+                  phone={item.phone}
+                  lastAppointment={item.lastAppointment}
+                  onDelete={handleDeletePatientById}
+                />
+              </Col>
+            ))}
+          </Row>
+          <Pagination
+            onChange={(pag) => {
+              if (currentData) paginateItems(currentData, pag, setPatients, 8);
+              setPagination((prev) => {
+                return {
+                  ...prev,
+                  page: pag,
+                };
+              });
+            }}
+            defaultCurrent={1}
+            total={pagination.count}
+            defaultPageSize={8}
+            align="center"
+          />
+        </>
+      )}
     </Flex>
   );
 }
