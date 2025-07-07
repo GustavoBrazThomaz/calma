@@ -95,6 +95,7 @@ export function Dashboard() {
                 isDone={item.isDone}
                 onDelete={handleDelete}
                 hasDelete={false}
+                isHome
               />
             </Col>
           ))}
@@ -124,6 +125,7 @@ export function Dashboard() {
                   price={item.price}
                   isDone={item.isDone}
                   onDelete={handleDelete}
+                  isHome
                 />
               </Col>
             ))}

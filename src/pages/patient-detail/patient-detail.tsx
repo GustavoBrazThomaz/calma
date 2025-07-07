@@ -70,7 +70,7 @@ export function PatientDetail() {
               {data.firstName} {data.lastName}
             </Title>
             <Text>
-              {getAgeFromBirthDate(data.birthDate)} anos -{" "}
+              {getAgeFromBirthDate(dayjs(data.birthDate).toDate())} anos -{" "}
               {dayjs(data.birthDate).format("DD/MM/YYYY")}
             </Text>
           </Space.Compact>

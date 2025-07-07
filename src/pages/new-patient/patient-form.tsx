@@ -2,11 +2,13 @@ import {
   Button,
   Card,
   DatePicker,
+  Empty,
   Flex,
   Form,
   Input,
   InputNumber,
   Select,
+  Spin,
   Typography,
 } from "antd";
 import { useMask } from "react-phone-hooks";
@@ -21,6 +23,8 @@ import type { PatientDetails } from "../../types/patient-detail";
 import { PAYMENT_TYPE } from "../../enum/payment_type";
 import { usePatient } from "../../services/patient/use-patient";
 import { useQueryClient } from "@tanstack/react-query";
+import { useGetPatientDetail } from "../../services/patient/use-get-patient-detail";
+import dayjs from "dayjs";
 
 const { Title } = Typography;
 const dateFormat = "DD/MM/YYYY";
@@ -28,10 +32,29 @@ const dateFormat = "DD/MM/YYYY";
 export function NewPatient() {
   const navigate = useNavigate();
   const { id } = useParams();
-  const { newPatient } = usePatient();
+  const { newPatient, updatePatient } = usePatient();
+  const { data, isLoading } = useGetPatientDetail(id ?? "");
+
   const queryClient = useQueryClient();
 
   function handleSubmit(form: Omit<PatientDetails, "id">) {
+    if (id) {
+      updatePatient.mutate(
+        { id, patient: form },
+        {
+          onSuccess() {
+            queryClient.invalidateQueries({ queryKey: ["fetchPatients"] });
+            queryClient.invalidateQueries({
+              queryKey: ["fetchPatientDetail", id],
+            });
+          },
+        }
+      );
+
+      navigate(`/paciente/${id}`);
+      return;
+    }
+
     newPatient.mutate(form, {
       onSuccess() {
         queryClient.invalidateQueries({ queryKey: ["fetchPatients"] });
@@ -41,14 +64,47 @@ export function NewPatient() {
     navigate("/pacientes");
   }
 
+  function PhoneInput() {
+    return (
+      <Form.Item<Omit<PatientDetails, "id">>
+        label="Telefone"
+        name="phone"
+        rules={[{ required: true }]}
+        style={{ width: "100%" }}
+      >
+        <Input {...useMask("(..) .....-....")} placeholder="(99) 9999-99999" />
+      </Form.Item>
+    );
+  }
+
+  if (id) {
+    if (isLoading)
+      return (
+        <Flex
+          align="center"
+          justify="center"
+          style={{ width: "100%", height: "100%" }}
+        >
+          <Spin tip="Loading..." size="large" />
+        </Flex>
+      );
+
+    if (!data) return <Empty />;
+  }
+
   return (
     <Form<Omit<PatientDetails, "id">>
       onFinish={handleSubmit}
       autoComplete="off"
       layout="vertical"
+      initialValues={
+        data ? { ...data, birthDate: dayjs(data.birthDate) } : undefined
+      }
     >
       <Title level={3}>
-        {id ? "Paciente: Maria Silva" : "Criar novo paciente"}
+        {id
+          ? `Paciente: ${data?.firstName} ${data?.lastName}`
+          : "Criar novo paciente"}
       </Title>
       <Card>
         <Flex gap="small">
@@ -80,17 +136,7 @@ export function NewPatient() {
             <Input type="email" placeholder="exemplo@gmail.com" />
           </Form.Item>
 
-          <Form.Item<Omit<PatientDetails, "id">>
-            label="Telefone"
-            name="phone"
-            rules={[{ required: true }]}
-            style={{ width: "100%" }}
-          >
-            <Input
-              {...useMask("(..) ....-....")}
-              placeholder="(99) 9999-99999"
-            />
-          </Form.Item>
+          <PhoneInput />
         </Flex>
         <Flex gap="middle">
           <Form.Item<Omit<PatientDetails, "id">>
@@ -102,7 +148,6 @@ export function NewPatient() {
               placeholder="Escolha a data"
               style={{ width: "100%" }}
               format={dateFormat}
-              onChange={(date) => console.log(date)}
             />
           </Form.Item>
           <Form.Item<Omit<PatientDetails, "id">>

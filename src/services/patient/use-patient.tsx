@@ -1,9 +1,17 @@
 import { useMutation } from "@tanstack/react-query";
-import { deletePatientById, postCreateNewPatient } from "./patient.service";
+import {
+  deletePatientById,
+  postCreateNewPatient,
+  putPatientDetails,
+} from "./patient.service";
 
 export function usePatient() {
   const newPatient = useMutation({
     mutationFn: postCreateNewPatient,
+  });
+
+  const updatePatient = useMutation({
+    mutationFn: putPatientDetails,
   });
 
   const deletePatient = useMutation({
@@ -13,5 +21,6 @@ export function usePatient() {
   return {
     newPatient,
     deletePatient,
+    updatePatient,
   };
 }

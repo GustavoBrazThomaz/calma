@@ -8,6 +8,7 @@ export function useGetPatientDetail(id: string) {
       const response = await getPatientDetail(id);
       return response;
     },
+    staleTime: 0,
   });
 
   return { ...patientDetail };

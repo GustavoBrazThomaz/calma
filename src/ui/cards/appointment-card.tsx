@@ -15,6 +15,7 @@ import {
   Popconfirm,
   Space,
   Tooltip,
+  Typography,
 } from "antd";
 import dayjs from "dayjs";
 import { useState } from "react";
@@ -26,6 +27,7 @@ import type { Appointment } from "../../types/appointment";
 type Props = Appointment & {
   onDelete?: (id: string) => void;
   hasDelete?: boolean;
+  isHome?: boolean;
 };
 
 export function AppointmentCard({
@@ -41,6 +43,7 @@ export function AppointmentCard({
   paymentType,
   onDelete,
   hasDelete,
+  isHome,
 }: Props) {
   const navigate = useNavigate();
   const location = useLocation();
@@ -84,61 +87,68 @@ export function AppointmentCard({
         }
         title={
           <Flex justify="space-between">
-            {`${firstName} ${lastName}`}{" "}
+            <Typography.Title style={{ marginBottom: 0 }} level={5}>
+              {`${firstName} ${lastName}`}
+            </Typography.Title>
             <Space>
               <Badge
                 count={hasPaid ? "Pago" : "Pendente"}
                 color={hasPaid ? "green" : "orange"}
               />
 
-              <Tooltip
-                title={`Mudar status da consulta para ${
-                  !hasPaid ? "Realiza" : "Agendada"
-                }`}
-              >
-                <Button
-                  type="text"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleIsDone();
-                  }}
-                  icon={<CheckOutlined />}
-                />
-              </Tooltip>
-
-              <Tooltip
-                title={`Mudar status para ${!hasPaid ? "Pago" : "Pendente"}`}
-              >
-                <Button
-                  type="text"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleIsPaid();
-                  }}
-                  icon={<DollarOutlined />}
-                />
-              </Tooltip>
-
-              <Popconfirm
-                title="Excluir consulta"
-                description="Você tem certeza que deseja excluir essa consulta?"
-                onConfirm={(e) => {
-                  e?.stopPropagation();
-                  handleDelete();
-                  if (onDelete) onDelete(id);
-                }}
-                onCancel={(e) => e?.stopPropagation()}
-                okText="Excluir"
-                cancelText="Cancelar"
-              >
-                {hasDelete ?? undefined ?? (
-                  <Button
-                    icon={<DeleteOutlined />}
-                    type="text"
-                    onClick={(e) => e.stopPropagation()}
-                  />
-                )}
-              </Popconfirm>
+              {!isHome && (
+                <>
+                  {" "}
+                  <Tooltip
+                    title={`Mudar status da consulta para ${
+                      !hasPaid ? "Realiza" : "Agendada"
+                    }`}
+                  >
+                    <Button
+                      type="text"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleIsDone();
+                      }}
+                      icon={<CheckOutlined />}
+                    />
+                  </Tooltip>
+                  <Tooltip
+                    title={`Mudar status para ${
+                      !hasPaid ? "Pago" : "Pendente"
+                    }`}
+                  >
+                    <Button
+                      type="text"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleIsPaid();
+                      }}
+                      icon={<DollarOutlined />}
+                    />
+                  </Tooltip>
+                  <Popconfirm
+                    title="Excluir consulta"
+                    description="Você tem certeza que deseja excluir essa consulta?"
+                    onConfirm={(e) => {
+                      e?.stopPropagation();
+                      handleDelete();
+                      if (onDelete) onDelete(id);
+                    }}
+                    onCancel={(e) => e?.stopPropagation()}
+                    okText="Excluir"
+                    cancelText="Cancelar"
+                  >
+                    {hasDelete ?? undefined ?? (
+                      <Button
+                        icon={<DeleteOutlined />}
+                        type="text"
+                        onClick={(e) => e.stopPropagation()}
+                      />
+                    )}
+                  </Popconfirm>
+                </>
+              )}
             </Space>
           </Flex>
         }

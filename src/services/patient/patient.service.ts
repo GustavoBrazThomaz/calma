@@ -5,6 +5,7 @@ import { patients } from "../../mocks/patient.mock";
 import type { CaseEvolution } from "../../types/case-evolution";
 import type { Patients } from "../../types/patient";
 import type { PatientDetails } from "../../types/patient-detail";
+import { appointments } from "../../mocks/appointment.mock";
 
 export async function getPatients(): Promise<Patients[]> {
   return new Promise((resolve, reject) => {
@@ -102,6 +103,58 @@ export async function getSearchPatient(name: string): Promise<Patients[]> {
         return fullName.includes(nameLower);
       });
       resolve(result);
+    }, 500);
+  });
+}
+
+export async function putPatientDetails({
+  id,
+  patient,
+}: {
+  id: string;
+  patient: Omit<PatientDetails, "id">;
+}) {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      const patientDetailIndex = patientsDetails.findIndex(
+        (item) => item.id === id
+      );
+      const patientsIndex = patients.findIndex((item) => item.id === id);
+
+      if (patientDetailIndex === -1 || patientsIndex === -1) {
+        reject({ code: 404, message: "Não foi possível atualizar o caso" });
+      }
+
+      appointments.map((item, index) => {
+        if (item.patientId === id) {
+          appointments[index] = {
+            ...item,
+            firstName: patient.firstName,
+            lastName: patient.lastName,
+            phone: patient.phone,
+            price: patient.price,
+            paymentType: patient.paymentType,
+          };
+        }
+      });
+
+      patientsDetails[patientDetailIndex] = {
+        ...patientsDetails[patientDetailIndex],
+        ...patient,
+      };
+
+      patients[patientsIndex] = {
+        ...patients[patientsIndex],
+        firstName: patient.firstName,
+        lastName: patient.lastName,
+        birthDate: dayjs(patient.birthDate).toDate(),
+        phone: patient.phone,
+      };
+
+      return resolve({
+        code: 204,
+        message: "Paciente atualizado com sucesso",
+      });
     }, 500);
   });
 }
