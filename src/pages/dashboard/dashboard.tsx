@@ -92,7 +92,7 @@ export function Dashboard() {
                 phone={item.phone}
                 scheduled={item.scheduled}
                 price={item.price}
-                status={item.status}
+                isDone={item.isDone}
                 onDelete={handleDelete}
                 hasDelete={false}
               />
@@ -122,7 +122,7 @@ export function Dashboard() {
                   phone={item.phone}
                   scheduled={item.scheduled}
                   price={item.price}
-                  status={item.status}
+                  isDone={item.isDone}
                   onDelete={handleDelete}
                 />
               </Col>

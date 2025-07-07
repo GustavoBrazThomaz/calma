@@ -4,8 +4,8 @@ import {
   DeleteOutlined,
   DollarOutlined,
   PhoneOutlined,
-  StopOutlined,
 } from "@ant-design/icons";
+import { useQueryClient } from "@tanstack/react-query";
 import {
   Avatar,
   Badge,
@@ -22,7 +22,6 @@ import { useLocation, useNavigate } from "react-router";
 import { PAYMENT_TYPE } from "../../enum/payment_type";
 import { useAppointment } from "../../services/appointment/use-appointment";
 import type { Appointment } from "../../types/appointment";
-import { useQueryClient } from "@tanstack/react-query";
 
 type Props = Appointment & {
   onDelete?: (id: string) => void;
@@ -38,15 +37,17 @@ export function AppointmentCard({
   phone,
   price,
   scheduled,
-  status,
+  isDone,
   paymentType,
   onDelete,
   hasDelete,
 }: Props) {
   const navigate = useNavigate();
   const location = useLocation();
-  const { toggleIsPaidById, deleteAppointment } = useAppointment();
+  const { toggleIsPaidById, toggleIsDoneById, deleteAppointment } =
+    useAppointment();
   const [hasPaid, setHasPaid] = useState<boolean>(isPaid);
+  const [hasDone, setHasDone] = useState<boolean>(isDone);
   const queryClient = useQueryClient();
 
   function handleRedirectToPatient() {
@@ -57,6 +58,11 @@ export function AppointmentCard({
   function handleIsPaid() {
     toggleIsPaidById.mutate(id);
     setHasPaid(!hasPaid);
+  }
+
+  function handleIsDone() {
+    toggleIsDoneById.mutate(id);
+    setHasDone(!hasDone);
   }
 
   function handleDelete() {
@@ -84,6 +90,22 @@ export function AppointmentCard({
                 count={hasPaid ? "Pago" : "Pendente"}
                 color={hasPaid ? "green" : "orange"}
               />
+
+              <Tooltip
+                title={`Mudar status da consulta para ${
+                  !hasPaid ? "Realiza" : "Agendada"
+                }`}
+              >
+                <Button
+                  type="text"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleIsDone();
+                  }}
+                  icon={<CheckOutlined />}
+                />
+              </Tooltip>
+
               <Tooltip
                 title={`Mudar status para ${!hasPaid ? "Pago" : "Pendente"}`}
               >
@@ -132,11 +154,7 @@ export function AppointmentCard({
                 : "A cada consulta"}
             </p>
             <Flex justify="space-between" style={{ width: "100%" }}>
-              {status === "cancel" ? (
-                <p style={{ color: "red" }}>
-                  <StopOutlined /> Cancelado
-                </p>
-              ) : status === "done" ? (
+              {hasDone ? (
                 <p style={{ color: "#52C41A" }}>
                   <CheckOutlined /> Realizada
                 </p>

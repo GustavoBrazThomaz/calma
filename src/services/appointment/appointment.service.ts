@@ -58,7 +58,7 @@ export async function postCreateNewAppointment(appointment: AppointmentForm) {
     lastName: patient.lastName,
     phone: patient.phone,
     scheduled: combinedDate,
-    status: "scheduled",
+    isDone: false,
     paymentType: patient.paymentType,
     isPaid: false,
     price: patient.price,
@@ -80,6 +80,22 @@ export async function putToggleIsPaidById(id: string) {
   }
 
   appointments[index].isPaid = !appointments[index].isPaid;
+
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve({ code: 204, message: "Status mudado com sucesso" });
+    }, 500);
+  });
+}
+
+export async function putToggleIsDoneById(id: string) {
+  const index = appointments.findIndex((appointment) => appointment.id === id);
+
+  if (index === -1) {
+    return Promise.reject({ code: 404, message: "Consulta não encontrada" });
+  }
+
+  appointments[index].isDone = !appointments[index].isDone;
 
   return new Promise((resolve) => {
     setTimeout(() => {
@@ -140,7 +156,8 @@ export async function getSearchAppointment(
 
         const appointmentMatch =
           appointmentStatus === "all" ||
-          appointment.status === appointmentStatus;
+          (appointmentStatus === "done" && appointment.isDone === true) ||
+          (appointmentStatus === "scheduled" && appointment.isDone === false);
 
         const paymentMatch =
           paymentStatus === "all" ||
@@ -149,9 +166,6 @@ export async function getSearchAppointment(
 
         return nameMatch && appointmentMatch && paymentMatch;
       });
-
-      console.log(result);
-
       resolve(result);
     }, 500);
   });

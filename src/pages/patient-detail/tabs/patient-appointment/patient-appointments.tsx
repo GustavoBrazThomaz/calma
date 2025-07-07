@@ -27,7 +27,7 @@ export function PatientAppointments() {
             phone={item.phone}
             scheduled={item.scheduled}
             price={item.price}
-            status={item.status}
+            isDone={item.isDone}
           />
         </Col>
       ))}

@@ -9,6 +9,6 @@ export interface Appointment {
   scheduled: Date;
   price: string;
   isPaid: boolean;
-  status: "done" | "cancel" | "scheduled";
+  isDone: boolean;
   paymentType: PAYMENT_TYPE;
 }

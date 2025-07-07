@@ -11,7 +11,7 @@ export const appointments: Appointment[] = [
     scheduled: new Date(),
     price: "R$ 143,00",
     isPaid: false,
-    status: "scheduled",
+    isDone: true,
     paymentType: PAYMENT_TYPE.APPOINTMENT,
   },
   {
@@ -23,7 +23,7 @@ export const appointments: Appointment[] = [
     scheduled: new Date("2025-07-12"),
     price: "R$ 143,00",
     isPaid: true,
-    status: "scheduled",
+    isDone: true,
     paymentType: PAYMENT_TYPE.APPOINTMENT,
   },
   {
@@ -35,7 +35,7 @@ export const appointments: Appointment[] = [
     scheduled: new Date("2025-06-09"),
     price: "R$ 250,00",
     isPaid: false,
-    status: "scheduled",
+    isDone: true,
     paymentType: PAYMENT_TYPE.APPOINTMENT,
   },
   {
@@ -47,7 +47,7 @@ export const appointments: Appointment[] = [
     scheduled: new Date("2025-05-26"),
     price: "R$ 250,00",
     isPaid: true,
-    status: "cancel",
+    isDone: false,
     paymentType: PAYMENT_TYPE.APPOINTMENT,
   },
   {
@@ -59,7 +59,7 @@ export const appointments: Appointment[] = [
     scheduled: new Date("2025-05-31"),
     price: "R$ 129,00",
     isPaid: true,
-    status: "scheduled",
+    isDone: false,
     paymentType: PAYMENT_TYPE.MONTHLY,
   },
   {
@@ -71,7 +71,7 @@ export const appointments: Appointment[] = [
     scheduled: new Date("2025-07-08"),
     price: "R$ 129,00",
     isPaid: true,
-    status: "scheduled",
+    isDone: true,
     paymentType: PAYMENT_TYPE.MONTHLY,
   },
   {
@@ -83,7 +83,7 @@ export const appointments: Appointment[] = [
     scheduled: new Date("2025-07-10"),
     price: "R$ 199,00",
     isPaid: true,
-    status: "done",
+    isDone: false,
     paymentType: PAYMENT_TYPE.APPOINTMENT,
   },
   {
@@ -95,7 +95,7 @@ export const appointments: Appointment[] = [
     scheduled: new Date("2025-06-11"),
     price: "R$ 199,00",
     isPaid: false,
-    status: "cancel",
+    isDone: false,
     paymentType: PAYMENT_TYPE.APPOINTMENT,
   },
   {
@@ -107,7 +107,7 @@ export const appointments: Appointment[] = [
     scheduled: new Date("2025-06-27"),
     price: "R$ 138,00",
     isPaid: true,
-    status: "scheduled",
+    isDone: false,
     paymentType: PAYMENT_TYPE.APPOINTMENT,
   },
   {
@@ -119,7 +119,7 @@ export const appointments: Appointment[] = [
     scheduled: new Date("2025-06-17"),
     price: "R$ 138,00",
     isPaid: true,
-    status: "cancel",
+    isDone: false,
     paymentType: PAYMENT_TYPE.APPOINTMENT,
   },
 ];

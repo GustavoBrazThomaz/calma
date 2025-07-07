@@ -140,7 +140,6 @@ export function Appointments() {
               { value: "all", label: "Todas as consultas" },
               { value: "scheduled", label: "Agendados" },
               { value: "done", label: "Realizada" },
-              { value: "cancel", label: "Cancelada" },
             ]}
           />
           <Select
@@ -186,7 +185,7 @@ export function Appointments() {
                   phone={item.phone}
                   scheduled={item.scheduled}
                   price={item.price}
-                  status={item.status}
+                  isDone={item.isDone}
                   onDelete={handleDelete}
                 />
               </Col>
