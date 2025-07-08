@@ -6,6 +6,14 @@ Uma aplicação web para **psicologos gerenciarem os pacientes**, permitindo o c
 
 ---
 
+## 🌐 Acesse o app
+
+Você pode acessar a aplicação online clicando no link abaixo:
+
+👉 [https://calma-seven.vercel.app/](https://calma-seven.vercel.app/)
+
+---
+
 ## ⚙️ Tecnologias Principais
 
 - **React** + **TypeScript**
