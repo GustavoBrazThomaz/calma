@@ -1,11 +1,11 @@
-import { useState, type ReactNode } from "react";
 import { Avatar, Flex, Layout, Menu, Typography } from "antd";
-const { Sider, Content } = Layout;
+import { useState, type ReactNode } from "react";
+const { Sider, Content, Header } = Layout;
 const { Title } = Typography;
 
 import {
-  HomeOutlined,
   CalendarOutlined,
+  HomeOutlined,
   TeamOutlined,
 } from "@ant-design/icons";
 import type { MenuProps } from "antd";
@@ -14,16 +14,17 @@ import { getKeyByPathname } from "../../utils/get-key-by-pathname";
 type MenuItem = Required<MenuProps>["items"][number];
 
 const siderStyle: React.CSSProperties = {
-  overflow: "auto",
+  overflow: "visible",
   height: "100vh",
   position: "sticky",
   insetInlineStart: 0,
   top: 0,
   bottom: 0,
+  zIndex: 1001,
 };
 
 export function AppLayout({ children }: { children: ReactNode }) {
-  const [collapsed, setCollapsed] = useState(false);
+  const [breakpoint, setBreakpoint] = useState<boolean>(false);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -53,14 +54,15 @@ export function AppLayout({ children }: { children: ReactNode }) {
       <Sider
         theme="light"
         style={siderStyle}
-        collapsed={collapsed}
-        onCollapse={(value) => setCollapsed(value)}
-        collapsible={true}
+        onBreakpoint={(broken) => setBreakpoint(broken)}
+        breakpoint="sm"
+        collapsedWidth={breakpoint ? "0" : "60"}
+        trigger={null}
       >
         <Flex
           align="center"
           style={{
-            marginBottom: collapsed ? "0.6rem" : "0",
+            marginBottom: "0",
             marginLeft: "1.5rem",
           }}
         >
@@ -69,13 +71,14 @@ export function AppLayout({ children }: { children: ReactNode }) {
               size={32}
               src="/calma.png"
               shape="square"
-              style={{ marginTop: collapsed ? "0.6rem" : "0" }}
+              style={{
+                marginTop: "0",
+              }}
             />
-            {!collapsed && (
-              <Title style={{ marginTop: "0.8rem" }} level={4}>
-                Calma
-              </Title>
-            )}
+
+            <Title style={{ marginTop: "0.8rem" }} level={4}>
+              Calma
+            </Title>
           </Flex>
         </Flex>
 
@@ -86,10 +89,20 @@ export function AppLayout({ children }: { children: ReactNode }) {
         />
       </Sider>
       <Layout>
+        {breakpoint && (
+          <Header style={{ padding: "0", background: "#fff" }}>
+            <Menu
+              mode="horizontal"
+              defaultSelectedKeys={getKeyByPathname(location.pathname) ?? ["1"]}
+              items={menuItems}
+            />
+          </Header>
+        )}
+
         <Content
           style={{
-            margin: "24px 16px",
-            padding: 24,
+            margin: breakpoint ? "16px" : "24px",
+            padding: breakpoint ? "16px" : "24px",
             minHeight: "100vh",
             height: "100%",
             background: "#fff",

@@ -7,7 +7,6 @@ import {
 } from "@ant-design/icons";
 import { useQueryClient } from "@tanstack/react-query";
 import {
-  Avatar,
   Badge,
   Button,
   Card,
@@ -75,16 +74,15 @@ export function AppointmentCard({
 
   return (
     <Card
-      style={{ minWidth: 300, cursor: "pointer" }}
+      style={{
+        minWidth: 300,
+        width: "100%",
+        cursor: "pointer",
+      }}
       onClick={handleRedirectToPatient}
       hoverable
     >
       <Card.Meta
-        avatar={
-          <Avatar size="large" style={{ backgroundColor: "#FF7D29" }}>
-            {firstName}
-          </Avatar>
-        }
         title={
           <Flex justify="space-between">
             <Typography.Title style={{ marginBottom: 0 }} level={5}>

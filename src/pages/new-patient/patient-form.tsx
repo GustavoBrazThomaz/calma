@@ -5,6 +5,7 @@ import {
   Empty,
   Flex,
   Form,
+  Grid,
   Input,
   InputNumber,
   Select,
@@ -28,13 +29,14 @@ import dayjs from "dayjs";
 
 const { Title } = Typography;
 const dateFormat = "DD/MM/YYYY";
+const { useBreakpoint } = Grid;
 
 export function NewPatient() {
   const navigate = useNavigate();
   const { id } = useParams();
   const { newPatient, updatePatient } = usePatient();
   const { data, isLoading } = useGetPatientDetail(id ?? "");
-
+  const { md } = useBreakpoint();
   const queryClient = useQueryClient();
 
   function handleSubmit(form: Omit<PatientDetails, "id">) {
@@ -46,6 +48,9 @@ export function NewPatient() {
             queryClient.invalidateQueries({ queryKey: ["fetchPatients"] });
             queryClient.invalidateQueries({
               queryKey: ["fetchPatientDetail", id],
+            });
+            queryClient.invalidateQueries({
+              queryKey: ["fetchPatientAppointment", id],
             });
           },
         }
@@ -92,6 +97,8 @@ export function NewPatient() {
     if (!data) return <Empty />;
   }
 
+  const formResponsive = { display: !md ? "block" : "flex" };
+
   return (
     <Form<Omit<PatientDetails, "id">>
       onFinish={handleSubmit}
@@ -107,7 +114,7 @@ export function NewPatient() {
           : "Criar novo paciente"}
       </Title>
       <Card>
-        <Flex gap="small">
+        <Flex gap="small" style={formResponsive}>
           <Form.Item<Omit<PatientDetails, "id">>
             label="Nome"
             name="firstName"
@@ -126,7 +133,7 @@ export function NewPatient() {
           </Form.Item>
         </Flex>
 
-        <Flex gap="middle">
+        <Flex gap="middle" style={formResponsive}>
           <Form.Item<Omit<PatientDetails, "id">>
             label="Email"
             name="email"
@@ -138,7 +145,7 @@ export function NewPatient() {
 
           <PhoneInput />
         </Flex>
-        <Flex gap="middle">
+        <Flex gap="middle" style={formResponsive}>
           <Form.Item<Omit<PatientDetails, "id">>
             label="Data de nascimento"
             name="birthDate"
@@ -159,7 +166,7 @@ export function NewPatient() {
           </Form.Item>
         </Flex>
 
-        <Flex gap="middle">
+        <Flex gap="middle" style={formResponsive}>
           <Form.Item<Omit<PatientDetails, "id">>
             label="Gênero"
             name="gender"
@@ -185,7 +192,7 @@ export function NewPatient() {
           </Form.Item>
         </Flex>
 
-        <Flex gap="middle">
+        <Flex gap="middle" style={formResponsive}>
           <Form.Item<Omit<PatientDetails, "id">>
             label="Estado civil"
             name="maritalStatus"
@@ -202,7 +209,7 @@ export function NewPatient() {
           </Form.Item>
         </Flex>
 
-        <Flex gap="middle">
+        <Flex gap="middle" style={formResponsive}>
           <Form.Item<Omit<PatientDetails, "id">>
             label="Endereço"
             name="address"
@@ -222,7 +229,7 @@ export function NewPatient() {
           </Form.Item>
         </Flex>
 
-        <Flex gap="middle" align="center">
+        <Flex gap="middle" align="center" style={formResponsive}>
           <Form.Item<Omit<PatientDetails, "id">>
             label="Valor"
             style={{ width: "100%" }}

@@ -1,18 +1,20 @@
-import { Button, Col, Empty, Flex, Row } from "antd";
+import { Button, Col, Empty, Flex, Grid, Row } from "antd";
 import { CaseEvolutionCard } from "../../../../ui/cards/case-evolution-card";
 import { useNavigate, useParams } from "react-router";
 import { useGetPatientCaseEvolution } from "../../../../services/patient/use-get-patient-case-evolution";
 import { CaseEvolutionSkeleton } from "./case-evolution.loading";
 
+const { useBreakpoint } = Grid;
+
 export function CaseEvolution() {
   const navigate = useNavigate();
   const { id } = useParams();
   const { data, isLoading } = useGetPatientCaseEvolution(id as string);
+  const { lg } = useBreakpoint();
 
   if (isLoading) return <CaseEvolutionSkeleton />;
   if (!data || data.length === 0)
     return <Empty style={{ marginTop: "4rem" }} />;
-
 
   return (
     <Flex vertical gap="middle">
@@ -24,7 +26,12 @@ export function CaseEvolution() {
 
       <Row gutter={[16, 16]}>
         {data.map((item, index) => (
-          <Col span={12} key={"col_" + index}>
+          <Col
+            span={16}
+            lg={12}
+            key={"col_" + index}
+            style={{ minWidth: !lg ? "100%" : "" }}
+          >
             <CaseEvolutionCard
               id={item.id}
               patientId={item.patientId}

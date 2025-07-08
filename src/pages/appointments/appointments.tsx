@@ -3,6 +3,7 @@ import {
   Col,
   Empty,
   Flex,
+  Grid,
   Input,
   Pagination,
   Row,
@@ -21,7 +22,7 @@ import { AppointmentLoading } from "./appointment.loading";
 import { ClearOutlined } from "@ant-design/icons";
 
 const { Title } = Typography;
-
+const { useBreakpoint } = Grid;
 export function Appointments() {
   const [open, setOpen] = useState<boolean>(false);
   const { data, isLoading, refetch } = useGetAppointment();
@@ -34,7 +35,7 @@ export function Appointments() {
   const search = searchParams.get("search") ?? "";
   const appointmentStatus = searchParams.get("appointmentStatus") ?? "all";
   const paymentStatus = searchParams.get("paymentStatus") ?? "all";
-
+  const { lg, md, xxl } = useBreakpoint();
   const [filters, setFilters] = useState<{
     search: string;
     appointmentStatus: string;
@@ -115,7 +116,7 @@ export function Appointments() {
         <Title level={3}>Consultas</Title>
       </Flex>
 
-      <Flex gap="large">
+      <Flex gap="middle" wrap={!xxl}>
         <Input.Search
           placeholder="Buscar consulta pelo nome do paciente"
           onSearch={(value: string) =>
@@ -129,10 +130,17 @@ export function Appointments() {
           }
         />
 
-        <Flex gap="middle" style={{ width: "30%" }}>
+        <Flex
+          gap="middle"
+          wrap={!md}
+          style={{ width: !lg ? "100%" : !xxl ? "55%" : "30%" }}
+        >
           <Select
             value={filters.appointmentStatus}
-            style={{ width: "50%", minWidth: "190px" }}
+            style={{
+              width: !md ? "100%" : "50%",
+              minWidth: !lg ? "190px" : "none",
+            }}
             onChange={(value) =>
               handleFilter({ value, paramName: "appointmentStatus" })
             }
@@ -144,7 +152,10 @@ export function Appointments() {
           />
           <Select
             value={filters.paymentStatus}
-            style={{ width: "50%", minWidth: "190px" }}
+            style={{
+              width: !md ? "100%" : "50%",
+              minWidth: !lg ? "190px" : "none",
+            }}
             onChange={(value) =>
               handleFilter({ value, paramName: "paymentStatus" })
             }
@@ -155,16 +166,24 @@ export function Appointments() {
             ]}
           />
         </Flex>
+        <Flex gap="middle" style={{ width: !lg ? "100%" : !xxl ? "40%" : "" }}>
+          {(appointmentStatus !== "all" ||
+            paymentStatus !== "all" ||
+            search) && (
+            <Button style={{ width: !xxl ? "100%" : "" }} onClick={handleClear}>
+              Limpar filtros <ClearOutlined />
+            </Button>
+          )}
 
-        {(appointmentStatus !== "all" || paymentStatus !== "all" || search) && (
-          <Button onClick={handleClear}>
-            Limpar filtros <ClearOutlined />
+          <Button
+            style={{ width: !xxl ? "100%" : "" }}
+            onClick={() => setOpen(true)}
+            variant="solid"
+            color="blue"
+          >
+            Nova Consulta
           </Button>
-        )}
-
-        <Button onClick={() => setOpen(true)} variant="solid" color="blue">
-          Nova Consulta
-        </Button>
+        </Flex>
       </Flex>
       {isLoading || searchAppointment.isLoading ? (
         <AppointmentLoading />
@@ -174,7 +193,7 @@ export function Appointments() {
         <>
           <Row gutter={[16, 16]}>
             {appointments.map((item) => (
-              <Col span={12} key={item.id}>
+              <Col span={16} key={item.id} lg={12} className="appointment-col ">
                 <AppointmentCard
                   id={item.id}
                   patientId={item.patientId}

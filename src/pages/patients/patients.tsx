@@ -4,6 +4,7 @@ import {
   Col,
   Empty,
   Flex,
+  Grid,
   Input,
   Pagination,
   Row,
@@ -20,7 +21,7 @@ import { PatientCard } from "../../ui/cards/patient-card";
 import { paginateItems } from "../../utils/paginate-items";
 
 const { Title } = Typography;
-
+const { useBreakpoint } = Grid;
 export function Patients() {
   const navigate = useNavigate();
   const { data, isLoading, refetch } = useGetPatients();
@@ -30,7 +31,7 @@ export function Patients() {
   );
   const queryClient = useQueryClient();
   const { deletePatient } = usePatient();
-
+  const { sm, md } = useBreakpoint();
   const [searchParams, setSearchParams] = useSearchParams();
   const search = searchParams.get("search") ?? "";
   const searchPatient = useSearchPatient(search);
@@ -83,7 +84,12 @@ export function Patients() {
         <Title level={3}>Pacientes</Title>
       </Flex>
 
-      <Flex gap="middle" justify="space-between" style={{ width: "100%" }}>
+      <Flex
+        gap="middle"
+        wrap={!sm}
+        justify="space-between"
+        style={{ width: "100%" }}
+      >
         <Input.Search
           placeholder="Buscar por paciente pelo nome"
           allowClear
@@ -99,6 +105,7 @@ export function Patients() {
           onClick={() => navigate("/novo-paciente")}
           variant="solid"
           color="blue"
+          style={{ width: !sm ? "100%" : "" }}
         >
           Novo Paciente
         </Button>
@@ -110,7 +117,14 @@ export function Patients() {
         <>
           <Row gutter={[16, 16]}>
             {patients.map((item) => (
-              <Col span={6} key={item.id}>
+              <Col
+                style={{ minWidth: !md ? "100%" : "" }}
+                span={16}
+                md={12}
+                lg={8}
+                xxl={6}
+                key={item.id}
+              >
                 <PatientCard
                   id={item.id}
                   firstName={item.firstName}

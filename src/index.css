@@ -3,3 +3,13 @@
   margin: 0;
   box-sizing: border-box;
 }
+
+.ant-layout-sider .ant-layout-sider-zero-width-trigger {
+  top: 0;
+}
+
+@media screen and (max-width: 992px) {
+  .appointment-col {
+    min-width: 100% !important;
+  }
+}

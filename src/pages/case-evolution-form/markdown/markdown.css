@@ -5,8 +5,14 @@
   padding: 2rem;
 }
 
+@media screen and (max-width: 576px) {
+  .markdown-preview {
+    padding: 0;
+  }
+}
+
 .markdown-preview p {
-    margin: 0;
+  margin: 0;
 }
 
 .markdown-preview h1 {

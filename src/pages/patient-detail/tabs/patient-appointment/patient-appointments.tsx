@@ -16,7 +16,7 @@ export function PatientAppointments() {
   return (
     <Row gutter={[16, 16]}>
       {data.map((item, index) => (
-        <Col span={12} key={"col_" + index}>
+        <Col span={16} lg={12} key={"col_" + index}>
           <AppointmentCard
             id={item.id}
             patientId={item.patientId}

@@ -60,7 +60,12 @@ export function Dashboard() {
 
   return (
     <Flex vertical gap="middle">
-      <Flex align="center" justify="space-between" style={{ width: "100%" }}>
+      <Flex
+        align="center"
+        wrap
+        justify="space-between"
+        style={{ width: "100%" }}
+      >
         <Title level={3}>Dashboard</Title>
         <Space>
           <Button onClick={() => navigate("/novo-paciente")}>
@@ -81,7 +86,7 @@ export function Dashboard() {
       ) : (
         <Row gutter={[16, 16]}>
           {todayAppointment.data.map((item) => (
-            <Col span={12} key={item.id}>
+            <Col span={16} key={item.id} lg={12} className="appointment-col">
               <AppointmentCard
                 id={item.id}
                 patientId={item.patientId}
@@ -112,7 +117,7 @@ export function Dashboard() {
         <>
           <Row gutter={[16, 16]}>
             {appointments.map((item) => (
-              <Col span={12} key={item.id}>
+              <Col span={16} key={item.id} lg={12} className="appointment-col">
                 <AppointmentCard
                   id={item.id}
                   patientId={item.patientId}
