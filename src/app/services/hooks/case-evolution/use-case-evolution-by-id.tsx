@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { getCaseEvolutionById } from "./case-evolution.service";
+import { getCaseEvolutionById } from "../../case-evolution.service";
 
 export function useCaseEvolutionById(id: string) {
   const caseEvolution = useQuery({

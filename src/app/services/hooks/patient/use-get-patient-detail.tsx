@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { getPatientDetail } from "./patient.service";
+import { getPatientDetail } from "../../patient.service";
 
 export function useGetPatientDetail(id: string) {
   const patientDetail = useQuery({

@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { getPatientCasesEvolution } from "./patient.service";
+import { getPatientCasesEvolution } from "../../patient.service";
 
 export function useGetPatientCaseEvolution(patientId: string) {
   const caseEvolution = useQuery({

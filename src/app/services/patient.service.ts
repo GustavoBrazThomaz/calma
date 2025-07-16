@@ -1,11 +1,15 @@
 import dayjs from "dayjs";
-import { casesEvolution } from "../../mocks/case-evolution.mock";
-import { patientsDetails } from "../../mocks/patient-detail.mock";
-import { patients } from "../../mocks/patient.mock";
-import type { CaseEvolution } from "../../types/case-evolution";
-import type { Patients } from "../../types/patient";
-import type { PatientDetails } from "../../types/patient-detail";
-import { appointments } from "../../mocks/appointment.mock";
+import type {
+  Patients,
+  PatientDetails,
+  CaseEvolution,
+} from "../../domain/types";
+import {
+  patientsDetails,
+  patients,
+  casesEvolution,
+  appointments,
+} from "../../domain/mocks";
 
 export async function getPatients(): Promise<Patients[]> {
   return new Promise((resolve, reject) => {

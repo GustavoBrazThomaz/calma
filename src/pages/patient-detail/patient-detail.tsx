@@ -13,9 +13,9 @@ import { CaseEvolution } from "./tabs/case-evolution/case-evolution";
 import { PatientAppointments } from "./tabs/patient-appointment/patient-appointments";
 import { ClinicalData } from "./tabs/clinical-data";
 import { useNavigate, useParams, useSearchParams } from "react-router";
-import { useGetPatientDetail } from "../../services/patient/use-get-patient-detail";
 import dayjs from "dayjs";
-import { getAgeFromBirthDate } from "../../utils/get-age";
+import { getAgeFromBirthDate } from "../../app/utils/get-age";
+import { useGetPatientDetail } from "../../app/services/hooks/patient/use-get-patient-detail";
 
 const { Title, Text } = Typography;
 export function PatientDetail() {

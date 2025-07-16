@@ -1,5 +1,5 @@
-import { casesEvolution } from "../../mocks/case-evolution.mock";
-import type { CaseEvolution } from "../../types/case-evolution";
+import { casesEvolution } from "../../domain/mocks/case-evolution.mock";
+import type { CaseEvolution } from "../../domain/types";
 
 export function getCaseEvolutionById(id: string): Promise<CaseEvolution> {
   return new Promise((resolve, reject) => {

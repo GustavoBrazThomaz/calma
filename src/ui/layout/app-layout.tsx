@@ -10,7 +10,8 @@ import {
 } from "@ant-design/icons";
 import type { MenuProps } from "antd";
 import { useLocation, useNavigate } from "react-router";
-import { getKeyByPathname } from "../../utils/get-key-by-pathname";
+import { getKeyByPathname } from "../../app/utils/get-key-by-pathname";
+
 type MenuItem = Required<MenuProps>["items"][number];
 
 const siderStyle: React.CSSProperties = {

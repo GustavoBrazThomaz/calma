@@ -1,6 +1,6 @@
 import { Card, Flex, Space, Typography } from "antd";
-import { PAYMENT_TYPE } from "../../../enum/payment_type";
-import type { PatientDetails } from "../../../types/patient-detail";
+import { PAYMENT_TYPE } from "../../../domain/enum/payment_type";
+import type { PatientDetails } from "../../../domain/types";
 
 const { Title, Text, Paragraph } = Typography;
 export function ClinicalData({ patient }: { patient: PatientDetails }) {

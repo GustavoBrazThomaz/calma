@@ -1,8 +1,10 @@
 import { Button, Col, Empty, Flex, Grid, Row } from "antd";
-import { CaseEvolutionCard } from "../../../../ui/cards/case-evolution-card";
+
 import { useNavigate, useParams } from "react-router";
-import { useGetPatientCaseEvolution } from "../../../../services/patient/use-get-patient-case-evolution";
+
 import { CaseEvolutionSkeleton } from "./case-evolution.loading";
+import { useGetPatientCaseEvolution } from "../../../../app/services/hooks/patient/use-get-patient-case-evolution";
+import { CaseEvolutionCard } from "../../../../ui/components/case-evolution-card";
 
 const { useBreakpoint } = Grid;
 

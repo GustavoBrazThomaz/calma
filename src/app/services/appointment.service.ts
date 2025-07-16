@@ -1,8 +1,7 @@
 import dayjs from "dayjs";
-import { patientsDetails } from "../../mocks/patient-detail.mock";
-import type { Appointment } from "../../types/appointment";
+import { appointments, patientsDetails } from "../../domain/mocks";
+import type { Appointment } from "../../domain/types";
 import type { AppointmentForm } from "../../ui/forms/appointment/appointment.types";
-import { appointments } from "./../../mocks/appointment.mock";
 
 export async function getAppointment(): Promise<Appointment[]> {
   return new Promise((resolve, reject) => {

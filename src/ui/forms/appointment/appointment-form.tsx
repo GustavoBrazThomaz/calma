@@ -11,10 +11,11 @@ import {
 import { useState, type Dispatch } from "react";
 
 import dayjs from "dayjs";
-import { useAppointment } from "../../../services/appointment/use-appointment";
-import { useGetPatients } from "../../../services/patient/use-get-patients";
+
 import type { AppointmentForm } from "./appointment.types";
 import { useQueryClient } from "@tanstack/react-query";
+import { useAppointment } from "../../../app/services/hooks/appointment/use-appointment";
+import { useGetPatients } from "../../../app/services/hooks/patient/use-get-patients";
 
 export function AppointmentForm({
   open,

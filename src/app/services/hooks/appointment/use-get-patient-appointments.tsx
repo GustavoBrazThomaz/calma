@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { getPatientAppointment } from "./appointment.service";
+import { getPatientAppointment } from "../../appointment.service";
 
 export function useGetPatientAppointments(patientId: string) {
   const patientAppointments = useQuery({

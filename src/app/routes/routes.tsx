@@ -1,11 +1,11 @@
 import { createBrowserRouter } from "react-router";
 import App from "../App";
-import { Appointments } from "../pages/appointments/appointments";
-import { CaseEvolutionForm } from "../pages/case-evolution-form/case-evolution-form";
-import { Dashboard } from "../pages/dashboard/dashboard";
-import { PatientDetail } from "../pages/patient-detail/patient-detail";
-import { Patients } from "../pages/patients/patients";
-import { NewPatient } from "../pages/new-patient/patient-form";
+import { Appointments } from "../../pages/appointments/appointments";
+import { CaseEvolutionForm } from "../../pages/case-evolution-form/case-evolution-form";
+import { Dashboard } from "../../pages/dashboard/dashboard";
+import { PatientDetail } from "../../pages/patient-detail/patient-detail";
+import { Patients } from "../../pages/patients/patients";
+import { NewPatient } from "../../pages/new-patient/patient-form";
 
 export const routes = createBrowserRouter([
   {

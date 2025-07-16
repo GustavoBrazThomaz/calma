@@ -11,13 +11,13 @@ import {
 } from "antd";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
-import { useGetAppointment } from "../../services/appointment/use-get-appointment";
-import { useGetTodayAppointment } from "../../services/appointment/use-get-today-appointment";
-import type { Appointment } from "../../types/appointment";
-import { AppointmentCard } from "../../ui/cards/appointment-card";
-import { AppointmentForm } from "../../ui/forms/appointment/appointment-form";
-import { paginateItems } from "../../utils/paginate-items";
+import { paginateItems } from "../../app/utils/paginate-items";
 import { AppointmentInDashboardLoading } from "./appointment-in-dashboard.loading";
+import { useGetAppointment } from "../../app/services/hooks/appointment/use-get-appointment";
+import { useGetTodayAppointment } from "../../app/services/hooks/appointment/use-get-today-appointment";
+import type { Appointment } from "../../domain/types";
+import { AppointmentForm } from "../../ui/forms/appointment/appointment-form";
+import { AppointmentCard } from "../../ui/components/appointment-card";
 
 const { Title } = Typography;
 

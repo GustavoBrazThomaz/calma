@@ -19,9 +19,9 @@ import {
 import dayjs from "dayjs";
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router";
-import { PAYMENT_TYPE } from "../../enum/payment_type";
-import { useAppointment } from "../../services/appointment/use-appointment";
-import type { Appointment } from "../../types/appointment";
+import { useAppointment } from "../../app/services/hooks/appointment/use-appointment";
+import { PAYMENT_TYPE } from "../../domain/enum/payment_type";
+import type { Appointment } from "../../domain/types";
 
 type Props = Appointment & {
   onDelete?: (id: string) => void;

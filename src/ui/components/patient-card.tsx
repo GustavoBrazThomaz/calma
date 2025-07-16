@@ -14,8 +14,8 @@ import {
 } from "antd";
 import dayjs from "dayjs";
 import { useNavigate } from "react-router";
-import type { Patients } from "../../types/patient";
-import { getAgeFromBirthDate } from "../../utils/get-age";
+import type { Patients } from "../../domain/types";
+import { getAgeFromBirthDate } from "../../app/utils/get-age";
 
 const { Title } = Typography;
 

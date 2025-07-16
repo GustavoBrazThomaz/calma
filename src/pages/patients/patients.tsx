@@ -13,12 +13,12 @@ import {
 } from "antd";
 import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router";
-import { useGetPatients } from "../../services/patient/use-get-patients";
-import { usePatient } from "../../services/patient/use-patient";
-import { useSearchPatient } from "../../services/patient/use-search-patient";
-import type { Patients } from "../../types/patient";
-import { PatientCard } from "../../ui/cards/patient-card";
-import { paginateItems } from "../../utils/paginate-items";
+import { paginateItems } from "../../app/utils/paginate-items";
+import { useGetPatients } from "../../app/services/hooks/patient/use-get-patients";
+import { usePatient } from "../../app/services/hooks/patient/use-patient";
+import { useSearchPatient } from "../../app/services/hooks/patient/use-search-patient";
+import { PatientCard } from "../../ui/components/patient-card";
+import type { Patients } from "../../domain/types";
 
 const { Title } = Typography;
 const { useBreakpoint } = Grid;

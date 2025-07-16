@@ -20,12 +20,12 @@ import {
   maritalStatusOptions,
   educationLevelOptions,
 } from "./constants";
-import type { PatientDetails } from "../../types/patient-detail";
-import { PAYMENT_TYPE } from "../../enum/payment_type";
-import { usePatient } from "../../services/patient/use-patient";
 import { useQueryClient } from "@tanstack/react-query";
-import { useGetPatientDetail } from "../../services/patient/use-get-patient-detail";
 import dayjs from "dayjs";
+import { usePatient } from "../../app/services/hooks/patient/use-patient";
+import { useGetPatientDetail } from "../../app/services/hooks/patient/use-get-patient-detail";
+import { PAYMENT_TYPE } from "../../domain/enum/payment_type";
+import type { PatientDetails } from "../../domain/types";
 
 const { Title } = Typography;
 const dateFormat = "DD/MM/YYYY";

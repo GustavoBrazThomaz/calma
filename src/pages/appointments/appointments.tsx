@@ -12,14 +12,15 @@ import {
 } from "antd";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router";
-import { useGetAppointment } from "../../services/appointment/use-get-appointment";
-import { useSearchAppointment } from "../../services/appointment/use-search-appointment";
-import type { Appointment } from "../../types/appointment";
-import { AppointmentCard } from "../../ui/cards/appointment-card";
-import { AppointmentForm } from "../../ui/forms/appointment/appointment-form";
-import { paginateItems } from "../../utils/paginate-items";
+import { paginateItems } from "../../app/utils/paginate-items";
 import { AppointmentLoading } from "./appointment.loading";
 import { ClearOutlined } from "@ant-design/icons";
+import { useGetAppointment } from "../../app/services/hooks/appointment/use-get-appointment";
+import { useSearchAppointment } from "../../app/services/hooks/appointment/use-search-appointment";
+import type { Appointment } from "../../domain/types";
+
+import { AppointmentForm } from "../../ui/forms/appointment/appointment-form";
+import { AppointmentCard } from "../../ui/components/appointment-card";
 
 const { Title } = Typography;
 const { useBreakpoint } = Grid;

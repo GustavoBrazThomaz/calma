@@ -12,11 +12,11 @@ import {
 } from "antd";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
-import { useCaseEvolution } from "../../services/case-evolution/use-case-evolution";
-import { useCaseEvolutionById } from "../../services/case-evolution/use-case-evolution-by-id";
 import type { CaseEvolutionForm } from "./case-evolution.types";
 import { MarkdownEditor } from "./markdown/markdown-editor";
 import { MarkdownPreview } from "./markdown/markdown-preview";
+import { useCaseEvolutionById } from "../../app/services/hooks/case-evolution/use-case-evolution-by-id";
+import { useCaseEvolution } from "../../app/services/hooks/case-evolution/use-case-evolution";
 
 const { Title, Paragraph } = Typography;
 
