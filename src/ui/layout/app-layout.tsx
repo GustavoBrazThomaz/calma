@@ -1,4 +1,4 @@
-import { Avatar, Flex, Layout, Menu, Typography } from "antd";
+import { Avatar, Button, Flex, Layout, Menu, Typography } from "antd";
 import { useState, type ReactNode } from "react";
 const { Sider, Content, Header } = Layout;
 const { Title } = Typography;
@@ -11,6 +11,7 @@ import {
 import type { MenuProps } from "antd";
 import { useLocation, useNavigate } from "react-router";
 import { getKeyByPathname } from "../../app/utils/get-key-by-pathname";
+import { useAuth } from "../../app/services/hooks/auth/use-auth";
 
 type MenuItem = Required<MenuProps>["items"][number];
 
@@ -28,6 +29,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
   const [breakpoint, setBreakpoint] = useState<boolean>(false);
   const navigate = useNavigate();
   const location = useLocation();
+  const { signOut } = useAuth();
 
   const menuItems: MenuItem[] = [
     {
@@ -88,6 +90,24 @@ export function AppLayout({ children }: { children: ReactNode }) {
           defaultSelectedKeys={getKeyByPathname(location.pathname) ?? ["1"]}
           items={menuItems}
         />
+
+        <div
+          style={{
+            position: "absolute",
+            bottom: "0",
+            width: "100%",
+            padding: "0.5rem",
+          }}
+        >
+          <Button
+            onClick={() => signOut.mutate()}
+            style={{ width: "100%" }}
+            color="danger"
+            variant="text"
+          >
+            Sair
+          </Button>
+        </div>
       </Sider>
       <Layout>
         {breakpoint && (

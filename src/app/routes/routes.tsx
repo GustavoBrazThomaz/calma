@@ -6,11 +6,17 @@ import { Dashboard } from "../../pages/dashboard/dashboard";
 import { PatientDetail } from "../../pages/patient-detail/patient-detail";
 import { Patients } from "../../pages/patients/patients";
 import { NewPatient } from "../../pages/new-patient/patient-form";
+import { Login } from "../../pages/login/login";
+import { RequireAuth } from "./require-auth.route";
 
 export const routes = createBrowserRouter([
   {
     path: "/",
-    element: <App />,
+    element: (
+      <RequireAuth>
+        <App />
+      </RequireAuth>
+    ),
     children: [
       { index: true, element: <Dashboard /> },
       { path: "consultas", element: <Appointments /> },
@@ -27,5 +33,9 @@ export const routes = createBrowserRouter([
       { path: "novo-paciente", element: <NewPatient /> },
       { path: "editar-paciente/:id", element: <NewPatient /> },
     ],
+  },
+  {
+    path: "login",
+    element: <Login />,
   },
 ]);

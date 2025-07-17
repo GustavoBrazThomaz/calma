@@ -5,6 +5,8 @@ import { RouterProvider } from "react-router";
 import { routes } from "./app/routes/routes.tsx";
 import "@ant-design/v5-patch-for-react-19";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ConfigProvider, App as AntdApp } from "antd";
+
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -17,8 +19,13 @@ const queryClient = new QueryClient({
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <QueryClientProvider client={queryClient}>
-      <RouterProvider router={routes} />
-    </QueryClientProvider>
+    <ConfigProvider>
+      <AntdApp>
+        <QueryClientProvider client={queryClient}>
+          <RouterProvider router={routes} />
+        </QueryClientProvider>
+      </AntdApp>
+
+    </ConfigProvider>
   </StrictMode>
 );
