@@ -66,7 +66,7 @@ export function NewPatient() {
       },
     });
 
-    // navigate("/pacientes");
+    navigate("/pacientes");
   }
 
   function PhoneInput() {

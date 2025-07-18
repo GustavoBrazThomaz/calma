@@ -23,5 +23,11 @@ export async function SingOut() {
 
 export async function getUser() {
   const { data } = await supabase.auth.getUser();
+  const userId = data.user?.id;
+
+  if (userId) {
+    window.sessionStorage.setItem("userId", userId);
+  }
+
   return data;
 }
