@@ -1,5 +1,5 @@
-import { useMutation } from "@tanstack/react-query";
-import { SignIn, SingOut } from "../../auth.service";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { getUser, SignIn, SingOut } from "../../services/auth.service";
 import { useNavigate } from "react-router";
 
 export function useAuth() {
@@ -21,5 +21,10 @@ export function useAuth() {
     },
   });
 
-  return { signIn, signOut };
+  const fetchUser = useQuery({
+    queryKey: ["user"],
+    queryFn: getUser,
+  });
+
+  return { signIn, signOut, fetchUser };
 }

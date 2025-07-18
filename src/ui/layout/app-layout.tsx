@@ -11,7 +11,7 @@ import {
 import type { MenuProps } from "antd";
 import { useLocation, useNavigate } from "react-router";
 import { getKeyByPathname } from "../../app/utils/get-key-by-pathname";
-import { useAuth } from "../../app/services/hooks/auth/use-auth";
+import { useAuth } from "../../app/api/hooks/auth/use-auth";
 
 type MenuItem = Required<MenuProps>["items"][number];
 

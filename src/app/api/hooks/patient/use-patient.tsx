@@ -3,7 +3,7 @@ import {
   deletePatientById,
   postCreateNewPatient,
   putPatientDetails,
-} from "../../patient.service";
+} from "../../services/patient.service";
 
 export function usePatient() {
   const newPatient = useMutation({

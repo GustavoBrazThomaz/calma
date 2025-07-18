@@ -19,7 +19,7 @@ import {
 import dayjs from "dayjs";
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router";
-import { useAppointment } from "../../app/services/hooks/appointment/use-appointment";
+import { useAppointment } from "../../app/api/hooks/appointment/use-appointment";
 import { PAYMENT_TYPE } from "../../domain/enum/payment_type";
 import type { Appointment } from "../../domain/types";
 

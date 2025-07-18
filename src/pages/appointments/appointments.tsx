@@ -15,8 +15,8 @@ import { useSearchParams } from "react-router";
 import { paginateItems } from "../../app/utils/paginate-items";
 import { AppointmentLoading } from "./appointment.loading";
 import { ClearOutlined } from "@ant-design/icons";
-import { useGetAppointment } from "../../app/services/hooks/appointment/use-get-appointment";
-import { useSearchAppointment } from "../../app/services/hooks/appointment/use-search-appointment";
+import { useGetAppointment } from "../../app/api/hooks/appointment/use-get-appointment";
+import { useSearchAppointment } from "../../app/api/hooks/appointment/use-search-appointment";
 import type { Appointment } from "../../domain/types";
 
 import { AppointmentForm } from "../../ui/forms/appointment/appointment-form";

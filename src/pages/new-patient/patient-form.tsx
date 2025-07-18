@@ -22,8 +22,8 @@ import {
 } from "./constants";
 import { useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
-import { usePatient } from "../../app/services/hooks/patient/use-patient";
-import { useGetPatientDetail } from "../../app/services/hooks/patient/use-get-patient-detail";
+import { usePatient } from "../../app/api/hooks/patient/use-patient";
+import { useGetPatientDetail } from "../../app/api/hooks/patient/use-get-patient-detail";
 import { PAYMENT_TYPE } from "../../domain/enum/payment_type";
 import type { PatientDetails } from "../../domain/types";
 
@@ -66,7 +66,7 @@ export function NewPatient() {
       },
     });
 
-    navigate("/pacientes");
+    // navigate("/pacientes");
   }
 
   function PhoneInput() {

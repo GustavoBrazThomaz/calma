@@ -4,7 +4,7 @@ import {
   postCreateNewAppointment,
   putToggleIsDoneById,
   putToggleIsPaidById,
-} from "../../appointment.service";
+} from "../../services/appointment.service";
 
 export function useAppointment() {
   const newAppointment = useMutation({

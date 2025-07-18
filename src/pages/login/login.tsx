@@ -9,7 +9,7 @@ import {
   Typography,
 } from "antd";
 import type { Login } from "../../domain/types/login";
-import { useAuth } from "../../app/services/hooks/auth/use-auth";
+import { useAuth } from "../../app/api/hooks/auth/use-auth";
 
 export function Login() {
   const [formInstance] = Form.useForm<Login>();

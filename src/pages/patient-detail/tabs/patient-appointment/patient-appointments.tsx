@@ -1,6 +1,6 @@
 import { Row, Col, Empty } from "antd";
 import { useParams } from "react-router";
-import { useGetPatientAppointments } from "../../../../app/services/hooks/appointment/use-get-patient-appointments";
+import { useGetPatientAppointments } from "../../../../app/api/hooks/appointment/use-get-patient-appointments";
 import { AppointmentCard } from "../../../../ui/components/appointment-card";
 import { PatientAppointmentsSkeleton } from "./patient-appointment.loading";
 

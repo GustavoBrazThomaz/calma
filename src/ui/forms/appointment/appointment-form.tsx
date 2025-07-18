@@ -14,8 +14,8 @@ import dayjs from "dayjs";
 
 import type { AppointmentForm } from "./appointment.types";
 import { useQueryClient } from "@tanstack/react-query";
-import { useAppointment } from "../../../app/services/hooks/appointment/use-appointment";
-import { useGetPatients } from "../../../app/services/hooks/patient/use-get-patients";
+import { useAppointment } from "../../../app/api/hooks/appointment/use-appointment";
+import { useGetPatients } from "../../../app/api/hooks/patient/use-get-patients";
 
 export function AppointmentForm({
   open,

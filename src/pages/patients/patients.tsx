@@ -14,9 +14,9 @@ import {
 import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router";
 import { paginateItems } from "../../app/utils/paginate-items";
-import { useGetPatients } from "../../app/services/hooks/patient/use-get-patients";
-import { usePatient } from "../../app/services/hooks/patient/use-patient";
-import { useSearchPatient } from "../../app/services/hooks/patient/use-search-patient";
+import { useGetPatients } from "../../app/api/hooks/patient/use-get-patients";
+import { usePatient } from "../../app/api/hooks/patient/use-patient";
+import { useSearchPatient } from "../../app/api/hooks/patient/use-search-patient";
 import { PatientCard } from "../../ui/components/patient-card";
 import type { Patients } from "../../domain/types";
 

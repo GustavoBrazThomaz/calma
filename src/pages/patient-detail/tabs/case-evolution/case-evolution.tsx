@@ -3,7 +3,7 @@ import { Button, Col, Empty, Flex, Grid, Row } from "antd";
 import { useNavigate, useParams } from "react-router";
 
 import { CaseEvolutionSkeleton } from "./case-evolution.loading";
-import { useGetPatientCaseEvolution } from "../../../../app/services/hooks/patient/use-get-patient-case-evolution";
+import { useGetPatientCaseEvolution } from "../../../../app/api/hooks/patient/use-get-patient-case-evolution";
 import { CaseEvolutionCard } from "../../../../ui/components/case-evolution-card";
 
 const { useBreakpoint } = Grid;
