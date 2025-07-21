@@ -1,10 +1,5 @@
 import dayjs from "dayjs";
-import type {
-  Patients,
-  PatientDetails,
-  CaseEvolution,
-} from "../../../domain/types";
-import { casesEvolution } from "../../../domain/mocks";
+import type { PatientDetails, Patients } from "../../../domain/types";
 import { supabase } from "../config";
 
 const psychologistId = window.sessionStorage.getItem("userId");
@@ -64,24 +59,6 @@ export async function getPatientDetail(id: string): Promise<PatientDetails> {
     currentMedications: patient.current_medications,
     diagnoses: patient.diagnoses,
   };
-}
-
-export async function getPatientCasesEvolution(
-  patientId: string
-): Promise<CaseEvolution[]> {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      const patientCases = casesEvolution.filter(
-        (p) => p.patientId === patientId
-      );
-
-      if (patientCases.length > 0) {
-        return resolve(patientCases);
-      }
-
-      reject({ code: 404, message: "Evolução de caso não encontrada" });
-    }, 500);
-  });
 }
 
 export async function postCreateNewPatient(

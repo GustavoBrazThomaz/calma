@@ -1,23 +1,31 @@
-import { casesEvolution } from "../../../domain/mocks/case-evolution.mock";
 import type { CaseEvolution } from "../../../domain/types";
+import { supabase } from "../config";
 
-export function getCaseEvolutionById(id: string): Promise<CaseEvolution> {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      const patientAppointments = casesEvolution.filter(
-        (caseEvolution) => caseEvolution.id === id
-      );
+const userId = window.sessionStorage.getItem("userId");
 
-      if (patientAppointments[0]) {
-        resolve(patientAppointments[0]);
-      }
+export async function getCaseEvolutionById(
+  caseId: string
+): Promise<CaseEvolution> {
+  const { data, error } = await supabase
+    .from("case_evolutions")
+    .select("id, title, note, patient_id")
+    .eq("id", caseId)
+    .single();
 
-      reject({ code: 404, message: "Consultas não encontradas" });
-    }, 500);
-  });
+  if (error || !data) {
+    console.error("Erro ao buscar evolução de caso", error);
+    throw new Error("Erro ao buscar evolução de caso");
+  }
+
+  return {
+    id: data.id,
+    patientId: data.patient_id,
+    title: data.title,
+    note: data.note,
+  };
 }
 
-export function postCreateCaseEvolution({
+export async function postCreateCaseEvolution({
   title,
   note,
   patientId,
@@ -26,25 +34,15 @@ export function postCreateCaseEvolution({
   note: string;
   patientId: string;
 }) {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      casesEvolution.push({
-        id: crypto.randomUUID(),
-        title,
-        note,
-        patientId,
-      });
-
-      console.log(casesEvolution);
-
-      resolve({ code: 201, message: "Evolução de caso criada com sucesso" });
-
-      reject({ code: 404, message: "Não foi possível atualizar o caso" });
-    }, 500);
+  await supabase.from("case_evolutions").insert({
+    title,
+    note,
+    patient_id: patientId,
+    psychologist_id: userId,
   });
 }
 
-export function putUpdateCaseEvolutionById({
+export async function putUpdateCaseEvolutionById({
   id,
   title,
   note,
@@ -52,17 +50,36 @@ export function putUpdateCaseEvolutionById({
   id: string;
   title: string;
   note: string;
-}): Promise<CaseEvolution> {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      const index = casesEvolution.findIndex((item) => item.id === id);
-      if (index !== -1) {
-        casesEvolution[index].title = title;
-        casesEvolution[index].note = note;
-        return resolve(casesEvolution[index]);
-      }
+}) {
+  await supabase
+    .from("case_evolutions")
+    .insert({
+      title,
+      note,
+    })
+    .eq("id", id);
+}
 
-      reject({ code: 404, message: "Não foi possível atualizar o caso" });
-    }, 500);
-  });
+export async function getPatientCaseEvolutions(
+  patientId: string
+): Promise<CaseEvolution[]> {
+  const { data, error } = await supabase
+    .from("case_evolutions")
+    .select("id, title, note, patient_id")
+    .eq("patient_id", patientId)
+    .eq("psychologist_id", userId);
+
+  if (error || !data) {
+    console.error("Erro ao buscar evoluções de caso", error);
+    return [];
+  }
+
+  const caseEvolution: CaseEvolution[] = data.map((item) => ({
+    id: item.id,
+    patientId: item.patient_id,
+    title: item.title,
+    note: item.note,
+  }));
+
+  return caseEvolution;
 }

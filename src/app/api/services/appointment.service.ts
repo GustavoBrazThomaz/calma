@@ -140,6 +140,7 @@ export async function getPatientAppointment(
   const { data, error } = await supabase
     .from("appointments_view")
     .select("*")
+    .eq("psychologist_id", userId)
     .eq("patient_id", patientId);
 
   if (error || !data) {
