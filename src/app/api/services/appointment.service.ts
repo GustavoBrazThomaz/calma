@@ -3,9 +3,7 @@ import type { Appointment } from "../../../domain/types";
 import type { AppointmentForm } from "../../../ui/forms/appointment/appointment.types";
 import { supabase } from "../config";
 
-export async function getAppointment(): Promise<Appointment[]> {
-  const userId = window.sessionStorage.getItem("userId");
-
+export async function getAppointment(userId: string): Promise<Appointment[]> {
   const { data, error } = await supabase
     .from("appointments_view")
     .select("*")
@@ -32,8 +30,9 @@ export async function getAppointment(): Promise<Appointment[]> {
   return appointment;
 }
 
-export async function getTodayAppointments(): Promise<Appointment[]> {
-  const userId = window.sessionStorage.getItem("userId");
+export async function getTodayAppointments(
+  userId: string
+): Promise<Appointment[]> {
   const now = new Date();
 
   const startOfDay = new Date(now);
