@@ -8,8 +8,8 @@ export async function getPatients(): Promise<Patients[]> {
   if (!psychologistId) return [];
 
   const { data, error } = await supabase
-    .from("patients")
-    .select("id, first_name, last_name, birth_date, phone")
+    .from("patients_view")
+    .select("id, first_name, last_name, birth_date, phone, last_appointment")
     .eq("psychologist_id", psychologistId);
 
   if (error || !data) {
@@ -23,7 +23,7 @@ export async function getPatients(): Promise<Patients[]> {
     lastName: item.last_name,
     birthDate: item.birth_date,
     phone: item.phone,
-    lastAppointment: new Date(),
+    lastAppointment: item.last_appointment,
   }));
 
   return patients;
@@ -107,7 +107,7 @@ export async function getSearchPatient(name: string): Promise<Patients[]> {
 
   const { data, error } = await supabase
     .from("patients_view")
-    .select("id, first_name, last_name, birth_date, phone")
+    .select("id, first_name, last_name, birth_date, phone, last_appointment")
     .eq("psychologist_id", psychologistId)
     .ilike("full_name", `%${name.toLowerCase()}%`);
 
@@ -122,7 +122,7 @@ export async function getSearchPatient(name: string): Promise<Patients[]> {
     lastName: item.last_name,
     birthDate: item.birth_date,
     phone: item.phone,
-    lastAppointment: new Date(),
+    lastAppointment: item.last_appointment,
   }));
 
   return patients;
