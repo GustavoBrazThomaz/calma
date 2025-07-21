@@ -1,11 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
-import { getTodayAppointment } from "../../services/appointment.service";
+import { getTodayAppointments } from "../../services/appointment.service";
 
 export function useGetTodayAppointment() {
   const appointment = useQuery({
     queryKey: ["fetchTodayAppointment"],
     queryFn: async () => {
-      const response = await getTodayAppointment();
+      const response = await getTodayAppointments();
       return response;
     },
   });

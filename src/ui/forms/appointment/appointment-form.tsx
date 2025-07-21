@@ -43,8 +43,6 @@ export function AppointmentForm({
   });
 
   function handleSubmit(form: AppointmentForm) {
-    form.scheduled_time = dayjs(form.scheduled_time).toDate();
-    form.date = dayjs(form.date).toDate();
     newAppointment.mutate(form, {
       onSuccess() {
         queryClient.invalidateQueries({ queryKey: ["fetchAppointment"] });
@@ -115,7 +113,7 @@ export function AppointmentForm({
 
             <Form.Item<AppointmentForm>
               label="Horário"
-              name="scheduled_time"
+              name="scheduledTime"
               rules={[{ required: true }]}
               style={{ width: "100%" }}
             >

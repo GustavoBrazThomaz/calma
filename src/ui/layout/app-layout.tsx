@@ -22,7 +22,7 @@ const siderStyle: React.CSSProperties = {
   insetInlineStart: 0,
   top: 0,
   bottom: 0,
-  zIndex: 1001,
+  zIndex: 100,
 };
 
 export function AppLayout({ children }: { children: ReactNode }) {

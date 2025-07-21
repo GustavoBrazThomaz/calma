@@ -1,7 +1,8 @@
 export interface AppointmentForm {
   patient: string;
   date: Date;
-  scheduled_time: Date;
+  scheduledTime: Date;
   price: string;
-  isPaid: string;
+  isPaid: boolean;
+  isDone: boolean;
 }

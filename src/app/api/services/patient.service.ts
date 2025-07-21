@@ -129,7 +129,7 @@ export async function getSearchPatient(name: string): Promise<Patients[]> {
   if (!psychologistId) return [];
 
   const { data, error } = await supabase
-    .from("patient_view")
+    .from("patients_view")
     .select("id, first_name, last_name, birth_date, phone")
     .eq("psychologist_id", psychologistId)
     .ilike("full_name", `%${name.toLowerCase()}%`);

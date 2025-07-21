@@ -1,142 +1,166 @@
 import dayjs from "dayjs";
-import { appointments, patientsDetails } from "../../../domain/mocks";
 import type { Appointment } from "../../../domain/types";
 import type { AppointmentForm } from "../../../ui/forms/appointment/appointment.types";
+import { supabase } from "../config";
+
+const userId = window.sessionStorage.getItem("userId");
 
 export async function getAppointment(): Promise<Appointment[]> {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      resolve(appointments);
+  const { data, error } = await supabase
+    .from("appointments_view")
+    .select("*")
+    .eq("psychologist_id", userId);
 
-      reject({ code: 404, message: "Paciente não encontrado" });
-    }, 500);
-  });
+  if (error || !data) {
+    console.error("Erro ao buscar consultas:", error);
+    return [];
+  }
+
+  const appointment: Appointment[] = data.map((item) => ({
+    id: item.id,
+    patientId: item.patient_id,
+    firstName: item.first_name,
+    lastName: item.last_name,
+    phone: item.phone,
+    scheduled: item.scheduled,
+    paymentType: item.payment_type,
+    price: item.price,
+    isPaid: item.is_paid,
+    isDone: item.is_done,
+  }));
+
+  return appointment;
 }
 
-export async function getTodayAppointment(): Promise<Appointment[]> {
+export async function getTodayAppointments(): Promise<Appointment[]> {
   const now = new Date();
-  const startOfDay = new Date(now.setHours(0, 0, 0, 0));
-  const endOfDay = new Date(now.setHours(23, 59, 59, 999));
 
-  const todayAppointments: Appointment[] = appointments
-    .filter(({ scheduled }) => {
-      const date = new Date(scheduled);
-      return date >= startOfDay && date <= endOfDay;
-    })
-    .sort(
-      (a, b) =>
-        new Date(a.scheduled).getTime() - new Date(b.scheduled).getTime()
-    );
+  const startOfDay = new Date(now);
+  startOfDay.setHours(0, 0, 0, 0);
 
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      resolve(todayAppointments);
+  const endOfDay = new Date(now);
+  endOfDay.setHours(23, 59, 59, 999);
 
-      reject({ code: 404, message: "Consulta não encontrada" });
-    }, 500);
-  });
+  const { data, error } = await supabase
+    .from("appointments_view")
+    .select("*")
+    .eq("psychologist_id", userId)
+    .eq("is_done", false)
+    .gte("scheduled", startOfDay.toISOString())
+    .lte("scheduled", endOfDay.toISOString())
+    .order("scheduled", { ascending: true })
+    .limit(4);
+
+  if (error || !data) {
+    console.error("Erro ao buscar consultas do dia:", error);
+    return [];
+  }
+  const appointment: Appointment[] = data.map((item) => ({
+    id: item.id,
+    patientId: item.patient_id,
+    firstName: item.first_name,
+    lastName: item.last_name,
+    phone: item.phone,
+    scheduled: item.scheduled,
+    paymentType: item.payment_type,
+    price: item.price,
+    isPaid: item.is_paid,
+    isDone: item.is_done,
+  }));
+
+  return appointment;
 }
 
 export async function postCreateNewAppointment(appointment: AppointmentForm) {
-  const scheduledDate = appointment.date;
-  const scheduledTime = appointment.scheduled_time;
-  const combinedDate = dayjs(
-    `${scheduledDate} ${scheduledTime}`,
-    "YYYY-MM-DD HH:mm"
-  ).toDate();
-  const newId = crypto.randomUUID();
+  const date = dayjs(appointment.date);
+  const time = dayjs(appointment.scheduledTime);
+  const combinedDate = date
+    .hour(time.hour())
+    .minute(time.minute())
+    .second(0)
+    .millisecond(0);
 
-  const patient = patientsDetails.find((p) => p.id === appointment.patient);
-
-  if (!patient) return;
-
-  appointments.push({
-    id: newId,
-    patientId: patient.id,
-    firstName: patient.firstName,
-    lastName: patient.lastName,
-    phone: patient.phone,
-    scheduled: combinedDate,
-    isDone: false,
-    paymentType: patient.paymentType,
-    isPaid: false,
-    price: patient.price,
-  });
-
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      resolve(appointments);
-      reject({ code: 404, message: "Consulta não encontrada" });
-    }, 500);
+  await supabase.from("appointments").insert({
+    psychologist_id: userId,
+    patient_id: appointment.patient,
+    scheduled: combinedDate.format(),
+    is_done: appointment.isDone,
+    is_paid: appointment.isPaid,
   });
 }
 
-export async function putToggleIsPaidById(id: string) {
-  const index = appointments.findIndex((appointment) => appointment.id === id);
+export async function putToggleIsPaidById({
+  id,
+  isPaid,
+}: {
+  id: string;
+  isPaid: boolean;
+}) {
+  const { data, error } = await supabase
+    .from("appointments")
+    .update({ is_paid: isPaid }, { count: "exact" })
+    .eq("id", id);
 
-  if (index === -1) {
-    return Promise.reject({ code: 404, message: "Consulta não encontrada" });
-  }
+  if (error) return error;
 
-  appointments[index].isPaid = !appointments[index].isPaid;
-
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve({ code: 204, message: "Status mudado com sucesso" });
-    }, 500);
-  });
+  return data;
 }
 
-export async function putToggleIsDoneById(id: string) {
-  const index = appointments.findIndex((appointment) => appointment.id === id);
+export async function putToggleIsDoneById({
+  id,
+  isDone,
+}: {
+  id: string;
+  isDone: boolean;
+}) {
+  const { data, error } = await supabase
+    .from("appointments")
+    .update({ is_done: isDone }, { count: "exact" })
+    .eq("id", id);
 
-  if (index === -1) {
-    return Promise.reject({ code: 404, message: "Consulta não encontrada" });
-  }
+  if (error) return error;
 
-  appointments[index].isDone = !appointments[index].isDone;
-
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve({ code: 204, message: "Status mudado com sucesso" });
-    }, 500);
-  });
+  return data;
 }
 
 export async function deleteAppointmentById(id: string) {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      const index = appointments.findIndex(
-        (appointment) => appointment.id === id
-      );
+  const { data, error } = await supabase
+    .from("appointments")
+    .delete({ count: "exact" })
+    .eq("id", id);
 
-      if (index === -1) {
-        reject({ code: 404, message: "Consulta não encontrada" });
-        return;
-      }
+  if (error) return error;
 
-      appointments.splice(index, 1);
-      resolve(appointments);
-    }, 500);
-  });
+  return data;
 }
 
 export async function getPatientAppointment(
   patientId: string
 ): Promise<Appointment[]> {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      const patientAppointments = appointments.filter(
-        (appointment) => appointment.patientId === patientId
-      );
+  const { data, error } = await supabase
+    .from("appointments_view")
+    .select("*")
+    .eq("patient_id", patientId);
 
-      if (patientAppointments) {
-        resolve(patientAppointments);
-      }
+  if (error || !data) {
+    console.error("Erro ao buscar consultas:", error);
+    return [];
+  }
 
-      reject({ code: 404, message: "Consultas não encontradas" });
-    }, 500);
-  });
+  const appointment: Appointment[] = data.map((item) => ({
+    id: item.id,
+    patientId: item.patient_id,
+    firstName: item.first_name,
+    lastName: item.last_name,
+    phone: item.phone,
+    scheduled: item.scheduled,
+    paymentType: item.payment_type,
+    price: item.price,
+    isPaid: item.is_paid,
+    isDone: item.is_done,
+  }));
+
+  return appointment;
 }
 
 export async function getSearchAppointment(
@@ -144,28 +168,45 @@ export async function getSearchAppointment(
   appointmentStatus: string,
   paymentStatus: string
 ): Promise<Appointment[]> {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      const searchLower = search.toLowerCase();
+  const query = supabase
+    .from("appointments_view")
+    .select("*")
+    .eq("psychologist_id", userId);
 
-      const result = appointments.filter((appointment) => {
-        const fullName =
-          `${appointment.firstName} ${appointment.lastName}`.toLowerCase();
-        const nameMatch = search ? fullName.includes(searchLower) : true;
+  if (search) {
+    query.ilike("full_name", `%${search.toLowerCase()}%`);
+  }
 
-        const appointmentMatch =
-          appointmentStatus === "all" ||
-          (appointmentStatus === "done" && appointment.isDone === true) ||
-          (appointmentStatus === "scheduled" && appointment.isDone === false);
+  if (appointmentStatus === "done") {
+    query.eq("is_done", true);
+  } else if (appointmentStatus === "scheduled") {
+    query.eq("is_done", false);
+  }
 
-        const paymentMatch =
-          paymentStatus === "all" ||
-          (paymentStatus === "paid" && appointment.isPaid === true) ||
-          (paymentStatus === "pending" && appointment.isPaid === false);
+  if (paymentStatus === "paid") {
+    query.eq("is_paid", true);
+  } else if (paymentStatus === "pending") {
+    query.eq("is_paid", false);
+  }
 
-        return nameMatch && appointmentMatch && paymentMatch;
-      });
-      resolve(result);
-    }, 500);
-  });
+  const { data, error } = await query;
+
+  if (error || !data) {
+    console.error("Erro ao buscar agendamentos:", error);
+    return [];
+  }
+  const appointment: Appointment[] = data.map((item) => ({
+    id: item.id,
+    patientId: item.patient_id,
+    firstName: item.first_name,
+    lastName: item.last_name,
+    phone: item.phone,
+    scheduled: item.scheduled,
+    paymentType: item.payment_type,
+    price: item.price,
+    isPaid: item.is_paid,
+    isDone: item.is_done,
+  }));
+
+  return appointment;
 }

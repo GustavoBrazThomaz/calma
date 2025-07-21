@@ -58,12 +58,15 @@ export function AppointmentCard({
   }
 
   function handleIsPaid() {
-    toggleIsPaidById.mutate(id);
+    toggleIsPaidById.mutate({
+      id,
+      isPaid: !hasPaid,
+    });
     setHasPaid(!hasPaid);
   }
 
   function handleIsDone() {
-    toggleIsDoneById.mutate(id);
+    toggleIsDoneById.mutate({ id, isDone: !hasDone });
     setHasDone(!hasDone);
   }
 
@@ -173,7 +176,7 @@ export function AppointmentCard({
                 </p>
               )}
 
-              <p style={{ color: "#52C41A" }}>{price}</p>
+              <p style={{ color: "#52C41A" }}>R$ {price},00</p>
             </Flex>
           </Flex>
         }

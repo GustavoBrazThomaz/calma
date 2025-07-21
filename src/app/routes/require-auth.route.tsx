@@ -24,7 +24,7 @@ export function RequireAuth({ children }: Props) {
       <Flex
         align="center"
         justify="center"
-        style={{ width: "100%", height: "100%" }}
+        style={{ width: "100%", height: "100vh" }}
       >
         <Spin size="large" />
       </Flex>
