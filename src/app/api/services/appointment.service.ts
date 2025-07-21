@@ -3,9 +3,9 @@ import type { Appointment } from "../../../domain/types";
 import type { AppointmentForm } from "../../../ui/forms/appointment/appointment.types";
 import { supabase } from "../config";
 
-const userId = window.sessionStorage.getItem("userId");
-
 export async function getAppointment(): Promise<Appointment[]> {
+  const userId = window.sessionStorage.getItem("userId");
+
   const { data, error } = await supabase
     .from("appointments_view")
     .select("*")
@@ -33,6 +33,7 @@ export async function getAppointment(): Promise<Appointment[]> {
 }
 
 export async function getTodayAppointments(): Promise<Appointment[]> {
+  const userId = window.sessionStorage.getItem("userId");
   const now = new Date();
 
   const startOfDay = new Date(now);
@@ -72,6 +73,7 @@ export async function getTodayAppointments(): Promise<Appointment[]> {
 }
 
 export async function postCreateNewAppointment(appointment: AppointmentForm) {
+  const userId = window.sessionStorage.getItem("userId");
   const date = dayjs(appointment.date);
   const time = dayjs(appointment.scheduledTime);
   const combinedDate = date
@@ -137,6 +139,7 @@ export async function deleteAppointmentById(id: string) {
 export async function getPatientAppointment(
   patientId: string
 ): Promise<Appointment[]> {
+  const userId = window.sessionStorage.getItem("userId");
   const { data, error } = await supabase
     .from("appointments_view")
     .select("*")
@@ -169,6 +172,7 @@ export async function getSearchAppointment(
   appointmentStatus: string,
   paymentStatus: string
 ): Promise<Appointment[]> {
+  const userId = window.sessionStorage.getItem("userId");
   const query = supabase
     .from("appointments_view")
     .select("*")

@@ -2,15 +2,14 @@ import dayjs from "dayjs";
 import type { PatientDetails, Patients } from "../../../domain/types";
 import { supabase } from "../config";
 
-const psychologistId = window.sessionStorage.getItem("userId");
-
 export async function getPatients(): Promise<Patients[]> {
-  if (!psychologistId) return [];
+  const userId = window.sessionStorage.getItem("userId");
+  if (!userId) return [];
 
   const { data, error } = await supabase
     .from("patients_view")
     .select("id, first_name, last_name, birth_date, phone, last_appointment")
-    .eq("psychologist_id", psychologistId);
+    .eq("psychologist_id", userId);
 
   if (error || !data) {
     console.error("Erro ao buscar pacientes:", error);
@@ -30,10 +29,11 @@ export async function getPatients(): Promise<Patients[]> {
 }
 
 export async function getPatientDetail(id: string): Promise<PatientDetails> {
+  const userId = window.sessionStorage.getItem("userId");
   const { data } = await supabase
     .from("patients")
     .select("*")
-    .eq("psychologist_id", psychologistId)
+    .eq("psychologist_id", userId)
     .eq("id", id)
     .single();
 
@@ -64,9 +64,10 @@ export async function getPatientDetail(id: string): Promise<PatientDetails> {
 export async function postCreateNewPatient(
   patient: Omit<PatientDetails, "id">
 ) {
+  const userId = window.sessionStorage.getItem("userId");
   try {
     const { data } = await supabase.from("patients").insert({
-      psychologist_id: psychologistId,
+      psychologist_id: userId,
       first_name: patient.firstName,
       last_name: patient.lastName,
       birth_date: dayjs(patient.birthDate).toISOString(),
@@ -103,12 +104,13 @@ export async function deletePatientById(id: string) {
 }
 
 export async function getSearchPatient(name: string): Promise<Patients[]> {
-  if (!psychologistId) return [];
+  const userId = window.sessionStorage.getItem("userId");
+  if (!userId) return [];
 
   const { data, error } = await supabase
     .from("patients_view")
     .select("id, first_name, last_name, birth_date, phone, last_appointment")
-    .eq("psychologist_id", psychologistId)
+    .eq("psychologist_id", userId)
     .ilike("full_name", `%${name.toLowerCase()}%`);
 
   if (error || !data) {

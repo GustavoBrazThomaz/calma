@@ -10,13 +10,15 @@ interface Props {
 export function RequireAuth({ children }: Props) {
   const navigate = useNavigate();
   const {
-    fetchUser: { isLoading, data },
+    fetchUser: { isLoading },
   } = useAuth();
+  const userId = window.sessionStorage.getItem("userId");
 
   useEffect(() => {
-    if (!isLoading && data?.user === null) {
-      navigate("/login");
-    }
+    if (!isLoading)
+      if (!userId) {
+        navigate("/login");
+      }
   }, [isLoading]);
 
   if (isLoading)

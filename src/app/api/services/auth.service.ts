@@ -7,6 +7,12 @@ export async function SignIn({ email, password }: Login) {
       email,
       password,
     });
+    const userId = data.user?.id;
+    if (!userId) {
+      throw new Error("erro ao pegar o id do usuário");
+    }
+    window.sessionStorage.setItem("userId", userId);
+
     return data;
   } catch (error) {
     return error;
@@ -16,6 +22,7 @@ export async function SignIn({ email, password }: Login) {
 export async function SingOut() {
   try {
     await supabase.auth.signOut();
+    window.sessionStorage.removeItem("userId");
   } catch (error) {
     return error;
   }
@@ -25,9 +32,9 @@ export async function getUser() {
   const { data } = await supabase.auth.getUser();
   const userId = data.user?.id;
 
-  if (userId) {
-    window.sessionStorage.setItem("userId", userId);
+  if (!userId) {
+    throw new Error("erro ao pegar o id do usuário");
   }
-
+  window.sessionStorage.setItem("userId", userId);
   return data;
 }

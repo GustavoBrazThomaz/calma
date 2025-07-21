@@ -1,8 +1,6 @@
 import type { CaseEvolution } from "../../../domain/types";
 import { supabase } from "../config";
 
-const userId = window.sessionStorage.getItem("userId");
-
 export async function getCaseEvolutionById(
   caseId: string
 ): Promise<CaseEvolution> {
@@ -34,6 +32,7 @@ export async function postCreateCaseEvolution({
   note: string;
   patientId: string;
 }) {
+  const userId = window.sessionStorage.getItem("userId");
   await supabase.from("case_evolutions").insert({
     title,
     note,
@@ -63,6 +62,7 @@ export async function putUpdateCaseEvolutionById({
 export async function getPatientCaseEvolutions(
   patientId: string
 ): Promise<CaseEvolution[]> {
+  const userId = window.sessionStorage.getItem("userId");
   const { data, error } = await supabase
     .from("case_evolutions")
     .select("id, title, note, patient_id")
