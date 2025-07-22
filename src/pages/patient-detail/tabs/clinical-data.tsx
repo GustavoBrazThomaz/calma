@@ -1,4 +1,5 @@
 import { Card, Flex, Space, Typography } from "antd";
+import { parsePrice } from "../../../app/utils/parse-price";
 import { PAYMENT_TYPE } from "../../../domain/enum/payment_type";
 import type { PatientDetails } from "../../../domain/types";
 
@@ -40,7 +41,7 @@ export function ClinicalData({ patient }: { patient: PatientDetails }) {
             ? "Mensal"
             : "A cada consulta"}
         </Paragraph>
-        <Paragraph>Valor: {patient.price}</Paragraph>
+        <Paragraph>Valor: {parsePrice(patient.price)}</Paragraph>
       </Card>
 
       <Card>

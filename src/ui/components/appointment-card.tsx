@@ -22,6 +22,7 @@ import { useLocation, useNavigate } from "react-router";
 import { useAppointment } from "../../app/api/hooks/appointment/use-appointment";
 import { PAYMENT_TYPE } from "../../domain/enum/payment_type";
 import type { Appointment } from "../../domain/types";
+import { parsePrice } from "../../app/utils/parse-price";
 
 type Props = Appointment & {
   onDelete?: (id: string) => void;
@@ -176,7 +177,7 @@ export function AppointmentCard({
                 </p>
               )}
 
-              <p style={{ color: "#52C41A" }}>R$ {price},00</p>
+              <p style={{ color: "#52C41A" }}>{parsePrice(price)}</p>
             </Flex>
           </Flex>
         }

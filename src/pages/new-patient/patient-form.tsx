@@ -150,11 +150,14 @@ export function NewPatient() {
             label="Data de nascimento"
             name="birthDate"
             style={{ width: "100%" }}
+            rules={[{ required: true }]}
           >
             <DatePicker
               placeholder="Escolha a data"
               style={{ width: "100%" }}
               format={dateFormat}
+              minDate={dayjs().subtract(100, "year")}
+              maxDate={dayjs().subtract(0, "year")}
             />
           </Form.Item>
           <Form.Item<Omit<PatientDetails, "id">>
@@ -171,6 +174,7 @@ export function NewPatient() {
             label="Gênero"
             name="gender"
             style={{ width: "100%" }}
+            rules={[{ required: true }]}
           >
             <Select
               options={genderOptions}
@@ -234,6 +238,7 @@ export function NewPatient() {
             label="Valor"
             style={{ width: "100%" }}
             name="price"
+            rules={[{ required: true }]}
           >
             <InputNumber<number>
               prefix="R$"
@@ -256,6 +261,7 @@ export function NewPatient() {
             }}
             name="paymentType"
             label="Tipo de pagamento"
+            rules={[{ required: true }]}
           >
             <Select
               placeholder="Selecione o tipo de pagamento"

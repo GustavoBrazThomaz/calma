@@ -82,7 +82,7 @@ export async function postCreateNewPatient(
       sexuality: patient.sexuality,
       price: patient.price,
       payment_type: patient.paymentType,
-      clinical_observations: patient.currentMedications,
+      clinical_observations: patient.clinicalObservations,
       current_medications: patient.currentMedications,
       diagnoses: patient.diagnoses,
     });
@@ -155,7 +155,7 @@ export async function putPatientDetails({
         sexuality: patient.sexuality,
         price: patient.price,
         payment_type: patient.paymentType,
-        clinical_observations: patient.currentMedications,
+        clinical_observations: patient.clinicalObservations,
         current_medications: patient.currentMedications,
         diagnoses: patient.diagnoses,
       })
