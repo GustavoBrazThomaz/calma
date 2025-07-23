@@ -6,7 +6,7 @@ export async function getCaseEvolutionById(
 ): Promise<CaseEvolution> {
   const { data, error } = await supabase
     .from("case_evolutions")
-    .select("id, title, note, patient_id")
+    .select("id, title, note, patient_id, created_at")
     .eq("id", caseId)
     .single();
 
@@ -20,6 +20,7 @@ export async function getCaseEvolutionById(
     patientId: data.patient_id,
     title: data.title,
     note: data.note,
+    createdAt: data.created_at,
   };
 }
 
@@ -65,7 +66,7 @@ export async function getPatientCaseEvolutions(
   const userId = window.sessionStorage.getItem("userId");
   const { data, error } = await supabase
     .from("case_evolutions")
-    .select("id, title, note, patient_id")
+    .select("id, title, note, patient_id, created_at")
     .eq("patient_id", patientId)
     .eq("psychologist_id", userId);
 
@@ -79,6 +80,7 @@ export async function getPatientCaseEvolutions(
     patientId: item.patient_id,
     title: item.title,
     note: item.note,
+    createdAt: item.created_at,
   }));
 
   return caseEvolution;

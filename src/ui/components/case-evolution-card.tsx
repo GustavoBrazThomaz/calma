@@ -1,26 +1,50 @@
-import { Card } from "antd";
+import { CalendarOutlined, ClockCircleOutlined } from "@ant-design/icons";
+import { Button, Card, Flex, Typography } from "antd";
+import dayjs from "dayjs";
 import { useNavigate } from "react-router";
-import type { CaseEvolution } from "../../domain/types";
 
+type Props = {
+  title: string;
+  id: string;
+  createdAt: Date;
+  patientId: string;
+};
 
-export function CaseEvolutionCard({
-  title,
-  id,
-  // note,
-  patientId,
-}: CaseEvolution) {
+export function CaseEvolutionCard({ title, id, createdAt, patientId }: Props) {
   const navigate = useNavigate();
-
-  // const limitedMarkdown = note.slice(0, 155) + (note.length > 155 ? "..." : "");
 
   return (
     <Card
-      title={title}
       onClick={() => navigate(`/paciente/${patientId}/evolucao-de-caso/${id}`)}
       style={{ cursor: "pointer" }}
       hoverable
+      actions={[
+        <Button
+          style={{ width: "98%" }}
+          color="default"
+          variant="text"
+          htmlType="button"
+        >
+          Ver detalhes
+        </Button>,
+      ]}
     >
-      {/* <MarkdownPreview markdown={limitedMarkdown} /> */}
+      <Typography.Title level={4}>{title}</Typography.Title>
+
+      <Typography.Text style={{ color: "#9E9E9E" }}>
+        Data de criação:
+      </Typography.Text>
+      <Flex gap="small">
+        <Typography.Text>
+          <CalendarOutlined style={{ marginRight: "0.3rem" }} />
+          {dayjs(createdAt).format("DD/MM/YYYY")}
+        </Typography.Text>
+        -
+        <Typography.Text>
+          <ClockCircleOutlined style={{ marginRight: "0.3rem" }} />
+          {dayjs(createdAt).format("HH:mm")}
+        </Typography.Text>
+      </Flex>
     </Card>
   );
 }

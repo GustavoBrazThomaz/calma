@@ -2,9 +2,9 @@ import { Button, Col, Empty, Flex, Grid, Row } from "antd";
 
 import { useNavigate, useParams } from "react-router";
 
-import { CaseEvolutionSkeleton } from "./case-evolution.loading";
 import { useGetPatientCaseEvolution } from "../../../../app/api/hooks/patient/use-get-patient-case-evolution";
 import { CaseEvolutionCard } from "../../../../ui/components/case-evolution-card";
+import { CaseEvolutionSkeleton } from "./case-evolution.loading";
 
 const { useBreakpoint } = Grid;
 
@@ -39,7 +39,7 @@ export function CaseEvolution() {
                 id={item.id}
                 patientId={item.patientId}
                 title={item.title}
-                note={item.note}
+                createdAt={item.createdAt}
               />
             </Col>
           ))}

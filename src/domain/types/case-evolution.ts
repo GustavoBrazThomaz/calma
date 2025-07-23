@@ -3,4 +3,5 @@ export interface CaseEvolution {
   patientId: string;
   title: string;
   note: string;
+  createdAt: Date;
 }
