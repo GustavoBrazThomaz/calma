@@ -116,6 +116,8 @@ export function Dashboard() {
         <AppointmentInDashboardLoading />
       ) : !data ? (
         <Empty />
+      ) : data.length === 0 ? (
+        <Empty />
       ) : (
         <>
           <Row gutter={[16, 16]}>
