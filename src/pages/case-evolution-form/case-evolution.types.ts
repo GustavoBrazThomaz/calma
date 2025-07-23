@@ -1,4 +1,4 @@
 export interface CaseEvolutionForm {
   title: string;
-  note: string;
+  // note: JSON;
 }

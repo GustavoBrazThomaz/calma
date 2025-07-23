@@ -52,7 +52,7 @@ export async function putUpdateCaseEvolutionById({
 }) {
   await supabase
     .from("case_evolutions")
-    .insert({
+    .update({
       title,
       note,
     })

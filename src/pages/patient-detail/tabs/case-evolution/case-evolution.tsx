@@ -15,8 +15,6 @@ export function CaseEvolution() {
   const { lg } = useBreakpoint();
 
   if (isLoading) return <CaseEvolutionSkeleton />;
-  if (!data || data.length === 0)
-    return <Empty style={{ marginTop: "4rem" }} />;
 
   return (
     <Flex vertical gap="middle">
@@ -26,23 +24,27 @@ export function CaseEvolution() {
         </Button>
       </Flex>
 
-      <Row gutter={[16, 16]}>
-        {data.map((item, index) => (
-          <Col
-            span={16}
-            lg={12}
-            key={"col_" + index}
-            style={{ minWidth: !lg ? "100%" : "" }}
-          >
-            <CaseEvolutionCard
-              id={item.id}
-              patientId={item.patientId}
-              title={item.title}
-              note={item.note}
-            />
-          </Col>
-        ))}
-      </Row>
+      {!data || data.length === 0 ? (
+        <Empty style={{ marginTop: "4rem" }} />
+      ) : (
+        <Row gutter={[16, 16]}>
+          {data.map((item, index) => (
+            <Col
+              span={16}
+              lg={12}
+              key={"col_" + index}
+              style={{ minWidth: !lg ? "100%" : "" }}
+            >
+              <CaseEvolutionCard
+                id={item.id}
+                patientId={item.patientId}
+                title={item.title}
+                note={item.note}
+              />
+            </Col>
+          ))}
+        </Row>
+      )}
     </Flex>
   );
 }

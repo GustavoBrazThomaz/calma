@@ -1,37 +1,22 @@
 import { useQueryClient } from "@tanstack/react-query";
-import {
-  App,
-  Button,
-  Card,
-  Flex,
-  Form,
-  Input,
-  Spin,
-  Tabs,
-  Typography,
-} from "antd";
-import { useEffect, useState } from "react";
+import { App, Button, Card, Flex, Form, Input, Spin, Typography } from "antd";
 import { useNavigate, useParams } from "react-router";
-import type { CaseEvolutionForm } from "./case-evolution.types";
-import { MarkdownEditor } from "./markdown/markdown-editor";
-import { MarkdownPreview } from "./markdown/markdown-preview";
-import { useCaseEvolutionById } from "../../app/api/hooks/case-evolution/use-case-evolution-by-id";
 import { useCaseEvolution } from "../../app/api/hooks/case-evolution/use-case-evolution";
+import { useCaseEvolutionById } from "../../app/api/hooks/case-evolution/use-case-evolution-by-id";
+import type { CaseEvolutionForm } from "./case-evolution.types";
+import RichTextInput from "./rich-text-input/rich-text-input";
+import { useState } from "react";
 
-const { Title, Paragraph } = Typography;
+const { Title } = Typography;
 
 export function CaseEvolutionForm() {
-  const [markdown, setMarkdown] = useState<string>("");
   const { caseId, id } = useParams();
   const { data, isLoading } = useCaseEvolutionById(caseId ?? "");
   const { updateCaseEvolution, createCaseEvolution } = useCaseEvolution();
   const navigate = useNavigate();
   const { message } = App.useApp();
   const queryClient = useQueryClient();
-
-  useEffect(() => {
-    if (data) setMarkdown(data.note);
-  }, [data, isLoading]);
+  const [note, setNote] = useState<string>("");
 
   if (caseId) {
     if (isLoading)
@@ -45,27 +30,20 @@ export function CaseEvolutionForm() {
         </Flex>
       );
   }
-  const tabs = [
-    {
-      label: "Editor",
-      key: "1",
-      children: <MarkdownEditor setMarkdown={setMarkdown} />,
-    },
-    {
-      label: "Preview",
-      key: "2",
-      children: <MarkdownPreview markdown={markdown} />,
-    },
-  ];
 
   function handleSubmit(form: CaseEvolutionForm) {
     if (!data) {
-      createCaseEvolution.mutate({ ...form, patientId: id as string });
+      createCaseEvolution.mutate({
+        ...form,
+        note: note,
+        patientId: id as string,
+      });
       message.success("Evolução de caso criada com sucesso");
     } else {
+      console.log("oi");
       updateCaseEvolution.mutate({
         id: caseId as string,
-        note: form.note,
+        note: note,
         title: form.title,
       });
       message.success("Evolução de caso atualizada com sucesso");
@@ -116,25 +94,8 @@ export function CaseEvolutionForm() {
           </Card>
 
           <Card>
-            <Title level={4}>Conteúdo da Evolução</Title>
-            <Paragraph>Conteúdo (Markdown)</Paragraph>
-            <Tabs defaultActiveKey={"1"} tabPosition="top" items={tabs} />
+            <RichTextInput setValue={setNote} content={data?.note} />
           </Card>
-          <Flex gap="large" style={{ color: "#868687" }}>
-            <div>
-              <p>Dicas de Markdown:</p>
-              <p># Título grande</p>
-              <p>## Título médio</p>
-              <p>**negrito**</p>
-              <p>*itálico*</p>
-            </div>
-            <div style={{ marginTop: "1.4rem" }}>
-              <p>- Lista com marcadores</p>
-              <p>- [ ] Lista de tarefas</p>
-              <p> {"> Citação importante"}</p>
-              <p>___ Divisor de conteúdo</p>
-            </div>
-          </Flex>
         </Flex>
       </Form>
     </Flex>
