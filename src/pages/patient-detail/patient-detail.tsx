@@ -16,6 +16,7 @@ import { useNavigate, useParams, useSearchParams } from "react-router";
 import dayjs from "dayjs";
 import { getAgeFromBirthDate } from "../../app/utils/get-age";
 import { useGetPatientDetail } from "../../app/api/hooks/patient/use-get-patient-detail";
+import { ArrowLeftOutlined } from "@ant-design/icons";
 
 const { Title, Text } = Typography;
 export function PatientDetail() {
@@ -31,7 +32,7 @@ export function PatientDetail() {
         justify="center"
         style={{ width: "100%", height: "100%" }}
       >
-        <Spin tip="Loading..." size="large" />
+        <Spin  size="large" />
       </Flex>
     );
   if (!data) return <Empty style={{ marginTop: "4rem" }} />;
@@ -57,7 +58,10 @@ export function PatientDetail() {
   return (
     <Flex vertical gap="middle">
       <Flex justify="space-between">
-        <Title level={3}>Detalhes do Paciente</Title>
+        <Flex gap="small">
+          <Button onClick={() => navigate("/pacientes")} color="default" variant="text" icon={<ArrowLeftOutlined />} />
+          <Title level={3}>Detalhes do Paciente</Title>
+        </Flex>
         <Button onClick={() => navigate(`/editar-paciente/${id}`)}>
           Editar
         </Button>

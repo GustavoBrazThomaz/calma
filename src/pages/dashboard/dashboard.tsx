@@ -77,7 +77,10 @@ export function Dashboard() {
         </Space>
       </Flex>
 
-      <Title level={4}>Consultas de Hoje</Title>
+      {Array.isArray(todayAppointment.data) &&
+        todayAppointment.data.length > 0 && (
+          <Title level={4}>Consultas de Hoje</Title>
+        )}
 
       {todayAppointment.isLoading ? (
         <Skeleton.Node style={{ width: 650, height: 140 }} />

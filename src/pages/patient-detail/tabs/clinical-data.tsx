@@ -73,14 +73,14 @@ export function ClinicalData({ patient }: { patient: PatientDetails }) {
 
       {patient.clinicalObservations && (
         <Card>
-          <Title level={4}>Observações Clínicas</Title>
+          <Title level={5} style={{marginBottom: "1rem"}}>Observações Clínicas</Title>
           <Paragraph>{patient.clinicalObservations}</Paragraph>
         </Card>
       )}
 
       {patient.currentMedications && (
         <Card>
-          <Title level={4}>Medicamentos em Uso</Title>
+          <Title level={5} style={{marginBottom: "1rem"}}>Medicamentos em Uso</Title>
           <Text style={{ whiteSpace: "pre-line" }}>
             {patient.currentMedications}
           </Text>
@@ -89,8 +89,7 @@ export function ClinicalData({ patient }: { patient: PatientDetails }) {
 
       {patient.diagnoses && (
         <Card>
-          <Title level={4}>Laudos e Diagnósticos</Title>
-
+          <Title level={5} style={{marginBottom: "1rem"}}>Laudos e Diagnósticos</Title>
           <Text style={{ whiteSpace: "pre-line" }}>{patient.diagnoses}</Text>
         </Card>
       )}

@@ -90,7 +90,7 @@ export function NewPatient() {
           justify="center"
           style={{ width: "100%", height: "100%" }}
         >
-          <Spin tip="Loading..." size="large" />
+          <Spin  size="large" />
         </Flex>
       );
 

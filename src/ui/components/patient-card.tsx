@@ -54,8 +54,10 @@ export function PatientCard({
         style={{ width: "100%" }}
         gap="small"
       >
-        <Avatar size="large">{firstName}</Avatar>
-        <Title style={{ marginBottom: 0 }} level={4}>
+        <Avatar size="large" style={{ textOverflow: "ellipsis" }}>
+          {firstName}
+        </Avatar>
+        <Title style={{ marginBottom: 0, textOverflow: "ellipsis" }} level={4}>
           {firstName} {lastName}
         </Title>
         <p>{getAgeFromBirthDate(birthDate)} anos</p>
@@ -69,7 +71,9 @@ export function PatientCard({
           <Space direction="vertical" size={0}>
             <p style={{ fontSize: "12px" }}>Última consulta</p>
             <p style={{ fontWeight: "bold" }}>
-              {dayjs(lastAppointment).format("DD/MM/YYYY")}
+              {lastAppointment
+                ? dayjs(lastAppointment).format("DD/MM/YYYY")
+                : "Sem registros"}
             </p>
           </Space>
         </Flex>
