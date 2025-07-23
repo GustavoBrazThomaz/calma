@@ -124,7 +124,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
           style={{
             margin: breakpoint ? "16px" : "24px",
             padding: breakpoint ? "16px" : "24px",
-            minHeight: "100vh",
+            minHeight: "calc(100vh - 4rem)",
             height: "100%",
             background: "#fff",
             borderRadius: "16px",
