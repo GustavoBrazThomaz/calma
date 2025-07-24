@@ -11,24 +11,23 @@ import {
   Spin,
   Typography,
 } from "antd";
-import { useEffect, useState } from "react";
+import { useMemo, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router";
-import { paginateItems } from "../../app/utils/paginate-items";
 import { useGetPatients } from "../../app/api/hooks/patient/use-get-patients";
 import { usePatient } from "../../app/api/hooks/patient/use-patient";
 import { useSearchPatient } from "../../app/api/hooks/patient/use-search-patient";
 import { PatientCard } from "../../ui/components/patient-card";
-import type { Patients } from "../../domain/types";
 
 const { Title } = Typography;
 const { useBreakpoint } = Grid;
 export function Patients() {
   const navigate = useNavigate();
-  const { data, isLoading, refetch } = useGetPatients();
-  const [patients, setPatients] = useState<Patients[]>([]);
-  const [pagination, setPagination] = useState<{ count: number; page: number }>(
-    { count: 0, page: 1 }
-  );
+  const [page, setPage] = useState<number>(1);
+  const { data, isLoading, refetch } = useGetPatients({
+    page,
+    limit: 8,
+  });
+
   const queryClient = useQueryClient();
   const { deletePatient } = usePatient();
   const { sm, md } = useBreakpoint();
@@ -36,35 +35,18 @@ export function Patients() {
   const search = searchParams.get("search") ?? "";
   const searchPatient = useSearchPatient(search);
   const hasSearch = !!search;
-  const currentData = hasSearch ? searchPatient.data : data;
+  const currentData = hasSearch ? searchPatient.data : data?.patients;
   const isEmpty = !currentData || currentData.length === 0;
 
-  useEffect(() => {
-    if (currentData) {
-      paginateItems(currentData, 1, setPatients, 8);
-      setPagination((prev) => ({
-        ...prev,
-        count: currentData.length,
-      }));
-    }
-  }, [currentData]);
+  const patient = useMemo(() => {
+    if (searchPatient.data) return searchPatient.data;
+    if (!data) return [];
+    return data.patients;
+  }, [data, searchPatient.data]);
 
   function handleDeletePatientById(id: string) {
     deletePatient.mutate(id);
-    queryClient.refetchQueries({ queryKey: ["fetchPatients"] });
-
-    if (data) {
-      const newData = data.filter((item) => item.id !== id);
-      paginateItems(newData, pagination.page, setPatients, 8);
-      setPagination((prev) => {
-        return {
-          ...prev,
-          count: newData.length,
-        };
-      });
-    }
-
-    setPatients((prev) => prev.filter((item) => item.id !== id));
+    queryClient.invalidateQueries({ queryKey: ["fetchPatients", page] });
   }
 
   if (isLoading || searchPatient.isLoading)
@@ -116,7 +98,7 @@ export function Patients() {
       ) : (
         <>
           <Row gutter={[16, 16]}>
-            {patients.map((item) => (
+            {patient.map((item) => (
               <Col
                 style={{ minWidth: !md ? "100%" : "" }}
                 span={16}
@@ -137,21 +119,18 @@ export function Patients() {
               </Col>
             ))}
           </Row>
-          <Pagination
-            onChange={(pag) => {
-              if (currentData) paginateItems(currentData, pag, setPatients, 8);
-              setPagination((prev) => {
-                return {
-                  ...prev,
-                  page: pag,
-                };
-              });
-            }}
-            defaultCurrent={1}
-            total={pagination.count}
-            defaultPageSize={8}
-            align="center"
-          />
+
+          {!hasSearch && (
+            <Pagination
+              onChange={(pag) => {
+                setPage(pag);
+              }}
+              defaultCurrent={1}
+              total={data?.total}
+              defaultPageSize={8}
+              align="center"
+            />
+          )}
         </>
       )}
     </Flex>

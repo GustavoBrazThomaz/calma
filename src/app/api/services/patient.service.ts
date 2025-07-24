@@ -2,18 +2,30 @@ import dayjs from "dayjs";
 import type { PatientDetails, Patients } from "../../../domain/types";
 import { supabase } from "../config";
 
-export async function getPatients(): Promise<Patients[]> {
+export async function getPatients(
+  page: number,
+  limit: number
+): Promise<{
+  patients: Patients[];
+  total: number;
+}> {
   const userId = window.sessionStorage.getItem("userId");
-  if (!userId) return [];
+  if (!userId) return { patients: [], total: 0 };
 
-  const { data, error } = await supabase
+  const from = (page - 1) * limit;
+  const to = from + limit - 1;
+
+  const { data, error, count } = await supabase
     .from("patients_view")
-    .select("id, first_name, last_name, birth_date, phone, last_appointment")
-    .eq("psychologist_id", userId);
+    .select("id, first_name, last_name, birth_date, phone, last_appointment", {
+      count: "exact",
+    })
+    .eq("psychologist_id", userId)
+    .range(from, to);
 
-  if (error || !data) {
+  if (error || !data || count === null) {
     console.error("Erro ao buscar pacientes:", error);
-    return [];
+    return { patients: [], total: 0 };
   }
 
   const patients: Patients[] = data.map((item) => ({
@@ -25,7 +37,10 @@ export async function getPatients(): Promise<Patients[]> {
     lastAppointment: item.last_appointment,
   }));
 
-  return patients;
+  return {
+    patients,
+    total: count,
+  };
 }
 
 export async function getPatientDetail(id: string): Promise<PatientDetails> {

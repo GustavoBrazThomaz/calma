@@ -3,18 +3,36 @@ import type { Appointment } from "../../../domain/types";
 import type { AppointmentForm } from "../../../ui/forms/appointment/appointment.types";
 import { supabase } from "../config";
 
-export async function getAppointment(userId: string): Promise<Appointment[]> {
-  const { data, error } = await supabase
-    .from("appointments_view")
-    .select("*")
-    .eq("psychologist_id", userId);
+export async function getAppointment({
+  userId,
+  page,
+  limit,
+}: {
+  userId: string;
+  page: number;
+  limit: number;
+}): Promise<{
+  appointments: Appointment[];
+  total: number;
+}> {
+  const from = (page - 1) * limit;
+  const to = from + limit - 1;
 
-  if (error || !data) {
+  const { data, error, count } = await supabase
+    .from("appointments_view")
+    .select("*", { count: "exact" })
+    .eq("psychologist_id", userId)
+    .range(from, to);
+
+  if (error || !data || count === null) {
     console.error("Erro ao buscar consultas:", error);
-    return [];
+    return {
+      total: 0,
+      appointments: [],
+    };
   }
 
-  const appointment: Appointment[] = data.map((item) => ({
+  const appointments: Appointment[] = data.map((item) => ({
     id: item.id,
     patientId: item.patient_id,
     firstName: item.first_name,
@@ -27,7 +45,7 @@ export async function getAppointment(userId: string): Promise<Appointment[]> {
     isDone: item.is_done,
   }));
 
-  return appointment;
+  return { appointments, total: count };
 }
 
 export async function getTodayAppointments(

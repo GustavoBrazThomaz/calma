@@ -8,7 +8,7 @@ import {
   TimePicker,
   type AutoCompleteProps,
 } from "antd";
-import { useState, type Dispatch } from "react";
+import { useMemo, useState, type Dispatch } from "react";
 
 import dayjs from "dayjs";
 
@@ -24,23 +24,28 @@ export function AppointmentForm({
   open: boolean;
   setOpen: Dispatch<boolean>;
 }) {
-  const dateFormat = "DD/MM/YYYY";
-  const timeFormat = "HH:mm";
-  const patientsOptions: AutoCompleteProps["options"] = [];
-  const { data, isLoading } = useGetPatients();
-  const { newAppointment } = useAppointment();
-  const [hasPatient, setHasPatient] = useState<boolean>(true);
   const queryClient = useQueryClient();
   const [formInstance] = Form.useForm<AppointmentForm>();
-  if (isLoading || !data) return null;
 
-  data.map((item) => {
-    patientsOptions.push({
-      label: `${item.firstName} ${item.lastName}`,
-      value: item.id,
+  const [hasPatient, setHasPatient] = useState<boolean>(true);
+
+  const { data, isLoading } = useGetPatients({ page: 1, limit: 200 });
+  const { newAppointment } = useAppointment();
+
+  const dateFormat = "DD/MM/YYYY";
+  const timeFormat = "HH:mm";
+
+  const patientsOptions: AutoCompleteProps["options"] = useMemo(() => {
+    if (!data) return [];
+    return data.patients.map((item) => {
+      return {
+        label: `${item.firstName} ${item.lastName}`,
+        value: item.id,
+      };
     });
-    return;
-  });
+  }, [data]);
+
+  if (isLoading || !data) return null;
 
   function handleSubmit(form: AppointmentForm) {
     newAppointment.mutate(form, {

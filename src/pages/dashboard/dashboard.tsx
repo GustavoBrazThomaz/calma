@@ -9,54 +9,35 @@ import {
   Space,
   Typography,
 } from "antd";
-import { useEffect, useState } from "react";
+import { useMemo, useState } from "react";
 import { useNavigate } from "react-router";
-import { paginateItems } from "../../app/utils/paginate-items";
-import { AppointmentInDashboardLoading } from "./appointment-in-dashboard.loading";
 import { useGetAppointment } from "../../app/api/hooks/appointment/use-get-appointment";
 import { useGetTodayAppointment } from "../../app/api/hooks/appointment/use-get-today-appointment";
-import type { Appointment } from "../../domain/types";
-import { AppointmentForm } from "../../ui/forms/appointment/appointment-form";
 import { AppointmentCard } from "../../ui/components/appointment-card";
+import { AppointmentForm } from "../../ui/forms/appointment/appointment-form";
+import { AppointmentInDashboardLoading } from "./appointment-in-dashboard.loading";
 
 const { Title } = Typography;
 
 export function Dashboard() {
   const [open, setOpen] = useState<boolean>(false);
-  const { data, isLoading, isSuccess, isStale } = useGetAppointment();
-  const [appointments, setAppointments] = useState<Appointment[]>([]);
-  const [pagination, setPagination] = useState<{ count: number; page: number }>(
-    { count: 0, page: 1 }
-  );
+  const [page, setPage] = useState<number>(1);
+  const { data, isLoading } = useGetAppointment({
+    page,
+    limit: 8,
+  });
+
   const todayAppointment = useGetTodayAppointment();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (data) {
-      paginateItems(data, 1, setAppointments);
-      setPagination((prev) => {
-        return {
-          ...prev,
-          count: data.length,
-        };
-      });
-    }
-  }, [isSuccess, data, isStale]);
+  const isEmpty = !data || data.appointments.length === 0;
 
-  function handleDelete(id: string) {
-    if (data) {
-      const newData = data.filter((item) => item.id !== id);
-      paginateItems(newData, pagination.page, setAppointments);
-      setPagination((prev) => {
-        return {
-          ...prev,
-          count: newData.length,
-        };
-      });
+  const appointments = useMemo(() => {
+    if (!data || !data.appointments) {
+      return [];
     }
-
-    setAppointments((prev) => prev.filter((item) => item.id !== id));
-  }
+    return data.appointments;
+  }, [data]);
 
   return (
     <Flex vertical gap="middle">
@@ -101,7 +82,6 @@ export function Dashboard() {
                 scheduled={item.scheduled}
                 price={item.price}
                 isDone={item.isDone}
-                onDelete={handleDelete}
                 hasDelete={false}
                 isHome
               />
@@ -114,9 +94,7 @@ export function Dashboard() {
 
       {isLoading ? (
         <AppointmentInDashboardLoading />
-      ) : !data ? (
-        <Empty />
-      ) : data.length === 0 ? (
+      ) : isEmpty ? (
         <Empty />
       ) : (
         <>
@@ -134,7 +112,6 @@ export function Dashboard() {
                   scheduled={item.scheduled}
                   price={item.price}
                   isDone={item.isDone}
-                  onDelete={handleDelete}
                   isHome
                 />
               </Col>
@@ -143,16 +120,10 @@ export function Dashboard() {
 
           <Pagination
             onChange={(pag) => {
-              paginateItems(data, pag, setAppointments);
-              setPagination((prev) => {
-                return {
-                  ...prev,
-                  page: pag,
-                };
-              });
+              setPage(pag);
             }}
             defaultCurrent={1}
-            total={pagination.count}
+            total={data.total}
             defaultPageSize={6}
             align="center"
           />

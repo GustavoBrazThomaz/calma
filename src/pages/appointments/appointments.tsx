@@ -1,3 +1,4 @@
+import { ClearOutlined } from "@ant-design/icons";
 import {
   Button,
   Col,
@@ -10,72 +11,58 @@ import {
   Select,
   Typography,
 } from "antd";
-import { useEffect, useState } from "react";
+import { useMemo, useState } from "react";
 import { useSearchParams } from "react-router";
-import { paginateItems } from "../../app/utils/paginate-items";
-import { AppointmentLoading } from "./appointment.loading";
-import { ClearOutlined } from "@ant-design/icons";
 import { useGetAppointment } from "../../app/api/hooks/appointment/use-get-appointment";
 import { useSearchAppointment } from "../../app/api/hooks/appointment/use-search-appointment";
-import type { Appointment } from "../../domain/types";
-
-import { AppointmentForm } from "../../ui/forms/appointment/appointment-form";
+import { AppointmentLoading } from "./appointment.loading";
 import { AppointmentCard } from "../../ui/components/appointment-card";
+import { AppointmentForm } from "../../ui/forms/appointment/appointment-form";
+import { useAppointment } from "../../app/api/hooks/appointment/use-appointment";
+import { useQueryClient } from "@tanstack/react-query";
 
 const { Title } = Typography;
 const { useBreakpoint } = Grid;
 export function Appointments() {
-  const [open, setOpen] = useState<boolean>(false);
-  const { data, isLoading, refetch } = useGetAppointment();
-  const [appointments, setAppointments] = useState<Appointment[]>([]);
-  const [pagination, setPagination] = useState<{ count: number; page: number }>(
-    { count: 0, page: 1 }
-  );
-
+  const { lg, md, xxl } = useBreakpoint();
+  const queryClient = useQueryClient();
   const [searchParams, setSearchParams] = useSearchParams();
   const search = searchParams.get("search") ?? "";
   const appointmentStatus = searchParams.get("appointmentStatus") ?? "all";
   const paymentStatus = searchParams.get("paymentStatus") ?? "all";
-  const { lg, md, xxl } = useBreakpoint();
+
+  const [open, setOpen] = useState<boolean>(false);
+  const [page, setPage] = useState<number>(1);
   const [filters, setFilters] = useState<{
     search: string;
     appointmentStatus: string;
     paymentStatus: string;
   }>({ search, appointmentStatus, paymentStatus });
 
+  const { data, isLoading, refetch } = useGetAppointment({ page, limit: 8 });
+  const { deleteAppointment } = useAppointment();
   const searchAppointment = useSearchAppointment({
     search,
     appointmentStatus,
     paymentStatus,
   });
+
   const hasActiveFilters =
     search !== "" || appointmentStatus !== "all" || paymentStatus !== "all";
-  const currentData = hasActiveFilters ? searchAppointment.data : data;
+  const currentData = hasActiveFilters
+    ? searchAppointment.data
+    : data?.appointments;
   const isEmpty = !currentData || currentData.length === 0;
 
-  useEffect(() => {
-    if (currentData) {
-      paginateItems(currentData, 1, setAppointments, 8);
-      setPagination((prev) => ({
-        ...prev,
-        count: currentData.length,
-      }));
-    }
-  }, [currentData]);
+  const appointments = useMemo(() => {
+    if (searchAppointment.data) return searchAppointment.data;
+    if (!data) return [];
+    return data.appointments;
+  }, [data, searchAppointment.data]);
 
   function handleDelete(id: string) {
-    if (data) {
-      const newData = data.filter((item) => item.id !== id);
-      paginateItems(newData, pagination.page, setAppointments, 8);
-      setPagination((prev) => {
-        return {
-          ...prev,
-          count: newData.length,
-        };
-      });
-    }
-
-    setAppointments((prev) => prev.filter((item) => item.id !== id));
+    deleteAppointment.mutate(id);
+    queryClient.invalidateQueries({ queryKey: ["fetchAppointment", page] });
   }
 
   function handleClear() {
@@ -211,21 +198,17 @@ export function Appointments() {
               </Col>
             ))}
           </Row>
-          <Pagination
-            onChange={(pag) => {
-              paginateItems(currentData, pag, setAppointments, 8);
-              setPagination((prev) => {
-                return {
-                  ...prev,
-                  page: pag,
-                };
-              });
-            }}
-            defaultCurrent={1}
-            total={pagination.count}
-            defaultPageSize={8}
-            align="center"
-          />
+          {!hasActiveFilters && (
+            <Pagination
+              onChange={(pag) => {
+                setPage(pag);
+              }}
+              defaultCurrent={1}
+              total={data?.total}
+              defaultPageSize={8}
+              align="center"
+            />
+          )}
         </>
       )}
 

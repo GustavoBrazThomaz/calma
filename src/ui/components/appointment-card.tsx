@@ -53,6 +53,11 @@ export function AppointmentCard({
   const [hasDone, setHasDone] = useState<boolean>(isDone);
   const queryClient = useQueryClient();
 
+  function handleInvalidateQueries() {
+    queryClient.refetchQueries({ queryKey: ["fetchAppointment", 1] });
+    queryClient.invalidateQueries({ queryKey: ["todayAppointment"] });
+  }
+
   function handleRedirectToPatient() {
     if (location.pathname === `/paciente/${patientId}`) return;
     navigate(`/paciente/${patientId}`);
@@ -64,16 +69,18 @@ export function AppointmentCard({
       isPaid: !hasPaid,
     });
     setHasPaid(!hasPaid);
+    handleInvalidateQueries();
   }
 
   function handleIsDone() {
     toggleIsDoneById.mutate({ id, isDone: !hasDone });
     setHasDone(!hasDone);
+    handleInvalidateQueries();
   }
 
   function handleDelete() {
     deleteAppointment.mutate(id);
-    queryClient.refetchQueries({ queryKey: ["fetchAppointment"] });
+    handleInvalidateQueries();
   }
 
   return (
