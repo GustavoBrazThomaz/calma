@@ -1,16 +1,16 @@
 name: run vitest
 
 on:
-  push: 
+  push:
     branches: [main]
-  pull_reques: 
+  pull_request:
     branches: [main]
 
 jobs:
   build:
     run-on: ubuntu-lastest
 
-    steps: 
+    steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
