@@ -18,6 +18,7 @@ export function CaseEvolutionCard({ title, id, createdAt, patientId }: Props) {
       onClick={() => navigate(`/paciente/${patientId}/evolucao-de-caso/${id}`)}
       style={{ cursor: "pointer" }}
       hoverable
+      data-testid="case_evolution_card"
       actions={[
         <Button
           style={{ width: "98%" }}

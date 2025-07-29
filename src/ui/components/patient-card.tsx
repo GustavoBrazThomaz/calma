@@ -92,6 +92,7 @@ export function PatientCard({
           icon={<DeleteOutlined />}
           type="text"
           color="danger"
+          data-testid="delete_button"
           style={{
             position: "absolute",
             right: "0.5rem",

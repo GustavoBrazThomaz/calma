@@ -90,6 +90,7 @@ export function AppointmentCard({
         width: "100%",
         cursor: "pointer",
       }}
+      data-testid="appointment-card"
       onClick={handleRedirectToPatient}
       hoverable
     >
@@ -110,11 +111,12 @@ export function AppointmentCard({
                   {" "}
                   <Tooltip
                     title={`Mudar status da consulta para ${
-                      !hasPaid ? "Realiza" : "Agendada"
+                      !hasDone ? "Realiza" : "Agendada"
                     }`}
                   >
                     <Button
                       type="text"
+                      data-testid="done_button"
                       onClick={(e) => {
                         e.stopPropagation();
                         handleIsDone();
@@ -129,6 +131,7 @@ export function AppointmentCard({
                   >
                     <Button
                       type="text"
+                      data-testid="paid_button"
                       onClick={(e) => {
                         e.stopPropagation();
                         handleIsPaid();
@@ -153,6 +156,7 @@ export function AppointmentCard({
                         icon={<DeleteOutlined />}
                         type="text"
                         onClick={(e) => e.stopPropagation()}
+                        data-testid="delete-button"
                       />
                     )}
                   </Popconfirm>

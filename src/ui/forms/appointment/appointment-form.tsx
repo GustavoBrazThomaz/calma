@@ -98,6 +98,7 @@ export function AppointmentForm({
               optionFilterProp="label"
               options={patientsOptions}
               onChange={(value) => setHasPatient(value ? false : true)}
+              data-testid="select_patient"
             />
           </Form.Item>
           <Flex gap="middle">
@@ -113,6 +114,7 @@ export function AppointmentForm({
                 disabled={hasPatient}
                 format={dateFormat}
                 placeholder="Selecione uma data"
+                data-testid="data_picker"
               />
             </Form.Item>
 
@@ -127,6 +129,8 @@ export function AppointmentForm({
                 format={timeFormat}
                 disabled={hasPatient}
                 style={{ width: "100%" }}
+                data-testid="time_picker"
+                onChange={(date) => console.log(date)}
               />
             </Form.Item>
           </Flex>
