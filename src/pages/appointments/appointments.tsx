@@ -104,7 +104,7 @@ export function Appointments() {
         <Title level={3}>Consultas</Title>
       </Flex>
 
-      <Flex gap="middle" wrap={!xxl}>
+      <Flex gap="middle" wrap={!md} style={{ marginTop: !md ? "-1rem" : "0" }}>
         <Input.Search
           placeholder="Buscar consulta pelo nome do paciente"
           onSearch={(value: string) =>
@@ -167,12 +167,13 @@ export function Appointments() {
             style={{ width: !xxl ? "100%" : "" }}
             onClick={() => setOpen(true)}
             variant="solid"
-            color="blue"
+            color="primary"
           >
             Nova Consulta
           </Button>
         </Flex>
       </Flex>
+
       {isLoading || searchAppointment.isLoading ? (
         <AppointmentLoading />
       ) : isEmpty ? (
@@ -181,7 +182,7 @@ export function Appointments() {
         <>
           <Row gutter={[16, 16]}>
             {appointments.map((item) => (
-              <Col span={16} key={item.id} lg={12} className="appointment-col ">
+              <Col span={16} key={item.id} lg={12} className="appointment-col">
                 <AppointmentCard
                   id={item.id}
                   patientId={item.patientId}

@@ -52,7 +52,7 @@ export function Dashboard() {
           <Button onClick={() => navigate("/novo-paciente")}>
             Novo Paciente
           </Button>
-          <Button onClick={() => setOpen(true)} variant="solid" color="blue">
+          <Button onClick={() => setOpen(true)} variant="solid" color="primary">
             Nova Consulta
           </Button>
         </Space>

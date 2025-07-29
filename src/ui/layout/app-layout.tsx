@@ -1,36 +1,38 @@
-import { Avatar, Button, Flex, Layout, Menu, Typography } from "antd";
-import { useState, type ReactNode } from "react";
-const { Sider, Content, Header } = Layout;
+import {
+  Avatar,
+  Button,
+  Flex,
+  Grid,
+  Layout,
+  Menu,
+  Space,
+  Typography,
+} from "antd";
+import { type ReactNode } from "react";
+const { Content, Header } = Layout;
 const { Title } = Typography;
 
 import {
   CalendarOutlined,
   HomeOutlined,
+  LogoutOutlined,
+  MoonOutlined,
+  SunOutlined,
   TeamOutlined,
 } from "@ant-design/icons";
 import type { MenuProps } from "antd";
 import { useLocation, useNavigate } from "react-router";
 import { getKeyByPathname } from "../../app/utils/get-key-by-pathname";
 import { useAuth } from "../../app/api/hooks/auth/use-auth";
+import { useThemeController } from "../context/theme-context";
 
 type MenuItem = Required<MenuProps>["items"][number];
 
-const siderStyle: React.CSSProperties = {
-  overflow: "visible",
-  height: "100vh",
-  position: "sticky",
-  insetInlineStart: 0,
-  top: 0,
-  bottom: 0,
-  zIndex: 100,
-};
-
 export function AppLayout({ children }: { children: ReactNode }) {
-  const [breakpoint, setBreakpoint] = useState<boolean>(false);
+  const { mode, toggleTheme } = useThemeController();
+  const { signOut } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
-  const { signOut } = useAuth();
-
   const menuItems: MenuItem[] = [
     {
       key: "1",
@@ -52,21 +54,24 @@ export function AppLayout({ children }: { children: ReactNode }) {
     },
   ];
 
+  const { md, lg, xxl } = Grid.useBreakpoint();
+  const isDarkTheme = mode === "dark" ? true : false;
+  const themedBackground = !isDarkTheme ? "#fff" : "#141414";
+  const themedLayoutBackground = !isDarkTheme ? "" : "#141414";
+
   return (
-    <Layout>
-      <Sider
-        theme="light"
-        style={siderStyle}
-        onBreakpoint={(broken) => setBreakpoint(broken)}
-        breakpoint="sm"
-        collapsedWidth={breakpoint ? "0" : "60"}
-        trigger={null}
+    <Layout style={{ background: themedLayoutBackground, width: "100%" }}>
+      <Header
+        style={{
+          padding: "0 1rem",
+          background: themedBackground,
+        }}
       >
         <Flex
           align="center"
+          justify="space-between"
           style={{
-            marginBottom: "0",
-            marginLeft: "1.5rem",
+            margin: md ? "0 1.5rem" : "0",
           }}
         >
           <Flex align="center" gap="small">
@@ -79,60 +84,58 @@ export function AppLayout({ children }: { children: ReactNode }) {
               }}
             />
 
-            <Title style={{ marginTop: "0.8rem" }} level={4}>
+            <Title
+              style={{
+                marginTop: "0.8rem",
+                fontFamily: "Playfair Display, serif",
+              }}
+              level={4}
+            >
               Calma
             </Title>
           </Flex>
-        </Flex>
 
-        <Menu
-          mode="inline"
-          defaultSelectedKeys={getKeyByPathname(location.pathname) ?? ["1"]}
-          items={menuItems}
-        />
-
-        <div
-          style={{
-            position: "absolute",
-            bottom: "0",
-            width: "100%",
-            padding: "0.5rem",
-          }}
-        >
-          <Button
-            onClick={() => signOut.mutate()}
-            style={{ width: "100%" }}
-            color="danger"
-            variant="text"
-          >
-            Sair
-          </Button>
-        </div>
-      </Sider>
-      <Layout>
-        {breakpoint && (
-          <Header style={{ padding: "0", background: "#fff" }}>
-            <Menu
-              mode="horizontal"
-              defaultSelectedKeys={getKeyByPathname(location.pathname) ?? ["1"]}
-              items={menuItems}
+          <Space>
+            <Button
+              color="primary"
+              variant="outlined"
+              onClick={() => {
+                toggleTheme();
+              }}
+              icon={!isDarkTheme ? <SunOutlined /> : <MoonOutlined />}
             />
-          </Header>
-        )}
 
-        <Content
-          style={{
-            margin: breakpoint ? "16px" : "24px",
-            padding: breakpoint ? "16px" : "24px",
-            minHeight: "calc(100vh - 4rem)",
-            height: "100%",
-            background: "#fff",
-            borderRadius: "16px",
-          }}
-        >
-          {children}
-        </Content>
-      </Layout>
+            <Button
+              onClick={() => signOut.mutate()}
+              color="danger"
+              variant="outlined"
+              icon={<LogoutOutlined />}
+              iconPosition="end"
+            >
+              Sair
+            </Button>
+          </Space>
+        </Flex>
+      </Header>
+
+      <Menu
+        style={{ paddingLeft: md ? "1.5rem" : "0" }}
+        mode="horizontal"
+        defaultSelectedKeys={getKeyByPathname(location.pathname) ?? ["1"]}
+        items={menuItems}
+      />
+      <Content
+        style={{
+          margin: xxl ? "2rem 8rem" : md ? "2rem" : "0",
+          padding: lg ? "2rem" : md ? "2rem" : "1rem",
+          background: themedBackground,
+          minHeight: !md ? "calc(100dvh - 6.9rem)" : "calc(100vh - 10.9rem)",
+          height: "100%",
+          borderRadius: "16px",
+        }}
+      >
+        {children}
+      </Content>
     </Layout>
   );
 }

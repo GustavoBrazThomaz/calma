@@ -70,7 +70,7 @@ export function Patients() {
         gap="middle"
         wrap={!sm}
         justify="space-between"
-        style={{ width: "100%" }}
+        style={{ width: "100%", marginTop: !md ? "-1rem" : "0" }}
       >
         <Input.Search
           placeholder="Buscar por paciente pelo nome"
@@ -86,7 +86,7 @@ export function Patients() {
         <Button
           onClick={() => navigate("/novo-paciente")}
           variant="solid"
-          color="blue"
+          color="primary"
           style={{ width: !sm ? "100%" : "" }}
         >
           Novo Paciente

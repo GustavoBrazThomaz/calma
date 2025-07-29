@@ -22,7 +22,10 @@ const { Title, Text } = Typography;
 export function PatientDetail() {
   const [searchParams, setSearchParams] = useSearchParams();
   const { id } = useParams();
-  const { data, isLoading } = useGetPatientDetail(id as string);
+  const { data, isLoading } = useGetPatientDetail(
+    id as string,
+    id ? true : false
+  );
   const navigate = useNavigate();
 
   if (isLoading)
@@ -32,7 +35,7 @@ export function PatientDetail() {
         justify="center"
         style={{ width: "100%", height: "100%" }}
       >
-        <Spin  size="large" />
+        <Spin size="large" />
       </Flex>
     );
   if (!data) return <Empty style={{ marginTop: "4rem" }} />;
@@ -59,7 +62,12 @@ export function PatientDetail() {
     <Flex vertical gap="middle">
       <Flex justify="space-between">
         <Flex gap="small">
-          <Button onClick={() => navigate("/pacientes")} color="default" variant="text" icon={<ArrowLeftOutlined />} />
+          <Button
+            onClick={() => navigate("/pacientes")}
+            color="default"
+            variant="text"
+            icon={<ArrowLeftOutlined />}
+          />
           <Title level={3}>Detalhes do Paciente</Title>
         </Flex>
         <Button onClick={() => navigate(`/editar-paciente/${id}`)}>

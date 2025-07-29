@@ -1,10 +1,12 @@
-import { Card, Descriptions, Flex, Typography } from "antd";
+import { Card, Descriptions, Flex, Grid, Typography } from "antd";
 import { parsePrice } from "../../../app/utils/parse-price";
 import { PAYMENT_TYPE } from "../../../domain/enum/payment_type";
 import type { PatientDetails } from "../../../domain/types";
 
 const { Title, Text, Paragraph } = Typography;
 export function ClinicalData({ patient }: { patient: PatientDetails }) {
+  const { md, lg } = Grid.useBreakpoint();
+
   return (
     <Flex vertical gap="middle">
       <Card>
@@ -17,8 +19,11 @@ export function ClinicalData({ patient }: { patient: PatientDetails }) {
       </Card>
 
       <Card>
-        <Descriptions title="Informações Pessoais" column={2}>
-          <Descriptions.Item style={{ width: "20%" }} label="Gênero">
+        <Descriptions title="Informações Pessoais" column={!md ? 1 : 2}>
+          <Descriptions.Item
+            style={{ width: !lg ? "40%" : "25%" }}
+            label="Gênero"
+          >
             {patient.gender}
           </Descriptions.Item>
           {patient.maritalStatus && (
@@ -73,14 +78,18 @@ export function ClinicalData({ patient }: { patient: PatientDetails }) {
 
       {patient.clinicalObservations && (
         <Card>
-          <Title level={5} style={{marginBottom: "1rem"}}>Observações Clínicas</Title>
+          <Title level={5} style={{ marginBottom: "1rem" }}>
+            Observações Clínicas
+          </Title>
           <Paragraph>{patient.clinicalObservations}</Paragraph>
         </Card>
       )}
 
       {patient.currentMedications && (
         <Card>
-          <Title level={5} style={{marginBottom: "1rem"}}>Medicamentos em Uso</Title>
+          <Title level={5} style={{ marginBottom: "1rem" }}>
+            Medicamentos em Uso
+          </Title>
           <Text style={{ whiteSpace: "pre-line" }}>
             {patient.currentMedications}
           </Text>
@@ -89,7 +98,9 @@ export function ClinicalData({ patient }: { patient: PatientDetails }) {
 
       {patient.diagnoses && (
         <Card>
-          <Title level={5} style={{marginBottom: "1rem"}}>Laudos e Diagnósticos</Title>
+          <Title level={5} style={{ marginBottom: "1rem" }}>
+            Laudos e Diagnósticos
+          </Title>
           <Text style={{ whiteSpace: "pre-line" }}>{patient.diagnoses}</Text>
         </Card>
       )}
