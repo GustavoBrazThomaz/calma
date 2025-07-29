@@ -79,7 +79,6 @@ export function AppointmentForm({
           form={formInstance}
           clearOnDestroy={true}
           onFinish={handleSubmit}
-          onFinishFailed={(e) => console.log(e)}
           autoComplete="off"
           layout="vertical"
           initialValues={{

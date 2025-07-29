@@ -1,17 +1,32 @@
 import { useQueryClient } from "@tanstack/react-query";
-import { App, Button, Card, Flex, Form, Input, Spin, Typography } from "antd";
+import {
+  App,
+  Button,
+  Card,
+  Flex,
+  Form,
+  Grid,
+  Input,
+  Spin,
+  Typography,
+} from "antd";
 import { useNavigate, useParams } from "react-router";
 import { useCaseEvolution } from "../../app/api/hooks/case-evolution/use-case-evolution";
 import { useCaseEvolutionById } from "../../app/api/hooks/case-evolution/use-case-evolution-by-id";
 import type { CaseEvolutionForm } from "./case-evolution.types";
 import RichTextInput from "./rich-text-input/rich-text-input";
 import { useState } from "react";
+import { ArrowLeftOutlined } from "@ant-design/icons";
 
 const { Title } = Typography;
 
 export function CaseEvolutionForm() {
   const { caseId, id } = useParams();
-  const { data, isLoading } = useCaseEvolutionById(caseId ?? "");
+  const { sm } = Grid.useBreakpoint();
+  const { data, isLoading } = useCaseEvolutionById(
+    caseId ?? "",
+    caseId ? true : false
+  );
   const { updateCaseEvolution, createCaseEvolution } = useCaseEvolution();
   const navigate = useNavigate();
   const { message } = App.useApp();
@@ -26,7 +41,7 @@ export function CaseEvolutionForm() {
           justify="center"
           style={{ width: "100%", height: "100%" }}
         >
-          <Spin  size="large" />
+          <Spin size="large" />
         </Flex>
       );
   }
@@ -40,7 +55,6 @@ export function CaseEvolutionForm() {
       });
       message.success("Evolução de caso criada com sucesso");
     } else {
-      console.log("oi");
       updateCaseEvolution.mutate({
         id: caseId as string,
         note: note,
@@ -60,11 +74,26 @@ export function CaseEvolutionForm() {
 
   return (
     <Flex vertical gap="middle">
-      <Flex justify="space-between">
-        <Title level={3}>
+      <Flex gap="small">
+        <Button
+          onClick={() => navigate(`/paciente/${id}?tab=3`)}
+          color="default"
+          variant="text"
+          icon={<ArrowLeftOutlined />}
+        />
+        <Title
+          level={3}
+          style={{
+            width: !sm ? "60%" : "100%",
+            textOverflow: "ellipsis",
+            overflow: "hidden",
+            whiteSpace: "nowrap",
+          }}
+        >
           {caseId ? "Evolução de caso" : "Nova Evolução de Caso"}
         </Title>
       </Flex>
+
       <Form<CaseEvolutionForm>
         onFinish={handleSubmit}
         autoComplete="off"

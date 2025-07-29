@@ -4,10 +4,10 @@ import { AppLayout } from "../ui/layout/app-layout";
 
 function App() {
   return (
-    <AppLayout>
-      <Outlet />
-      <ReactQueryDevtools initialIsOpen={false} />
-    </AppLayout>
+      <AppLayout>
+        <Outlet />
+        <ReactQueryDevtools initialIsOpen={false} />
+      </AppLayout>
   );
 }
 

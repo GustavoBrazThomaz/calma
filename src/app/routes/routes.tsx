@@ -18,7 +18,7 @@ export const routes = createBrowserRouter([
       </RequireAuth>
     ),
     children: [
-      { index: true, element: <Dashboard /> },
+      { path: "", element: <Dashboard /> },
       { path: "consultas", element: <Appointments /> },
       { path: "pacientes", element: <Patients /> },
       {

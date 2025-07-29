@@ -35,7 +35,7 @@ export function NewPatient() {
   const navigate = useNavigate();
   const { id } = useParams();
   const { newPatient, updatePatient } = usePatient();
-  const { data, isLoading } = useGetPatientDetail(id ?? "");
+  const { data, isLoading } = useGetPatientDetail(id ?? "", id ? true : false);
   const { md } = useBreakpoint();
   const queryClient = useQueryClient();
 
@@ -90,7 +90,7 @@ export function NewPatient() {
           justify="center"
           style={{ width: "100%", height: "100%" }}
         >
-          <Spin  size="large" />
+          <Spin size="large" />
         </Flex>
       );
 

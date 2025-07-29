@@ -42,7 +42,6 @@ export function Login() {
             form={formInstance}
             clearOnDestroy={true}
             onFinish={handleSubmit}
-            onFinishFailed={(e) => console.log(e)}
             autoComplete="off"
             layout="vertical"
           >
@@ -69,7 +68,7 @@ export function Login() {
             <Button
               type="primary"
               variant="solid"
-              color="orange"
+              color="primary"
               htmlType="submit"
               style={{ width: "100%" }}
             >

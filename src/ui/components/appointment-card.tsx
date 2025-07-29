@@ -95,11 +95,19 @@ export function AppointmentCard({
     >
       <Card.Meta
         title={
-          <Flex justify="space-between">
-            <Typography.Title style={{ marginBottom: 0 }} level={5}>
+          <Flex justify="space-between" align="center">
+            <Typography.Title
+              style={{
+                marginBottom: 0,
+                textOverflow: "ellipsis",
+                overflow: "hidden",
+                whiteSpace: "nowrap",
+              }}
+              level={5}
+            >
               {`${firstName} ${lastName}`}
             </Typography.Title>
-            <Space>
+            <Space >
               <Badge
                 count={hasPaid ? "Pago" : "Pendente"}
                 color={hasPaid ? "green" : "orange"}
@@ -107,7 +115,6 @@ export function AppointmentCard({
 
               {!isHome && (
                 <>
-                  {" "}
                   <Tooltip
                     title={`Mudar status da consulta para ${
                       !hasPaid ? "Realiza" : "Agendada"
