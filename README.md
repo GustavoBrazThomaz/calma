@@ -10,7 +10,7 @@ Uma aplicação web para **psicologos gerenciarem os pacientes**, permitindo o c
 
 Você pode acessar a aplicação online clicando no link abaixo:
 
-👉 [https://calma-seven.vercel.app/](https://calma-seven.vercel.app/)
+👉 [https://calma-seven.vercel.app/](https://calma-dashboard.vercel.app/)
 
 ---
 
